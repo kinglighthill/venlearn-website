@@ -77,24 +77,42 @@ export default function ContactClient() {
                 <div className="p-8 rounded-3xl glass border border-white/10">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-8">
-                                <label className="text-sm font-medium text-slate-400">First Name</label>
-                                <input name="firstName" required type="text" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500" placeholder="John" />
+                            <div className="flex flex-col gap-2">
+                                <label htmlFor="firstName" className="text-sm font-medium text-slate-400">
+                                    First Name
+                                </label>
+                                <input
+                                    id="firstName"
+                                    name="firstName"
+                                    required
+                                    type="text"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500"
+                                    placeholder="John"
+                                />
                             </div>
-                            <div className="space-y-8">
-                                <label className="text-sm font-medium text-slate-400">Last Name</label>
-                                <input name="lastName" required type="text" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500" placeholder="Doe" />
+                            <div className="flex flex-col gap-2">
+                                <label htmlFor="lastName" className="text-sm font-medium text-slate-400">
+                                    Last Name
+                                </label>
+                                <input
+                                    id="lastName"
+                                    name="lastName"
+                                    required
+                                    type="text"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500"
+                                    placeholder="Doe"
+                                />
                             </div>
                         </div>
 
-                        <div className="space-y-8">
-                            <label className="text-sm font-medium text-slate-400">Email Address</label>
-                            <input name="email" required type="email" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500" placeholder="john@school.edu" />
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="email" className="text-sm font-medium text-slate-400">Email Address</label>
+                            <input id="email" name="email" required type="email" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-slate-500" placeholder="john@school.edu" />
                         </div>
 
-                        <div className="space-y-8">
-                            <label className="text-sm font-medium text-slate-400">Message</label>
-                            <textarea name="message" required rows={4} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none placeholder:text-slate-500" placeholder="Tell us about your needs..." />
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="message" className="text-sm font-medium text-slate-400">Message</label>
+                            <textarea id="message" name="message" required rows={4} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none placeholder:text-slate-500" placeholder="Tell us about your needs..." />
                         </div>
 
                         {submitStatus && (
