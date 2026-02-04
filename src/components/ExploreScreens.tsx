@@ -7,11 +7,11 @@ import { useState, useEffect } from "react";
 
 // Example screens array - you can pass any array of images
 const screens = [
-  { id: 1, title: "Server", image: "/images/server-mockup.png", color: "bg-orange-100" },
-  { id: 2, title: "Manager", image: "/images/manager-mockup.png", color: "bg-blue-100" },
-  { id: 3, title: "Manager", image: "/images/manager-mockup-2.png", color: "bg-purple-100" },
-  { id: 4, title: "Editor", image: "/images/editor-mockup.png", color: "bg-green-100" },
-  { id: 5, title: "Client", image: "/images/client-mockup.png", color: "bg-pink-100" },
+  { id: 1, title: "Server", image: "/images/server-mockup.png", color: "bg-orange-100", alt: "VenLearn Server Dashboard showing real-time proctoring data" },
+  { id: 2, title: "Manager", image: "/images/manager-mockup.png", color: "bg-blue-100", alt: "Manager App student eligibility and exam scheduling interface" },
+  { id: 3, title: "Manager", image: "/images/manager-mockup-2.png", color: "bg-purple-100", alt: "Manager App detailed proctoring logs and session analytics" },
+  { id: 4, title: "Editor", image: "/images/editor-mockup.png", color: "bg-green-100", alt: "VenLearn Content Editor with rich-text and media support" },
+  { id: 5, title: "Client", image: "/images/client-mockup.png", color: "bg-pink-100", alt: "VenLearn Student Client in locked-down kiosk mode" },
 ];
 
 interface Screen {
@@ -19,6 +19,7 @@ interface Screen {
   title: string;
   image?: string;
   color: string;
+  alt?: string;
 }
 
 interface ExploreScreensProps {
@@ -175,8 +176,8 @@ export default function ExploreScreens({
               key={index}
               onClick={() => goToSlide(index)}
               className={`h-2 rounded-full transition-all duration-300 ${index === activeIndex
-                  ? 'w-8 bg-slate-900'
-                  : 'w-2 bg-slate-300 hover:bg-slate-400'
+                ? 'w-8 bg-slate-900'
+                : 'w-2 bg-slate-300 hover:bg-slate-400'
                 }`}
               aria-label={`Go to screen ${index + 1}`}
             />
@@ -225,7 +226,7 @@ function ScreenCard({ screen, isCenter = false, isSide = false }: {
           <div className="relative w-full h-[calc(100%-2rem)]">
             <Image
               src={screen.image}
-              alt={screen.title}
+              alt={screen.alt || screen.title}
               fill
               className="object-cover"
             />

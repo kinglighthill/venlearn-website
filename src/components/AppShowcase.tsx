@@ -11,7 +11,7 @@ const apps = [
     description: "The central nervous system. Manages connections, exam distribution, and real-time monitoring logs.",
     icon: Server,
     color: "bg-blue-100 text-blue-600",
-    image: "/images/server-mockup.png", 
+    image: "/images/server-mockup.png",
     features: ["Real-time Logging", "Secure Socket Connection", "Exam Distribution"]
   },
   {
@@ -48,19 +48,19 @@ export default function AppShowcase() {
     <section className="py-24 bg-slate-50 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             className="mb-6 flex justify-center"
-           >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-sm font-medium shadow-sm">
-                 <Zap size={14} className="text-orange-500 fill-orange-500" />
-                 <span>Powerful Ecosystem</span>
-              </div>
-           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-6 flex justify-center"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-sm font-medium shadow-sm">
+              <Zap size={14} className="text-orange-500 fill-orange-500" />
+              <span>Powerful Ecosystem</span>
+            </div>
+          </motion.div>
 
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -68,7 +68,7 @@ export default function AppShowcase() {
           >
             Complete <span className="text-brand-primary">Proctoring Suite</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -93,7 +93,7 @@ export default function AppShowcase() {
                 <div className={`w-14 h-14 rounded-2xl ${app.color} flex items-center justify-center mb-6`}>
                   <app.icon size={28} />
                 </div>
-                
+
                 <h3 className="text-2xl font-bold mb-3 text-slate-900">{app.title}</h3>
                 <p className="text-slate-500 mb-6 leading-relaxed">
                   {app.description}
@@ -112,20 +112,20 @@ export default function AppShowcase() {
                   Learn more <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
-              
+
               {/* App Interface Placeholder */}
               <div className="bg-slate-50 h-56 mx-8 rounded-t-xl border-t border-x border-slate-200 mt-4 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-sm">
-                 <div className="absolute inset-x-0 top-0 h-8 bg-white border-b border-slate-100 flex items-center px-4 gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                 </div>
-                 <Image 
-                   src={app.image} 
-                   alt={app.title} 
-                   fill 
-                   className="object-cover object-top pt-8 opacity-90 group-hover:opacity-100 transition-opacity" 
-                 />
+                <div className="absolute inset-x-0 top-0 h-8 bg-white border-b border-slate-100 flex items-center px-4 gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+                </div>
+                <Image
+                  src={app.image}
+                  alt={`${app.title} - ${app.description}`}
+                  fill
+                  className="object-cover object-top pt-8 opacity-90 group-hover:opacity-100 transition-opacity"
+                />
               </div>
             </motion.div>
           ))}

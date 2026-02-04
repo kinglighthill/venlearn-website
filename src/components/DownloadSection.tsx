@@ -30,7 +30,7 @@ export default function DownloadSection() {
                     <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                                <Image src="/images/icons/windows.avif" alt="Windows" width={18} height={18} />
+                                <Image src="/images/icons/windows.avif" alt="VenLearn for Windows Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
@@ -43,7 +43,7 @@ export default function DownloadSection() {
                     <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                                <Image src="/images/icons/mac.svg" alt="Mac" width={18} height={18} />
+                                <Image src="/images/icons/mac.svg" alt="VenLearn for Mac OS Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
@@ -56,7 +56,7 @@ export default function DownloadSection() {
                     <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                                <Image src="/images/icons/linux2.png" alt="Linux" width={18} height={18} />
+                                <Image src="/images/icons/linux2.png" alt="VenLearn for Linux Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
@@ -69,7 +69,7 @@ export default function DownloadSection() {
                     <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                                <Image src="/images/icons/android.svg" alt="Android" width={18} height={18} />
+                                <Image src="/images/icons/android.svg" alt="VenLearn for Android Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
@@ -82,7 +82,7 @@ export default function DownloadSection() {
                     <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                                <Image src="/images/icons/ios.avif" alt="iOS" width={18} height={18} />
+                                <Image src="/images/icons/ios.avif" alt="VenLearn for iOS App Store Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
