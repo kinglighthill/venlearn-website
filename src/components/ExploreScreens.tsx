@@ -65,7 +65,7 @@ export default function ExploreScreens({
   const getNextIndex = () => (activeIndex + 1) % customScreens.length;
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 bg-white dark:bg-slate-950 overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-6 text-center">
 
         {/* Label */}
@@ -87,7 +87,7 @@ export default function ExploreScreens({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl font-bold mb-6 text-slate-900"
+          className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white"
         >
           Explore Product
         </motion.h2>
@@ -97,7 +97,7 @@ export default function ExploreScreens({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-slate-500 text-lg max-w-2xl mx-auto mb-16"
+          className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto mb-16"
         >
           Checkout our App&apos;s beautiful user interface <br /> and user experience in pictures
         </motion.p>
@@ -192,7 +192,7 @@ export default function ExploreScreens({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="mt-6 text-2xl font-semibold text-slate-900"
+            className="mt-6 text-2xl font-semibold text-slate-900 dark:text-white"
           >
             {customScreens[activeIndex].title}
           </motion.p>

@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
+/* Configure dark mode to use class-based selector */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-brand-primary: #2661AC;
   --color-brand-secondary: #FF8000;
   --color-brand-accent: #2661AC;
-  /* reusing primary for now or maybe a lighter shade */
 }
 
 :root {
@@ -12,11 +14,13 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+html {
+  transition: color 0.3s, background-color 0.3s;
 }
 
 body {
@@ -33,6 +37,7 @@ body {
 
 .btn-secondary {
   @apply bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 transition-colors;
+  @apply dark:bg-slate-800 dark:text-white dark:border-slate-700 dark:hover:bg-slate-700;
 }
 
 .section-padding {
@@ -41,4 +46,10 @@ body {
 
 .container-max {
   @apply max-w-7xl mx-auto;
+}
+
+/* Glass effects for dark mode */
+.glass {
+  @apply bg-white/80 backdrop-blur-lg;
+  @apply dark:bg-slate-900/80;
 }

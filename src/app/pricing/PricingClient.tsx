@@ -114,7 +114,7 @@ export default function PricingClient() {
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 text-brand-primary">
                     Choose Your Perfect Plan
                 </h1>
-                <p className="text-slate-500 text-lg max-w-2xl mx-auto mb-8">
+                <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto mb-8">
                     Empower your educational institution with our comprehensive eLearning, CBT system and advanced features
                 </p>
             </div>
@@ -128,8 +128,8 @@ export default function PricingClient() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                         className={`relative rounded-3xl p-6 border flex flex-col transition-all duration-300 min-w-[300px] md:min-w-[320px] snap-center ${plan.highlight
-                                ? "border-brand-primary bg-blue-50/50 shadow-xl shadow-blue-500/10"
-                                : "border-slate-200 bg-white hover:shadow-lg"
+                            ? "border-brand-primary bg-blue-50/50 dark:bg-blue-900/20 shadow-xl shadow-blue-500/10"
+                            : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg"
                             }`}
                     >
                         {plan.highlight && (
@@ -139,24 +139,24 @@ export default function PricingClient() {
                         )}
 
                         <div className="mb-6 text-center">
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h3>
-                            <p className="text-slate-500 text-xs min-h-[40px]">{plan.description}</p>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs min-h-[40px]">{plan.description}</p>
                         </div>
 
                         <div className="mb-6 text-center">
                             <div className="flex items-baseline justify-center gap-1">
-                                <span className="text-3xl font-bold text-slate-900">
+                                <span className="text-3xl font-bold text-slate-900 dark:text-white">
                                     {typeof plan.price === 'number' ? `₦${plan.price}k` : plan.price}
                                 </span>
-                                <span className="text-slate-500 text-sm">
+                                <span className="text-slate-500 dark:text-slate-400 text-sm">
                                     {typeof plan.price === 'number' ? `/student/year` : ''}
                                 </span>
                             </div>
-                            <p className="text-slate-500 text-xs mt-1">Per student annually</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Per student annually</p>
                         </div>
 
-                        <div className="bg-slate-50 rounded-lg p-3 text-center mb-6">
-                            <span className="text-slate-600 text-xs font-semibold">{plan.minStudents}</span>
+                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center mb-6">
+                            <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{plan.minStudents}</span>
                         </div>
 
                         <div className="space-y-4 flex-1">
@@ -165,7 +165,7 @@ export default function PricingClient() {
                                     <div className={`mt-0.5 ${feature.included ? "text-emerald-500" : "text-slate-300"}`}>
                                         {feature.included ? <Check size={16} /> : <X size={16} />}
                                     </div>
-                                    <span className={`text-sm ${feature.included ? "text-slate-700 font-medium" : "text-slate-400"}`}>
+                                    <span className={`text-sm ${feature.included ? "text-slate-700 dark:text-slate-200 font-medium" : "text-slate-400 dark:text-slate-500"}`}>
                                         {feature.name}
                                     </span>
                                 </div>
@@ -176,29 +176,29 @@ export default function PricingClient() {
             </div>
 
             {/* Feature Comparison */}
-            <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-100">
-                <div className="p-8 border-b border-slate-100 bg-slate-50/50">
-                    <h2 className="text-2xl font-bold text-slate-900 text-center">Detailed Feature Comparison</h2>
-                    <p className="text-slate-500 text-center mt-2">Compare all features across our plans</p>
+            <div className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-xl border border-slate-100 dark:border-slate-700">
+                <div className="p-8 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center">Detailed Feature Comparison</h2>
+                    <p className="text-slate-500 dark:text-slate-400 text-center mt-2">Compare all features across our plans</p>
                 </div>
 
                 <div className="overflow-x-auto" id="pricing-table">
                     <table className="w-full min-w-[800px]">
                         <thead>
-                            <tr className="bg-white">
-                                <th className="p-6 text-left text-slate-900 font-bold w-1/4">Features</th>
+                            <tr className="bg-white dark:bg-slate-800">
+                                <th className="p-6 text-left text-slate-900 dark:text-white font-bold w-1/4">Features</th>
                                 {plans.map(plan => (
-                                    <th key={plan.name} className={`p-6 text-center font-bold ${plan.highlight ? "text-brand-primary" : "text-slate-700"
+                                    <th key={plan.name} className={`p-6 text-center font-bold ${plan.highlight ? "text-brand-primary" : "text-slate-700 dark:text-slate-300"
                                         }`}>
                                         {plan.name}
                                     </th>
                                 ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {featureComparison[0].rows.map((row, index) => (
-                                <tr key={index} className="hover:bg-slate-50 transition-colors">
-                                    <td className="p-6 text-slate-900 font-medium">{row.name}</td>
+                                <tr key={index} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                    <td className="p-6 text-slate-900 dark:text-white font-medium">{row.name}</td>
 
                                     {[row.free, row.starter, row.basic, row.pro, row.ent].map((val, i) => (
                                         <td key={i} className="p-6 text-center text-slate-600 text-sm">
@@ -207,7 +207,7 @@ export default function PricingClient() {
                                             ) : val === false ? (
                                                 <div className="flex justify-center text-slate-200"><X size={20} className="stroke-[3]" /></div>
                                             ) : (
-                                                <span className="font-semibold text-slate-900 bg-slate-100 px-3 py-1 rounded-full text-xs">{val}</span>
+                                                <span className="font-semibold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-xs">{val}</span>
                                             )}
                                         </td>
                                     ))}

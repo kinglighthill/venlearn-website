@@ -56,14 +56,14 @@ export default function DemoClient() {
         <div className="pt-32 pb-16 px-4 md:px-8 max-w-7xl mx-auto">
             {/* Header */}
             <div className="mb-12 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-brand-primary text-sm font-semibold mb-4 border border-blue-100">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-brand-primary text-sm font-semibold mb-4 border border-blue-100 dark:border-blue-800">
                     <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
                     Product Walkthroughs
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
                     See VenLearn in Action
                 </h1>
-                <p className="text-slate-500 text-lg max-w-2xl">
+                <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">
                     Watch deep-dive tutorials and feature overviews to understand how VenLearn can transform your educational institution.
                 </p>
             </div>
@@ -72,7 +72,7 @@ export default function DemoClient() {
             <div className="mb-20">
                 <div
                     onClick={() => setIsPlayingFeatured(true)}
-                    className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 border border-slate-200 bg-white group cursor-pointer"
+                    className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 group cursor-pointer"
                 >
                     {isPlayingFeatured ? (
                         <iframe
@@ -86,7 +86,7 @@ export default function DemoClient() {
                     ) : (
                         <>
                             {/* Placeholder Gradient Content */}
-                            <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
 
                                 {/* Play Button */}
                                 <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300 z-10">
@@ -110,7 +110,7 @@ export default function DemoClient() {
             {/* More Videos Section */}
             <div className="mb-16">
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-slate-900">More Videos</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">More Videos</h2>
                     <a
                         href="https://youtube.com/@venlearn"
                         target="_blank"
@@ -129,7 +129,7 @@ export default function DemoClient() {
                             onClick={() => setActiveVideo(index)}
                         >
                             {/* Thumbnail */}
-                            <div className={`relative aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100 shadow-sm border border-slate-200 transition-transform duration-300 group-hover:-translate-y-1`}>
+                            <div className={`relative aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 transition-transform duration-300 group-hover:-translate-y-1`}>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
                                     <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
                                         <Play className="fill-slate-900 stroke-slate-900 ml-0.5" size={16} />
@@ -138,7 +138,7 @@ export default function DemoClient() {
                             </div>
 
                             {/* Text Info */}
-                            <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-primary transition-colors">{video.title}</h3>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">{video.title}</h3>
                             <div className="flex items-center gap-2 mt-2 text-brand-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
                                 Watch Now <ArrowRight size={14} />
                             </div>
@@ -156,10 +156,10 @@ export default function DemoClient() {
             />
 
             {/* Youtube Link Featuret */}
-            <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Visit our YouTube Channel</h3>
-                    <p className="text-slate-500">Subscribe for weekly tips, new feature announcements, and success stories from other institutions using VenLearn.</p>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Visit our YouTube Channel</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Subscribe for weekly tips, new feature announcements, and success stories from other institutions using VenLearn.</p>
                 </div>
                 <a href="https://www.youtube.com/@venlearn" target="_blank" className="px-8 py-3 rounded-full bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
                     Open YouTube <ExternalLink size={18} />

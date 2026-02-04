@@ -6,14 +6,14 @@ import Image from "next/image";
 
 export default function DownloadSection() {
     return (
-        <section className="py-24 bg-white relative overflow-hidden">
+        <section className="py-24 bg-white dark:bg-slate-950 relative overflow-hidden transition-colors">
             <div className="max-w-7xl mx-auto px-6 text-center">
 
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 leading-tight"
+                    className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white leading-tight"
                 >
                     Download VenLearn <br /> and Start Learning Today
                 </motion.h2>
@@ -27,15 +27,15 @@ export default function DownloadSection() {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 max-w-5xl mx-auto mt-12"
                 >
                     {/* Windows */}
-                    <button className="flex items-center gap-5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
+                    <button className="flex items-center gap-5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 transition-all hover:scale-105 group text-left">
                         <div className="w-10 h-10 flex items-center justify-center">
                             <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
                                 <Image src="/images/icons/windows.avif" alt="VenLearn for Windows Download" width={18} height={18} />
                             </div>
                         </div>
                         <div>
-                            <div className="text-xs text-slate-500 font-medium">Download for</div>
-                            <div className="text-lg font-bold text-slate-800">Windows PC</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Download for</div>
+                            <div className="text-lg font-bold text-slate-800 dark:text-slate-100">Windows PC</div>
                         </div>
                     </button>
 

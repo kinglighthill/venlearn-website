@@ -45,7 +45,7 @@ const apps = [
 
 export default function AppShowcase() {
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden">
+    <section className="py-24 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.div
@@ -87,15 +87,15 @@ export default function AppShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative rounded-3xl overflow-hidden bg-white border border-slate-200 hover:shadow-xl transition-all duration-300"
+              className="group relative rounded-3xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300"
             >
               <div className="p-8 relative z-10">
                 <div className={`w-14 h-14 rounded-2xl ${app.color} flex items-center justify-center mb-6`}>
                   <app.icon size={28} />
                 </div>
 
-                <h3 className="text-2xl font-bold mb-3 text-slate-900">{app.title}</h3>
-                <p className="text-slate-500 mb-6 leading-relaxed">
+                <h3 className="text-2xl font-bold mb-3 text-slate-900 dark:text-white">{app.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
                   {app.description}
                 </p>
 
