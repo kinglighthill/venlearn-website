@@ -1,241 +1,70 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Bell, Check, Cloud, LockKeyhole, Smartphone } from "lucide-react";
 
-const downloads = [
-    {
-        name: "VenLearn Suite",
-        slug: "suite",
-        version: "v1.0.0",
-        size: "139 MB",
-        type: "server",
-        icon: "/images/icons/server.png",
-        description: "All in one proctoring solution",
-        platforms: [
-            {
-                slug: "windows",
-                name: "Windows",
-                icon: "/images/icons/windows.avif",
-                available: true
-            },
-            {
-                slug: "linux",
-                name: "Linux",
-                icon: "/images/icons/linux2.png",
-                available: false
-            },
-            {
-                slug: "mac",
-                name: "Mac",
-                icon: "/images/icons/mac.svg",
-                available: false
-            }
-        ]
-    },
-    {
-        name: "VenLearn Server",
-        slug: "server",
-        version: "v1.0.0",
-        size: "53 MB",
-        type: "server",
-        icon: "/images/icons/server.png",
-        description: "Centralized exam management core",
-        platforms: [
-            {
-                slug: "windows",
-                name: "Windows",
-                icon: "/images/icons/windows.avif",
-                available: true
-            },
-            {
-                slug: "linux",
-                name: "Linux",
-                icon: "/images/icons/linux2.png",
-                available: false
-            },
-            {
-                slug: "mac",
-                name: "Mac",
-                icon: "/images/icons/mac.svg",
-                available: false
-            }
-        ]
-    },
-    {
-        name: "VenLearn Manager",
-        slug: "manager",
-        version: "v1.0.0",
-        size: "26 MB",
-        type: "admin",
-        icon: "/images/icons/manager.png",
-        description: "Administration & proctoring dashboard",
-        platforms: [
-            {
-                slug: "windows",
-                name: "Windows",
-                icon: "/images/icons/windows.avif",
-                available: true
-            },
-            {
-                slug: "linux",
-                name: "Linux",
-                icon: "/images/icons/linux2.png",
-                available: false
-            },
-            {
-                slug: "mac",
-                name: "Mac",
-                icon: "/images/icons/mac.svg",
-                available: false
-            }
-        ]
-    },
-    {
-        name: "VenLearn Editor",
-        slug: "editor",
-        version: "v1.0.0",
-        size: "31 MB",
-        type: "editor",
-        icon: "/images/icons/editor.png",
-        description: "Rich content creation tool",
-        platforms: [
-            {
-                slug: "windows",
-                name: "Windows",
-                icon: "/images/icons/windows.avif",
-                available: true
-            },
-            {
-                slug: "linux",
-                name: "Linux",
-                icon: "/images/icons/linux2.png",
-                available: false
-            },
-            {
-                slug: "mac",
-                name: "Mac",
-                icon: "/images/icons/mac.svg",
-                available: false
-            }
-        ]
-    },
-    {
-        name: "VenLearn Client",
-        slug: "client",
-        version: "v1.0.0",
-        size: "26 MB",
-        type: "client",
-        icon: "/images/icons/client.png",
-        description: "Secure student exam interface",
-        platforms: [
-            {
-                slug: "windows",
-                name: "Windows",
-                icon: "/images/icons/windows.avif",
-                available: true
-            },
-            {
-                slug: "mac",
-                name: "Mac",
-                icon: "/images/icons/mac.svg",
-                available: false
-            },
-            {
-                slug: "linux",
-                name: "Linux",
-                icon: "/images/icons/linux2.png",
-                available: false
-            },
-            {
-                slug: "android",
-                name: "Android",
-                icon: "/images/icons/android.svg",
-                available: false
-            },
-            {
-                slug: "ios",
-                name: "iOS",
-                icon: "/images/icons/ios.avif",
-                available: false
-            }
-        ]
-    },
+const accessCards = [
+  ["Web workspace", "Run every school operation from the browser with no desktop installer.", Cloud],
+  ["Mobile portals", "Parents, students, teachers, and leaders stay connected on the go.", Smartphone],
+  ["Secure access", "Role permissions, audit trails, and protected records are built in.", LockKeyhole],
+  ["Live notifications", "Announcements, attendance alerts, invoices, and approvals arrive instantly.", Bell],
 ];
 
 export default function DownloadClient() {
-    return (
-        <div className="py-24 max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
-                    Get <span className="text-brand-primary">VenLearn</span>
-                </h1>
-                <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-                    Download the latest version of the VenLearn suite. Currently available for Windows, with other platforms support coming soon.
-                </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {downloads.map((item, i) => (
-                    <motion.div
-                        key={item.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="group p-6 rounded-3xl bg-white border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center hover:-translate-y-1"
-                    >
-                        <div className="w-24 h-24 mb-6 relative drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <Image
-                                src={item.icon}
-                                alt={item.name}
-                                fill
-                                className="object-contain"
-                            />
-                        </div>
-
-                        <h3 className="text-xl font-bold mb-2 text-slate-900">{item.name}</h3>
-                        <p className="text-slate-500 text-sm mb-4 min-h-[40px]">{item.description}</p>
-
-                        <div className="flex items-center gap-3 text-xs text-slate-400 font-mono mb-8 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
-                            <span className="font-semibold text-slate-600">{item.version}</span>
-                            <span>•</span>
-                            <span>{item.size}</span>
-                        </div>
-
-                        <div className="mt-auto space-y-3 w-full">
-                            {
-                                item.platforms.map((platform, i) => platform.available ? (
-                                    <a
-                                        key={platform.slug}
-                                        href={`/api/download?app=${item.slug}&platform=${platform.slug}`}
-                                        className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition-colors shadow-lg shadow-slate-900/10 active:scale-95"
-                                    >
-                                        <div className="relative w-[18px] h-[18px]">
-                                            <Image src={platform.icon} alt={platform.name} fill className="object-contain" />
-                                        </div>
-                                        Download for {platform.name}
-                                    </a>
-                                ) : (
-                                    <div key={platform.slug} className="relative group/mac cursor-not-allowed">
-                                        <button
-                                            disabled
-                                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-slate-50 text-slate-400 text-sm font-semibold border border-slate-100"
-                                        >
-                                            <div className="relative w-[18px] h-[18px] grayscale opacity-60">
-                                                <Image src={platform.icon} alt={platform.name} fill className="object-contain" />
-                                            </div>
-                                            {platform.name}
-                                        </button>
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/mac:opacity-100 transition-opacity bg-slate-900/80 rounded-xl">
-                                            <span className="text-white text-xs font-medium">Coming Soon</span>
-                                        </div>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+  return (
+    <div className="overflow-hidden bg-white px-5 pb-24 pt-32 sm:px-8 lg:px-10">
+      <div className="absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(circle_at_14%_16%,rgba(123,104,238,0.20),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(0,196,140,0.16),transparent_28%),linear-gradient(180deg,#f8f7ff_0%,#ffffff_82%)]" />
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-sm font-black uppercase tracking-[0.24em] text-[#7b68ee]">No old downloads needed</p>
+          <h1 className="mt-5 text-5xl font-black leading-[0.96] tracking-normal text-[#101828] sm:text-7xl">
+            VenLearn is a modern school workspace in the cloud.
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-8 text-[#667085] sm:text-xl">
+            Instead of separate desktop tools, your school gets one secure web platform for administrators, teachers, parents, students, and leadership.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/demo" className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#101828] px-8 py-4 font-black text-white">
+              See the workspace
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link href="/contact" className="flex min-h-14 items-center justify-center rounded-full border border-[#eaecf0] bg-white px-8 py-4 font-black text-[#101828] shadow-sm">
+              Ask about onboarding
+            </Link>
+          </div>
         </div>
-    );
+
+        <div className="mt-14 grid gap-5 lg:grid-cols-4">
+          {accessCards.map(([title, description, Icon]) => (
+            <article key={title as string} className="rounded-[1.75rem] border border-[#eaecf0] bg-white p-6 shadow-xl shadow-[#101828]/5">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7b68ee] to-[#2f80ed] text-white">
+                <Icon className="h-7 w-7" />
+              </div>
+              <h2 className="mt-6 text-xl font-black text-[#101828]">{title as string}</h2>
+              <p className="mt-3 text-sm font-semibold leading-6 text-[#667085]">{description as string}</p>
+            </article>
+          ))}
+        </div>
+
+        <section className="mt-16 rounded-[2rem] bg-[#101828] p-6 text-white sm:p-10">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-[#ffc371]">Implementation included</p>
+              <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">
+                We help your team move from scattered tools to one workspace.
+              </h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {["Data import", "Role setup", "Teacher training", "Parent launch", "Finance configuration", "Leadership reporting"].map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/8 p-4">
+                  <Check className="h-5 w-5 text-[#00c48c]" />
+                  <p className="font-black">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
 }

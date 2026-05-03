@@ -1,170 +1,91 @@
 "use client";
 
-import { useState } from "react";
-import { Play, ArrowRight, ExternalLink, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, BarChart3, Check, CreditCard, Play, UsersRound } from "lucide-react";
 
-const featured = {
-    title: "Getting Started with Venlearn Editor",
-    desc: "A short guide to getting started with Venlearn Editor.",
-    thumbnail: "/thumbnails/editor.jpg",
-    duration: "5:30",
-    color: "from-indigo-500 to-purple-600",
-    videoLink: "https://venlearn.fra1.cdn.digitaloceanspaces.com/editor/videos/overview.mp4",
-}
-
-const demoVideos = [
-    {
-        title: "Getting Started with Venlearn Editor",
-        thumbnail: "/thumbnails/editor.jpg",
-        duration: "5:30",
-        color: "from-indigo-500 to-purple-600",
-        videoLink: "https://venlearn.fra1.cdn.digitaloceanspaces.com/editor/videos/overview.mp4",
-    },
+const demoFlow = [
+  ["1", "Import your school data", "Students, guardians, staff, classes, subjects, and fee balances."],
+  ["2", "Configure your workspace", "Roles, approvals, grading scales, terms, notifications, and campuses."],
+  ["3", "Launch with every team", "Admin, teachers, bursary, parents, students, and leadership in one place."],
 ];
 
-function VideoModal({ isOpen, onClose, videoLink, title }: { isOpen: boolean; onClose: () => void; videoLink: string; title: string }) {
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-            <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm" onClick={onClose}></div>
-            <div className="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors border border-white/10"
-                >
-                    <X size={20} />
-                </button>
-                <iframe
-                    className="w-full h-full"
-                    src={`${videoLink}?autoplay=1`}
-                    title={title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                ></iframe>
-            </div>
-        </div>
-    );
-}
-
 export default function DemoClient() {
-    const [activeVideo, setActiveVideo] = useState<number | null>(null);
-    const [isPlayingFeatured, setIsPlayingFeatured] = useState(false);
-
-    return (
-        <div className="pt-32 pb-16 px-4 md:px-8 max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="mb-12 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-brand-primary text-sm font-semibold mb-4 border border-blue-100 dark:border-blue-800">
-                    <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
-                    Product Walkthroughs
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
-                    See VenLearn in Action
-                </h1>
-                <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">
-                    Watch deep-dive tutorials and feature overviews to understand how VenLearn can transform your educational institution.
-                </p>
-            </div>
-
-            {/* Featured Video - The Big Player */}
-            <div className="mb-20">
-                <div
-                    onClick={() => setIsPlayingFeatured(true)}
-                    className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 group cursor-pointer"
-                >
-                    {isPlayingFeatured ? (
-                        <iframe
-                            className="absolute inset-0 w-full h-full"
-                            src={featured.videoLink}
-                            title="VenLearn Platform Tour"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                    ) : (
-                        <>
-                            {/* Placeholder Gradient Content */}
-                            <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-
-                                {/* Play Button */}
-                                <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300 z-10">
-                                    <Play className="fill-brand-primary stroke-brand-primary ml-1" size={32} />
-                                </div>
-
-                                {/* Abstract bg */}
-                                <div className="absolute inset-0 opacity-10 bg-[url('/grid.svg')]"></div>
-                            </div>
-
-                            {/* UI Overlays */}
-                            <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60 to-transparent transition-opacity group-hover:opacity-0 duration-300">
-                                <h2 className="text-2xl font-bold text-white mb-2">{featured.title}</h2>
-                                <p className="text-white/80 font-medium">{featured.desc}</p>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
-
-            {/* More Videos Section */}
-            <div className="mb-16">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">More Videos</h2>
-                    <a
-                        href="https://youtube.com/@venlearn"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-brand-primary hover:text-blue-700 transition-colors text-sm font-bold"
-                    >
-                        View all on YouTube <ExternalLink size={14} />
-                    </a>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {demoVideos.map((video, index) => (
-                        <div
-                            key={index}
-                            className="group cursor-pointer"
-                            onClick={() => setActiveVideo(index)}
-                        >
-                            {/* Thumbnail */}
-                            <div className={`relative aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 transition-transform duration-300 group-hover:-translate-y-1`}>
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
-                                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
-                                        <Play className="fill-slate-900 stroke-slate-900 ml-0.5" size={16} />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Text Info */}
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">{video.title}</h3>
-                            <div className="flex items-center gap-2 mt-2 text-brand-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
-                                Watch Now <ArrowRight size={14} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Video Modal Overlay */}
-            <VideoModal
-                isOpen={activeVideo !== null}
-                onClose={() => setActiveVideo(null)}
-                videoLink={activeVideo !== null ? demoVideos[activeVideo].videoLink : ""}
-                title={activeVideo !== null ? demoVideos[activeVideo].title : ""}
-            />
-
-            {/* Youtube Link Featuret */}
-            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Visit our YouTube Channel</h3>
-                    <p className="text-slate-500 dark:text-slate-400">Subscribe for weekly tips, new feature announcements, and success stories from other institutions using VenLearn.</p>
-                </div>
-                <a href="https://www.youtube.com/@venlearn" target="_blank" className="px-8 py-3 rounded-full bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
-                    Open YouTube <ExternalLink size={18} />
-                </a>
-            </div>
+  return (
+    <div className="overflow-hidden bg-white px-5 pb-24 pt-32 sm:px-8 lg:px-10">
+      <div className="absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(circle_at_16%_18%,rgba(123,104,238,0.20),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(255,95,109,0.16),transparent_28%),linear-gradient(180deg,#f8f7ff_0%,#ffffff_82%)]" />
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-sm font-black uppercase tracking-[0.24em] text-[#7b68ee]">Product tour</p>
+          <h1 className="mt-5 text-5xl font-black leading-[0.96] tracking-normal text-[#101828] sm:text-7xl">
+            See how VenLearn runs a school day.
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-8 text-[#667085] sm:text-xl">
+            Preview the workspace your administrators, teachers, finance team, parents, and leadership will use every day.
+          </p>
         </div>
-    );
+
+        <div className="mt-14 rounded-[2rem] bg-[linear-gradient(135deg,#7b68ee,#2f80ed_45%,#ff5f6d)] p-1 shadow-2xl shadow-[#7b68ee]/20">
+          <div className="rounded-[1.8rem] bg-[#101828] p-4 sm:p-8">
+            <div className="grid gap-5 lg:grid-cols-[1.3fr_0.7fr]">
+              <div className="relative min-h-[28rem] overflow-hidden rounded-[1.5rem] bg-white p-6">
+                <div className="absolute right-8 top-8 flex h-20 w-20 items-center justify-center rounded-full bg-[#101828] text-white shadow-2xl">
+                  <Play className="ml-1 h-8 w-8 fill-current" />
+                </div>
+                <p className="text-sm font-black uppercase tracking-[0.22em] text-[#7b68ee]">Live walkthrough</p>
+                <h2 className="mt-4 max-w-xl text-4xl font-black leading-tight text-[#101828] sm:text-5xl">
+                  From morning attendance to end-of-day leadership reports.
+                </h2>
+                <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                  {[
+                    ["Students", "1,842", UsersRound],
+                    ["Collected", "₦42.6m", CreditCard],
+                    ["Reports", "96%", BarChart3],
+                  ].map(([label, value, Icon]) => (
+                    <div key={label as string} className="rounded-2xl border border-[#eaecf0] bg-[#fbfcff] p-4">
+                      <Icon className="h-6 w-6 text-[#7b68ee]" />
+                      <p className="mt-5 text-3xl font-black text-[#101828]">{value as string}</p>
+                      <p className="text-sm font-bold text-[#667085]">{label as string}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[1.5rem] bg-white/10 p-5 text-white">
+                <p className="text-sm font-black uppercase tracking-[0.22em] text-[#ffc371]">Demo agenda</p>
+                <div className="mt-5 space-y-4">
+                  {demoFlow.map(([step, title, detail]) => (
+                    <div key={step} className="rounded-2xl bg-white p-4 text-[#101828]">
+                      <div className="flex gap-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#ede9fe] font-black text-[#5146d8]">
+                          {step}
+                        </span>
+                        <div>
+                          <p className="font-black">{title}</p>
+                          <p className="mt-1 text-sm font-medium leading-6 text-[#667085]">{detail}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Link href="/contact" className="mt-5 flex min-h-14 items-center justify-center gap-2 rounded-full bg-white px-6 py-4 font-black text-[#101828]">
+                  Book this demo
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-14 grid gap-4 md:grid-cols-3">
+          {["No generic slideshow", "School-specific workflow mapping", "Migration and launch plan"].map((item) => (
+            <div key={item} className="flex items-center gap-3 rounded-2xl border border-[#eaecf0] bg-white p-5 shadow-sm">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ecfdf3] text-[#039855]">
+                <Check className="h-5 w-5" />
+              </span>
+              <p className="font-black text-[#101828]">{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
