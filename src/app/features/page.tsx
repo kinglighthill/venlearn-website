@@ -3,7 +3,7 @@ import FeaturesClient from "./FeaturesClient";
 
 export const metadata: Metadata = {
   title: "School Management Features",
-  description: "Explore VenLearn features for admissions, student records, attendance, academics, fees, communication, transport, library, reports, and security.",
+  description: "Explore Venlearn features for students, staff, guardians, fees, report cards, CBT, eLibrary, attendance, timetable, transport, portals, communication, inventory, and more.",
 };
 
 export default function FeaturesPage() {

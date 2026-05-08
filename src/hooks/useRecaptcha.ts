@@ -5,38 +5,39 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 export default function useRecaptcha() {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const verifyUser = async (action: string, formData: object, urlPath: string) => {
-    if (!executeRecaptcha) {
-      console.log("ReCaptcha not yet available");
-      return;
-    }
-
+  const verifyUser = async (action: string, formData: object, urlPath: string, endpoint = "/api/recaptcha") => {
     try {
-      // Retrieve Recaptcha token
-      const token = await executeRecaptcha(action);
-      if (token) {
-        const body = { ...formData, urlPath, token };
-        
-        // Using native fetch since postRequest wasn't found in the codebase
-        const response = await fetch('/api/recaptcha', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        });
+      let token: string | undefined;
 
-        if (!response.ok) {
-          throw new Error('ReCaptcha verification failed');
+      if (executeRecaptcha) {
+        try {
+          token = await executeRecaptcha(action);
+        } catch (recaptchaError) {
+          console.log("ReCaptcha execution failed, submitting without token: " + recaptchaError);
         }
+      }
 
-        const data = await response.json();
+      const body = token ? { ...formData, urlPath, token } : { ...formData, urlPath };
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : { success: response.ok };
+
+      if (!response.ok) {
         return data;
       }
+
+      return data;
     }
     catch (error) {
       console.log("An error occurred in useRecaptcha.ts: " + error);
-      return null;
+      return { success: false, message: "Unable to submit the form. Please try again." };
     }
   }
 

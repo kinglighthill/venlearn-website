@@ -8,32 +8,32 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 export const metadata: Metadata = {
   metadataBase: new URL("https://venlearn.com"),
   title: {
-    default: "VenLearn | School Management Software",
-    template: "%s | VenLearn",
+    default: "Venlearn | School Management Software",
+    template: "%s | Venlearn",
   },
   description: "A complete school management platform for admissions, academics, attendance, fees, communication, reporting, and daily operations.",
-  keywords: ["VenLearn", "School Management Software", "Student Information System", "School ERP", "Attendance Management", "School Fees", "Parent Portal"],
-  authors: [{ name: "VenLearn Team" }],
+  keywords: ["Venlearn", "School Management Software", "Student Information System", "School ERP", "Attendance Management", "School Fees", "Parent Portal"],
+  authors: [{ name: "Venlearn Team" }],
   creator: "Veracone Technologies Ltd",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://venlearn.com",
-    siteName: "VenLearn",
-    title: "VenLearn | School Management Software",
+    siteName: "Venlearn",
+    title: "Venlearn | School Management Software",
     description: "School management software for admissions, academics, attendance, billing, communication, reporting, and operations.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "VenLearn school management software",
+        alt: "Venlearn school management software",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VenLearn | School Management Software",
+    title: "Venlearn | School Management Software",
     description: "A complete school management platform for modern schools.",
     images: ["/og-image.jpg"],
     creator: "@venlearn",
@@ -51,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-white text-[#101828] antialiased selection:bg-[#7b68ee]/20 transition-colors duration-300">
+      <body className="flex min-h-screen flex-col bg-[#fbfbff] font-[var(--font-saas)] text-[#24223e] antialiased selection:bg-[#2661ac]/20 transition-colors duration-300">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

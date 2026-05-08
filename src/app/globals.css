@@ -4,14 +4,25 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-brand-primary: #2661AC;
-  --color-brand-secondary: #FF8000;
-  --color-brand-accent: #2661AC;
+  --color-brand-primary: #2661ac;
+  --color-brand-secondary: #2661ac;
+  --color-brand-accent: #d9e8fb;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfbff;
+  --foreground: #24223e;
+  --font-saas: Inter, "Avenir Next", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --brand-blue: #2661ac;
+  --brand-blue-dark: #174a86;
+  --brand-blue-soft: #d9e8fb;
+  --brand-blue-pale: #f3f7fc;
+  --clickup-purple: #2661ac;
+  --clickup-pink: #2661ac;
+  --clickup-blue: #2661ac;
+  --clickup-ink: #24223e;
+  --clickup-muted: #6c6f85;
+  --clickup-line: #e8e9f4;
 }
 
 .dark {
@@ -26,8 +37,45 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-saas);
   @apply antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--clickup-ink);
+  font-family: var(--font-saas);
+  letter-spacing: 0;
+}
+
+a,
+button,
+summary,
+input,
+textarea {
+  font-family: inherit;
+}
+
+a,
+button,
+summary {
+  transition-duration: 180ms;
+  transition-property: background-color, border-color, box-shadow, color, opacity, transform;
+}
+
+::selection {
+  background: rgba(38, 97, 172, 0.18);
+  color: var(--clickup-ink);
+}
+
+.clickup-surface {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--clickup-line);
+  box-shadow: 0 24px 70px rgba(36, 34, 62, 0.08);
 }
 
 /* Utilities */

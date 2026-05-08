@@ -1,0 +1,284 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Bed,
+  BookOpenCheck,
+  Bus,
+  CalendarClock,
+  CalendarDays,
+  ClipboardCheck,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  HeartPulse,
+  Library,
+  MessageSquareText,
+  MonitorCheck,
+  NotebookTabs,
+  PackageCheck,
+  TabletSmartphone,
+  Trophy,
+  UserRoundCheck,
+  UsersRound,
+} from "lucide-react";
+
+export type ProductFeature = {
+  title: string;
+  slug: string;
+  description: string;
+  icon: LucideIcon;
+  subFeatures: string[];
+};
+
+export const productFeatures: ProductFeature[] = [
+  {
+    title: "Students Management",
+    slug: "students-management",
+    description: "Keep student profiles, classes, documents, academic history, guardians, and status changes organized in one place.",
+    icon: GraduationCap,
+    subFeatures: [
+      "Complete student profiles with biodata, class placement, documents, and academic history.",
+      "Admission status, transfers, withdrawals, alumni records, and promotion tracking.",
+      "Guardian links, emergency contacts, sibling relationships, and access permissions.",
+      "Student documents, notes, tags, houses, clubs, and custom record fields.",
+      "Searchable records and reports for administrators, teachers, and leadership.",
+    ],
+  },
+  {
+    title: "Staff Management",
+    slug: "staff-management",
+    description: "Manage teachers and administrative staff with roles, departments, assignments, contact details, and work records.",
+    icon: UsersRound,
+    subFeatures: [
+      "Staff profiles for teachers, administrators, bursary teams, and support personnel.",
+      "Department, subject, class, and role assignments with clear responsibility mapping.",
+      "Employment records, contact details, attendance, workload, and activity history.",
+      "Permission groups for staff portals, approvals, reports, and sensitive records.",
+      "Staff directories and exports for operations, HR, and leadership review.",
+    ],
+  },
+  {
+    title: "Guardians Management",
+    slug: "guardians-management",
+    description: "Connect parents and guardians to each learner with accurate contacts, access permissions, and communication records.",
+    icon: UserRoundCheck,
+    subFeatures: [
+      "Parent and guardian profiles linked to one or many students.",
+      "Relationship types, contact channels, pickup permissions, and emergency contacts.",
+      "Portal access controls for fees, attendance, results, messages, and updates.",
+      "Communication history for notices, reminders, announcements, and follow-ups.",
+      "Clean household records for siblings, billing contacts, and family reporting.",
+    ],
+  },
+  {
+    title: "Fee collection",
+    slug: "fee-collection",
+    description: "Create invoices, track balances, record payments, issue receipts, and follow up on outstanding fees.",
+    icon: CreditCard,
+    subFeatures: [
+      "Fee schedules by class, term, student category, scholarship, or custom billing group.",
+      "Invoices, receipts, balances, discounts, payment plans, and arrears tracking.",
+      "Payment recording for bank transfers, cash, POS, online payments, and adjustments.",
+      "Automated reminders for parents and reports for bursary and leadership teams.",
+      "Financial summaries for collected fees, outstanding balances, and payment trends.",
+    ],
+  },
+  {
+    title: "Results & Report Cards",
+    slug: "results-report-cards",
+    description: "Compile assessments, grades, remarks, class positions, and publish polished report cards to families.",
+    icon: FileText,
+    subFeatures: [
+      "Assessment scores, exam marks, grading scales, comments, and class averages.",
+      "Teacher, form teacher, and principal remarks with approval workflows.",
+      "Termly and cumulative report cards with downloadable or portal-ready publishing.",
+      "Class positions, subject rankings, psychomotor notes, and attendance summaries.",
+      "Result analysis dashboards for classes, subjects, students, and departments.",
+    ],
+  },
+  {
+    title: "CBT (Offline & Online)",
+    slug: "cbt-offline-online",
+    description: "Run computer-based tests in school or remotely with question banks, timing, grading, and result summaries.",
+    icon: MonitorCheck,
+    subFeatures: [
+      "Question banks with objective, theory, image-based, and mixed assessment support.",
+      "Offline LAN-based exams for school labs and online tests for remote learners.",
+      "Timed exams, randomized questions, access rules, and exam availability windows.",
+      "Automatic marking, manual review tools, score publishing, and analysis reports.",
+      "Candidate monitoring, exam groups, attempts, and secure result export.",
+    ],
+  },
+  {
+    title: "Digital Learning & eLibrary",
+    slug: "digital-learning-elibrary",
+    description: "Share lessons, notes, books, practice materials, and learning resources students can access anytime.",
+    icon: BookOpenCheck,
+    subFeatures: [
+      "Upload notes, books, videos, assignments, past questions, and study resources.",
+      "Organize learning materials by class, subject, topic, term, or teacher.",
+      "Student access through portal dashboards for revision and guided study.",
+      "Resource visibility controls for classes, groups, staff, and individual learners.",
+      "Usage signals for popular materials, recent uploads, and student engagement.",
+    ],
+  },
+  {
+    title: "Attendance",
+    slug: "attendance",
+    description: "Track student and staff attendance by day, class, subject, event, or hostel with clear absence reports.",
+    icon: ClipboardCheck,
+    subFeatures: [
+      "Daily, class, subject, hostel, and staff attendance registers.",
+      "Late, absent, excused, present, and custom attendance statuses.",
+      "Parent notifications for absence, lateness, and attendance concerns.",
+      "Attendance summaries by class, student, staff member, term, and date range.",
+      "Patterns and exception reports for leadership, teachers, and administrators.",
+    ],
+  },
+  {
+    title: "Timetable",
+    slug: "timetable",
+    description: "Plan class schedules, teacher allocations, rooms, periods, and substitutions without timetable conflicts.",
+    icon: CalendarDays,
+    subFeatures: [
+      "Class, teacher, room, subject, and period scheduling in one workspace.",
+      "Conflict checks for double-booked teachers, rooms, and class periods.",
+      "Timetable views for students, teachers, administrators, and departments.",
+      "Substitutions, changes, and announcements for affected classes or staff.",
+      "Termly timetable setup with reusable schedule structures.",
+    ],
+  },
+  {
+    title: "Library Management",
+    slug: "library-management",
+    description: "Manage books, borrowers, returns, reservations, fines, catalog records, and library activity reports.",
+    icon: Library,
+    subFeatures: [
+      "Catalog books, authors, categories, shelves, copies, ISBNs, and availability.",
+      "Borrowing, renewals, reservations, overdue returns, and fine tracking.",
+      "Student and staff borrower histories with due date reminders.",
+      "Inventory reports for missing, damaged, borrowed, and available books.",
+      "Reading activity insights for classes, students, and the library team.",
+    ],
+  },
+  {
+    title: "Hostel management",
+    slug: "hostel-management",
+    description: "Assign hostels and rooms, monitor residents, track hostel attendance, and manage boarding records.",
+    icon: Bed,
+    subFeatures: [
+      "Hostel, dormitory, room, bed, and resident allocation records.",
+      "Boarding status, room changes, capacity tracking, and resident lists.",
+      "Hostel attendance, leave requests, incidents, and welfare notes.",
+      "Guardian contact and emergency records for boarding students.",
+      "Reports for hostel occupancy, availability, and student movement.",
+    ],
+  },
+  {
+    title: "Event Calendar",
+    slug: "event-calendar",
+    description: "Plan academic dates, exams, meetings, holidays, activities, and reminders on one shared school calendar.",
+    icon: CalendarClock,
+    subFeatures: [
+      "Academic calendar setup for terms, holidays, exams, open days, and meetings.",
+      "Event categories for classes, clubs, departments, campuses, and school-wide notices.",
+      "Calendar reminders for staff, parents, students, and leadership.",
+      "Recurring events, activity schedules, and visibility controls.",
+      "Shared calendar views for web and portal users.",
+    ],
+  },
+  {
+    title: "Medicals and Incidents Reporting",
+    slug: "medicals-incidents-reporting",
+    description: "Record medical notes, clinic visits, incidents, follow-ups, and guardian notifications with proper history.",
+    icon: HeartPulse,
+    subFeatures: [
+      "Student medical profiles, allergies, conditions, medications, and clinic notes.",
+      "Incident records for injuries, discipline, emergencies, and welfare concerns.",
+      "Guardian notifications, follow-up actions, and staff responsibility tracking.",
+      "Confidential access controls for sensitive medical and incident data.",
+      "History reports for student wellbeing, safety, and compliance reviews.",
+    ],
+  },
+  {
+    title: "School bus routes management",
+    slug: "school-bus-routes-management",
+    description: "Organize routes, stops, assigned students, pickup details, vehicle manifests, and transport updates.",
+    icon: Bus,
+    subFeatures: [
+      "Route setup with buses, stops, drivers, attendants, and student manifests.",
+      "Pickup and drop-off details with guardian contact information.",
+      "Transport assignments by student, class, campus, or route.",
+      "Delay notices, route changes, and parent communication.",
+      "Reports for ridership, bus capacity, routes, and transport billing support.",
+    ],
+  },
+  {
+    title: "Parents & Students portal",
+    slug: "parents-students-portal",
+    description: "Give families secure access to results, fees, attendance, announcements, assignments, and school updates.",
+    icon: TabletSmartphone,
+    subFeatures: [
+      "Secure portal access for students, parents, and guardians.",
+      "Results, report cards, invoices, receipts, attendance, and announcements.",
+      "Assignments, learning resources, calendars, timetable, and teacher updates.",
+      "Messaging between school teams, parents, and learners.",
+      "Role-aware views so each user sees only the records meant for them.",
+    ],
+  },
+  {
+    title: "Lesson Planner",
+    slug: "lesson-planner",
+    description: "Help teachers prepare lesson notes, objectives, activities, resources, and approval-ready lesson plans.",
+    icon: NotebookTabs,
+    subFeatures: [
+      "Lesson plans with objectives, topics, activities, materials, and assessments.",
+      "Plans organized by subject, class, teacher, week, and term.",
+      "Department review and approval flows for lesson notes.",
+      "Reusable lesson templates and resource attachments.",
+      "Progress tracking for planned, submitted, approved, and taught lessons.",
+    ],
+  },
+  {
+    title: "Messaging and Communication",
+    slug: "messaging-communication",
+    description: "Send targeted messages to parents, students, staff, classes, clubs, or the whole school community.",
+    icon: MessageSquareText,
+    subFeatures: [
+      "Announcements, notices, reminders, and targeted messages for school groups.",
+      "Audience targeting by class, department, hostel, route, club, or individual user.",
+      "Message history across parent, student, and staff communication.",
+      "Emergency alerts and important notices with clear delivery records.",
+      "Communication templates for fee reminders, events, results, and attendance.",
+    ],
+  },
+  {
+    title: "Inventory and Facility Management",
+    slug: "inventory-facility-management",
+    description: "Track school assets, supplies, maintenance requests, facility usage, stock levels, and accountability.",
+    icon: PackageCheck,
+    subFeatures: [
+      "Inventory records for supplies, equipment, assets, classrooms, and facilities.",
+      "Stock levels, issue logs, returns, purchases, and reorder visibility.",
+      "Maintenance requests, repair status, responsible teams, and completion notes.",
+      "Facility usage records for labs, halls, rooms, and shared resources.",
+      "Accountability reports for assets, supplies, costs, and operational planning.",
+    ],
+  },
+  {
+    title: "Extracurricular activities",
+    slug: "extracurricular-activities",
+    description: "Manage clubs, societies, sports, participation lists, schedules, achievements, and activity communication.",
+    icon: Trophy,
+    subFeatures: [
+      "Club, society, sports, house, and activity group management.",
+      "Participant lists, coordinators, schedules, events, and attendance records.",
+      "Achievements, awards, competition results, and activity history.",
+      "Communication with participants, guardians, coaches, and staff leaders.",
+      "Reports for participation, engagement, schedules, and school activities.",
+    ],
+  },
+];
+
+export function getProductFeature(slug: string) {
+  return productFeatures.find((feature) => feature.slug === slug);
+}
