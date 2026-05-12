@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,12 +13,21 @@ import {
   Smartphone,
 } from "lucide-react";
 import { productFeatures } from "@/data/productFeatures";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Venlearn | School Management Software",
+export const metadata = createPageMetadata({
+  title: "School Management Software for Modern Schools",
   description:
-    "School management software for admissions, academics, attendance, fees, communication, reporting, and campus operations.",
-};
+    "Venlearn is an all-in-one school management software for admissions, student records, staff, guardians, fees, attendance, report cards, CBT, portals, communication, and offline or cloud school operations.",
+  path: "/",
+  keywords: [
+    "all in one school management software",
+    "offline school management software",
+    "school management software Nigeria",
+    "CBT software for schools",
+    "school fee collection software",
+  ],
+});
 
 const paperworkHighlights = [
   "Generate report cards in minutes after score approval",
@@ -115,23 +123,8 @@ const roleViews = [
 ];
 
 export default function Home() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Venlearn",
-    applicationCategory: "EducationalApplication",
-    operatingSystem: "Web, iOS, Android",
-    description:
-      "School management software for admissions, academics, attendance, billing, communication, reporting, and operations.",
-  };
-
   return (
     <div className="min-h-screen overflow-hidden bg-[#fbfbff] text-[#24223e]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       <section className="relative px-5 pb-20 pt-36 sm:px-8 lg:px-10">
         <div className="absolute inset-x-0 top-0 -z-10 h-[48rem] bg-[radial-gradient(circle_at_15%_18%,rgba(38,97,172,0.10),transparent_28%),radial-gradient(circle_at_84%_16%,rgba(38,97,172,0.10),transparent_27%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_76%)]" />
         <div className="mx-auto max-w-7xl text-center">

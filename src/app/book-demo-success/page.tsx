@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CalendarCheck, CheckCircle2 } from "lucide-react";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Demo Booked | Venlearn",
+export const metadata: Metadata = createPageMetadata({
+  title: "Demo Booked",
   description: "Your Venlearn demo request has been received.",
-};
+  path: "/book-demo-success",
+  noIndex: true,
+});
 
 export default function BookDemoSuccessPage() {
   return (

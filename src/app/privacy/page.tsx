@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Privacy Policy",
+  description:
+    "Read how Venlearn approaches privacy, access controls, and protection for student, guardian, staff, academic, finance, and school operations data.",
+  path: "/privacy",
+});
 
 const sections = [
   ["School data we protect", "Student records, guardian details, attendance, academic results, invoices, communications, staff records, and operational reports."],

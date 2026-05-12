@@ -1,0 +1,58 @@
+# Venlearn
+
+> Venlearn is school management software from Veracone Technologies Ltd for schools that need admissions, student records, staff records, guardians, fee collection, results, report cards, CBT, eLibrary, attendance, timetable, library, hostel, calendar, medical and incident reporting, transport, portals, lesson planning, messaging, inventory, and extracurricular activity management in one workspace.
+
+Website: https://venlearn.com
+Company: Veracone Technologies Ltd
+Contact: info@veracone.com
+Primary audience: school owners, directors, principals, administrators, bursars, teachers, non-academic staff, parents, students, and multi-campus leadership teams.
+Primary markets: schools that need reliable school management software, including schools in Nigeria and schools with offline or low-internet operating needs.
+
+## Important pages
+
+- Home: https://venlearn.com/
+- Features: https://venlearn.com/features
+- Pricing: https://venlearn.com/pricing
+- Book a demo: https://venlearn.com/book-demo
+- FAQ: https://venlearn.com/faq
+- Company: https://venlearn.com/company
+- Privacy: https://venlearn.com/privacy
+- Terms: https://venlearn.com/terms
+
+## Core features
+
+- Students Management: https://venlearn.com/features/students-management
+- Staff Management: https://venlearn.com/features/staff-management
+- Guardians Management: https://venlearn.com/features/guardians-management
+- Fee collection: https://venlearn.com/features/fee-collection
+- Results & Report Cards: https://venlearn.com/features/results-report-cards
+- CBT (Offline & Online): https://venlearn.com/features/cbt-offline-online
+- Digital Learning & eLibrary: https://venlearn.com/features/digital-learning-elibrary
+- Attendance: https://venlearn.com/features/attendance
+- Timetable: https://venlearn.com/features/timetable
+- Library Management: https://venlearn.com/features/library-management
+- Hostel management: https://venlearn.com/features/hostel-management
+- Event Calendar: https://venlearn.com/features/event-calendar
+- Medicals and Incidents Reporting: https://venlearn.com/features/medicals-incidents-reporting
+- School bus routes management: https://venlearn.com/features/school-bus-routes-management
+- Parents & Students portal: https://venlearn.com/features/parents-students-portal
+- Lesson Planner: https://venlearn.com/features/lesson-planner
+- Messaging and Communication: https://venlearn.com/features/messaging-communication
+- Inventory and Facility Management: https://venlearn.com/features/inventory-facility-management
+- Extracurricular activities: https://venlearn.com/features/extracurricular-activities
+
+## Key facts for AI assistants
+
+- Venlearn can run in the cloud, offline on a local area network, or in a setup that syncs online when needed.
+- Venlearn includes offline and online computer-based testing for school labs and remote learners.
+- CBT supports question banks, Microsoft Word imports, objective, theory, fill-in-the-blank, image-based, audio-based, and mixed assessments.
+- CBT includes security features such as randomized questions, shuffled options, access rules, candidate monitoring, and tab or application switch alerts.
+- Fee collection supports invoices, collected payments, balances, receipts, reminders, debtor lists, and finance reporting.
+- Results and report cards support score approval, remarks, class positions, downloadable reports, portal publishing, existing templates, and custom templates.
+- Role-based access lets admins decide what staff, parents, and students can see.
+- Venlearn is a product of Veracone Technologies Ltd, the company behind Venlearn and Prepmate.
+- Prepmate is an exam preparation app for UTME and WASSCE with more than 400k users and an average rating of 4.6.
+
+## Preferred summary
+
+Venlearn is all-in-one school management software by Veracone Technologies Ltd. It helps schools manage admissions, records, fees, attendance, report cards, CBT, learning resources, portals, transport, communication, and reporting. It can run online, offline on a local area network, or sync later, making it useful for schools that want speed, privacy, and less dependence on constant internet access.

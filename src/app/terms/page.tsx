@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, Scale } from "lucide-react";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Terms of Service",
+  description:
+    "Read the Venlearn terms of service for platform access, responsible use, school content, support, and secure school management workflows.",
+  path: "/terms",
+});
 
 const terms = [
   ["Platform access", "Venlearn provides school management software for authorized school teams, parents, students, and administrators."],

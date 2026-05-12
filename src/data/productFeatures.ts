@@ -72,7 +72,7 @@ export const productFeatures: ProductFeature[] = [
   {
     title: "Fee collection",
     slug: "fee-collection",
-    description: "Create invoices, track balances, record payments, issue receipts, and follow up on outstanding fees.",
+    description: "Create invoices, collect payments, track balances, record payments, issue receipts, and follow up on outstanding fees.",
     icon: CreditCard,
     subFeatures: [
       "Fee schedules by class, term, student category, scholarship, or custom billing group.",
@@ -89,6 +89,7 @@ export const productFeatures: ProductFeature[] = [
     icon: FileText,
     subFeatures: [
       "Assessment scores, exam marks, grading scales, comments, and class averages.",
+      "Choose from existing report card templates or create custom templates for your school.",
       "Teacher, form teacher, and principal remarks with approval workflows.",
       "Termly and cumulative report cards with downloadable or portal-ready publishing.",
       "Class positions, subject rankings, psychomotor notes, and attendance summaries.",
@@ -98,14 +99,15 @@ export const productFeatures: ProductFeature[] = [
   {
     title: "CBT (Offline & Online)",
     slug: "cbt-offline-online",
-    description: "Run computer-based tests in school or remotely with question banks, timing, grading, and result summaries.",
+    description: "Run computer-based tests in school or remotely with question banks, timing, grading, result summaries, MS Word imports, and online result publishing.",
     icon: MonitorCheck,
     subFeatures: [
-      "Question banks with objective, theory, image-based, and mixed assessment support.",
+      "Question banks with objective, theory, fill-in-the-blank, image-based, audio-based, and mixed assessment support.",
+      "Create your own questions or import questions from Microsoft Word documents.",
       "Offline LAN-based exams for school labs and online tests for remote learners.",
-      "Timed exams, randomized questions, access rules, and exam availability windows.",
-      "Automatic marking, manual review tools, score publishing, and analysis reports.",
-      "Candidate monitoring, exam groups, attempts, and secure result export.",
+      "Timed exams, randomized questions, shuffled options, access rules, and exam availability windows.",
+      "Tab or application switch alerts, candidate monitoring, exam groups, attempts, and secure result export.",
+      "Automatic marking, manual review tools, score publishing, online assessment results, and analysis reports.",
     ],
   },
   {

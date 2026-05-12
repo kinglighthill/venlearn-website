@@ -1,10 +1,13 @@
-import { Metadata } from "next";
 import DownloadClient from "./DownloadClient";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Access Venlearn",
-  description: "Learn how schools access Venlearn as a secure cloud workspace for administration, academics, finance, communication, and reporting.",
-};
+export const metadata = createPageMetadata({
+  title: "Access the Platform",
+  description:
+    "Learn how schools access Venlearn for secure cloud, offline, and sync-ready school administration, academics, finance, communication, CBT, and reporting.",
+  path: "/download",
+  keywords: ["Venlearn access", "offline school software", "cloud school management software"],
+});
 
 export default function DownloadPage() {
   return <DownloadClient />;

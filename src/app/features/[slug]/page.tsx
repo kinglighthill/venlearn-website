@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
 import { getProductFeature, productFeatures } from "@/data/productFeatures";
+import { absoluteUrl, breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 
 type FeaturePageProps = {
   params: Promise<{
@@ -22,15 +24,20 @@ export async function generateMetadata({ params }: FeaturePageProps): Promise<Me
   const feature = getProductFeature(slug);
 
   if (!feature) {
-    return {
-      title: "Feature Not Found | Venlearn",
-    };
+    return createPageMetadata({
+      title: "Feature Not Found",
+      description: "The Venlearn feature you requested could not be found.",
+      path: "/features",
+      noIndex: true,
+    });
   }
 
-  return {
-    title: `${feature.title} | Venlearn`,
-    description: feature.description,
-  };
+  return createPageMetadata({
+    title: `${feature.title} Software`,
+    description: `Venlearn ${feature.title} helps schools ${feature.description.toLowerCase()}`,
+    path: `/features/${feature.slug}`,
+    keywords: [feature.title, `Venlearn ${feature.title}`, ...feature.subFeatures.slice(0, 4)],
+  });
 }
 
 export default async function FeatureDetailPage({ params }: FeaturePageProps) {
@@ -43,9 +50,39 @@ export default async function FeatureDetailPage({ params }: FeaturePageProps) {
 
   const Icon = feature.icon;
   const otherFeatures = productFeatures.filter((item) => item.slug !== feature.slug);
+  const featurePath = `/features/${feature.slug}`;
 
   return (
     <div className="overflow-hidden bg-white px-5 pb-24 pt-32 text-[#101828] sm:px-8 lg:px-10">
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Features", path: "/features" },
+            { name: feature.title, path: featurePath },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": absoluteUrl(`${featurePath}#webpage`),
+            name: `${feature.title} Software`,
+            url: absoluteUrl(featurePath),
+            description: feature.description,
+            isPartOf: { "@id": absoluteUrl("/#website") },
+            about: { "@id": absoluteUrl("/#software") },
+            mainEntity: {
+              "@type": "SoftwareApplication",
+              "@id": absoluteUrl(`${featurePath}#feature`),
+              name: `Venlearn ${feature.title}`,
+              applicationCategory: "EducationalApplication",
+              operatingSystem: "Web, Android, iOS, Windows, macOS",
+              url: absoluteUrl(featurePath),
+              description: feature.description,
+              featureList: feature.subFeatures,
+            },
+          },
+        ]}
+      />
       <div className="absolute inset-x-0 top-0 -z-10 h-[46rem] bg-[radial-gradient(circle_at_12%_20%,rgba(38,97,172,0.14),transparent_28%),radial-gradient(circle_at_82%_16%,rgba(38,97,172,0.08),transparent_25%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_78%)]" />
 
       <section className="mx-auto max-w-7xl text-center">

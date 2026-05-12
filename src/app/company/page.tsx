@@ -13,12 +13,16 @@ import {
   Sparkles,
   UsersRound,
 } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl, breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Company | Veracone Technologies Ltd",
+export const metadata: Metadata = createPageMetadata({
+  title: "Veracone Technologies Ltd",
   description:
-    "Learn about Veracone Technologies Ltd, a software company building practical products that solve real problems across industries.",
-};
+    "Learn about Veracone Technologies Ltd, the software company behind Venlearn and Prepmate, building practical products that solve real problems across industries.",
+  path: "/company",
+  keywords: ["Veracone Technologies Ltd", "Veracone", "Venlearn company", "Prepmate company"],
+});
 
 const products = [
   {
@@ -77,6 +81,24 @@ const culture = [
 export default function CompanyPage() {
   return (
     <div className="overflow-hidden bg-white px-5 pb-24 pt-32 text-[#101828] sm:px-8 lg:px-10">
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Company", path: "/company" },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "@id": absoluteUrl("/company#webpage"),
+            name: "About Veracone Technologies Ltd",
+            url: absoluteUrl("/company"),
+            description:
+              "Veracone Technologies Ltd is a software company building practical products that solve real problems across industries.",
+            about: { "@id": absoluteUrl("/#organization") },
+          },
+        ]}
+      />
       <div className="absolute inset-x-0 top-0 -z-10 h-[44rem] bg-[radial-gradient(circle_at_16%_18%,rgba(38,97,172,0.14),transparent_30%),radial-gradient(circle_at_84%_20%,rgba(255,128,0,0.10),transparent_28%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_82%)]" />
 
       <section className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">

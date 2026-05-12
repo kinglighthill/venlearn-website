@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Mail, MessageCircleQuestion, Minus, Plus } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "FAQ | Venlearn",
+export const metadata: Metadata = createPageMetadata({
+  title: "FAQ",
   description:
     "Answers to common questions about Venlearn school management software, features, setup, offline use, CBT, pricing, support, and data privacy.",
-};
+  path: "/faq",
+  keywords: ["Venlearn FAQ", "Venlearn support", "Venlearn pricing questions", "Venlearn offline questions"],
+});
 
 const faqs = [
   {
@@ -104,6 +108,20 @@ const faqs = [
 export default function FAQPage() {
   return (
     <div className="overflow-hidden bg-white px-5 pb-24 pt-32 text-[#101828] sm:px-8 lg:px-10">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }}
+      />
       <section className="mx-auto max-w-6xl">
         <div className="rounded-[2rem] border border-[#e8e9f4] bg-[#f3f7fc] p-8 shadow-2xl shadow-[#101828]/6 sm:p-12">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2661ac] text-white shadow-lg shadow-[#2661ac]/15">

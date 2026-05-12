@@ -4,43 +4,40 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CaptchaProvider from "@/components/CaptchaProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import JsonLd from "@/components/JsonLd";
+import {
+  createPageMetadata,
+  organizationJsonLd,
+  softwareJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
+import { productFeatures } from "@/data/productFeatures";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://venlearn.com"),
+  ...createPageMetadata({
+    title: "Venlearn | School Management Software",
+    description:
+      "A complete school management platform for admissions, academics, attendance, fees, communication, reporting, CBT, portals, and daily school operations.",
+    path: "/",
+  }),
   title: {
     default: "Venlearn | School Management Software",
     template: "%s | Venlearn",
   },
-  description: "A complete school management platform for admissions, academics, attendance, fees, communication, reporting, and daily operations.",
-  keywords: ["Venlearn", "School Management Software", "Student Information System", "School ERP", "Attendance Management", "School Fees", "Parent Portal"],
-  authors: [{ name: "Venlearn Team" }],
+  authors: [{ name: "Veracone Technologies Ltd" }],
+  applicationName: "Venlearn",
   creator: "Veracone Technologies Ltd",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://venlearn.com",
-    siteName: "Venlearn",
-    title: "Venlearn | School Management Software",
-    description: "School management software for admissions, academics, attendance, billing, communication, reporting, and operations.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Venlearn school management software",
-      },
+  publisher: "Veracone Technologies Ltd",
+  category: "Education software",
+  manifest: "/manifest.webmanifest",
+  referrer: "origin-when-cross-origin",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Venlearn | School Management Software",
-    description: "A complete school management platform for modern schools.",
-    images: ["/og-image.jpg"],
-    creator: "@venlearn",
-  },
-  robots: {
-    index: true,
-    follow: true,
+    apple: [{ url: "/icon.png" }],
   },
 };
 
@@ -59,6 +56,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <CaptchaProvider>
+            <JsonLd
+              data={[
+                organizationJsonLd(),
+                websiteJsonLd(),
+                softwareJsonLd(productFeatures.map((feature) => feature.title)),
+              ]}
+            />
             <Navbar />
             <main className="flex-grow">
               {children}
