@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
             ? "/api/zoho/oauth/start"
             : undefined,
         },
-        { status: 502 },
+        { status: 200 },
       );
     }
 
