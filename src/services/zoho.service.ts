@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import https from "node:https";
 import path from "node:path";
+import { getStore } from "@netlify/blobs";
 
 type ZohoTokenResponse = {
   access_token?: string;
@@ -43,6 +44,8 @@ let memoryAccessTokenExpiresAt = 0;
 let memoryApiDomain = "";
 
 const zohoTokenStorePath = path.join(process.cwd(), ".venlearn", "zoho-oauth.json");
+const zohoBlobStoreName = "venlearn-oauth";
+const zohoBlobStoreKey = "zoho";
 const zohoUserAgent = "Venlearn Website/1.0";
 
 const requestZohoJson = async <T>(
@@ -130,22 +133,64 @@ const postZohoJson = async <T>(url: string, payload: unknown, accessToken: strin
     method: "POST",
   });
 
+const shouldUseNetlifyBlobs = () => process.env.NETLIFY === "true" && process.env.NETLIFY_DEV !== "true";
+
+const cacheZohoTokenStore = (store: ZohoTokenStore) => {
+  if (!store.refreshToken) {
+    return null;
+  }
+
+  memoryRefreshToken = store.refreshToken;
+  memoryApiDomain = store.apiDomain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com";
+
+  return {
+    refreshToken: memoryRefreshToken,
+    apiDomain: memoryApiDomain,
+  };
+};
+
+const readZohoTokenFromBlob = async () => {
+  try {
+    const store = getStore(zohoBlobStoreName);
+    const stored = await store.get(zohoBlobStoreKey, {
+      consistency: "strong",
+      type: "json",
+    });
+
+    if (!stored || typeof stored !== "object") {
+      return null;
+    }
+
+    return cacheZohoTokenStore(stored as ZohoTokenStore);
+  } catch (error) {
+    console.warn(
+      "Unable to read Zoho OAuth token from Netlify Blobs:",
+      error instanceof Error ? error.message : error,
+    );
+    return null;
+  }
+};
+
+const writeZohoTokenToBlob = async (refreshToken: string, apiDomain: string) => {
+  const store = getStore(zohoBlobStoreName);
+
+  await store.setJSON(zohoBlobStoreKey, {
+    refreshToken,
+    apiDomain,
+    updatedAt: new Date().toISOString(),
+  } satisfies ZohoTokenStore);
+};
+
 const readStoredZohoToken = async () => {
+  if (shouldUseNetlifyBlobs()) {
+    return readZohoTokenFromBlob();
+  }
+
   try {
     const rawStore = await fs.readFile(zohoTokenStorePath, "utf8");
     const store = JSON.parse(rawStore) as ZohoTokenStore;
 
-    if (!store.refreshToken) {
-      return null;
-    }
-
-    memoryRefreshToken = store.refreshToken;
-    memoryApiDomain = store.apiDomain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com";
-
-    return {
-      refreshToken: memoryRefreshToken,
-      apiDomain: memoryApiDomain,
-    };
+    return cacheZohoTokenStore(store);
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
       return null;
@@ -160,20 +205,32 @@ const writeStoredZohoToken = async (refreshToken: string, apiDomain: string) => 
   memoryRefreshToken = refreshToken;
   memoryApiDomain = apiDomain;
 
-  await fs.mkdir(path.dirname(zohoTokenStorePath), { recursive: true });
-  await fs.writeFile(
-    zohoTokenStorePath,
-    JSON.stringify(
-      {
-        refreshToken,
-        apiDomain,
-        updatedAt: new Date().toISOString(),
-      } satisfies ZohoTokenStore,
-      null,
-      2,
-    ),
-    "utf8",
-  );
+  if (shouldUseNetlifyBlobs()) {
+    await writeZohoTokenToBlob(refreshToken, apiDomain);
+    return;
+  }
+
+  try {
+    await fs.mkdir(path.dirname(zohoTokenStorePath), { recursive: true });
+    await fs.writeFile(
+      zohoTokenStorePath,
+      JSON.stringify(
+        {
+          refreshToken,
+          apiDomain,
+          updatedAt: new Date().toISOString(),
+        } satisfies ZohoTokenStore,
+        null,
+        2,
+      ),
+      "utf8",
+    );
+  } catch (error) {
+    console.warn(
+      "Unable to persist Zoho OAuth token to disk. Set ZOHO_REFRESH_TOKEN in production for durable Zoho access.",
+      error instanceof Error ? error.message : error,
+    );
+  }
 };
 
 export const getZohoRedirectUri = (requestUrl?: string) => {

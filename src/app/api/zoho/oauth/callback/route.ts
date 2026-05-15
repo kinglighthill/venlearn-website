@@ -19,7 +19,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Zoho CRM is connected. Demo submissions can now create leads.",
+      message:
+        "Zoho CRM is connected. Demo submissions can now create leads.",
     });
   } catch (callbackError) {
     const message = callbackError instanceof Error ? callbackError.message : "Unable to finish Zoho OAuth.";

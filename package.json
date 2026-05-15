@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@netlify/blobs": "^10.7.7",
     "aws-sdk": "^2.1693.0",
     "firebase": "^12.8.0",
     "framer-motion": "^12.31.0",
