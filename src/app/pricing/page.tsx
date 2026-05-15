@@ -31,16 +31,11 @@ export default function PricingPage() {
             mainEntity: {
               "@type": "OfferCatalog",
               name: "Venlearn plans",
-              itemListElement: ["Launch", "Growth", "Enterprise"].map((name) => ({
+              itemListElement: ["Essentials", "Growth", "Complete"].map((name) => ({
                 "@type": "Offer",
                 name,
                 url: absoluteUrl("/book-demo"),
                 availability: "https://schema.org/InStock",
-                priceSpecification: {
-                  "@type": "PriceSpecification",
-                  priceCurrency: "NGN",
-                  description: "Custom pricing is confirmed after a school demo and needs review.",
-                },
               })),
             },
           },

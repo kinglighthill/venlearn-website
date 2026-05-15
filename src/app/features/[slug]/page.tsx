@@ -4,7 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
-import { getProductFeature, productFeatures } from "@/data/productFeatures";
+import {
+  getProductFeature,
+  getProductFeatureImage,
+  productFeatures,
+} from "@/data/productFeatures";
 import { absoluteUrl, breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 
 type FeaturePageProps = {
@@ -49,6 +53,7 @@ export default async function FeatureDetailPage({ params }: FeaturePageProps) {
   }
 
   const Icon = feature.icon;
+  const featureImage = getProductFeatureImage(feature.slug);
   const otherFeatures = productFeatures.filter((item) => item.slug !== feature.slug);
   const featurePath = `/features/${feature.slug}`;
 
@@ -109,10 +114,10 @@ export default async function FeatureDetailPage({ params }: FeaturePageProps) {
             <div className="rounded-[1.75rem] bg-white/90 p-3 shadow-inner shadow-white sm:p-4">
               <div className="overflow-hidden rounded-[1.35rem] border border-[#eef2f7] bg-[#f8fafc]">
                 <Image
-                  src="/images/demo-dashboard-generated.png"
-                  alt={`${feature.title} dashboard preview`}
-                  width={1792}
-                  height={1024}
+                  src={featureImage.src}
+                  alt={`${feature.title} feature preview`}
+                  width={featureImage.width}
+                  height={featureImage.height}
                   priority
                   className="h-auto w-full"
                 />

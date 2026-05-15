@@ -164,7 +164,7 @@ export default function BookDemoClient() {
                     name="phoneCode"
                     defaultValue="+234"
                     aria-label="Phone country code"
-                    className="w-28 rounded-l-2xl border-r border-[#d0d5dd] bg-[#f3f7fc] px-3 py-4 font-black text-[#101828] outline-none"
+                    className="w-36 shrink-0 rounded-l-2xl border-r border-[#d0d5dd] bg-[#f3f7fc] px-4 py-4 font-black text-[#101828] outline-none sm:w-32"
                   >
                     <option value="+234">NG +234</option>
                     <option value="+233">GH +233</option>

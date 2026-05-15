@@ -29,6 +29,80 @@ export type ProductFeature = {
   subFeatures: string[];
 };
 
+export type ProductFeatureImage = {
+  src: string;
+  width: number;
+  height: number;
+};
+
+export const defaultProductFeatureImage: ProductFeatureImage = {
+  src: "/images/home-dashboard-screenshot.png",
+  width: 3024,
+  height: 1964,
+};
+
+export const productFeatureImages: Record<string, ProductFeatureImage> = {
+  "students-management": {
+    src: "/images/features/staff-management.png",
+    width: 3024,
+    height: 1964,
+  },
+  "staff-management": {
+    src: "/images/features/students-management.png",
+    width: 3024,
+    height: 1964,
+  },
+  "guardians-management": {
+    src: "/images/features/guardians-management.png",
+    width: 3024,
+    height: 1964,
+  },
+  "cbt-offline-online": {
+    src: "/images/features/cbt-offline-online.png",
+    width: 3024,
+    height: 1964,
+  },
+  "digital-learning-elibrary": {
+    src: "/images/features/digital-learning-elibrary.png",
+    width: 3024,
+    height: 1964,
+  },
+  timetable: {
+    src: "/images/features/timetable.png",
+    width: 3024,
+    height: 1964,
+  },
+  "library-management": {
+    src: "/images/features/library-management.png",
+    width: 3024,
+    height: 1964,
+  },
+  "hostel-management": {
+    src: "/images/features/hostel-management.png",
+    width: 3024,
+    height: 1964,
+  },
+  "event-calendar": {
+    src: "/images/features/event-calendar.png",
+    width: 3024,
+    height: 1964,
+  },
+  "medicals-incidents-reporting": {
+    src: "/images/features/medicals-incidents-reporting.png",
+    width: 3024,
+    height: 1964,
+  },
+  "extracurricular-activities": {
+    src: "/images/features/extracurricular-activities.png",
+    width: 3024,
+    height: 1964,
+  },
+};
+
+export function getProductFeatureImage(slug: string) {
+  return productFeatureImages[slug] ?? defaultProductFeatureImage;
+}
+
 export const productFeatures: ProductFeature[] = [
   {
     title: "Students Management",

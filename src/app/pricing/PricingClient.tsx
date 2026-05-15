@@ -1,44 +1,94 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Layers3, Sparkles } from "lucide-react";
+import { productFeatures } from "@/data/productFeatures";
 
 const plans = [
   {
-    name: "Launch",
-    price: "Starter",
-    description: "For schools moving admissions, attendance, and communication into one place.",
+    name: "Essentials",
+    label: "Daily school administration",
+    bestFor: "Small and growing schools ready to replace paper registers and scattered spreadsheets.",
+    description: "Start with the records, access, attendance, communication, and scheduling tools every school needs first.",
     accent: "bg-[#2661ac]",
-    features: ["Student records", "Attendance", "Parent messaging", "Basic reports", "Setup support"],
+    slugs: [
+      "students-management",
+      "staff-management",
+      "guardians-management",
+      "attendance",
+      "timetable",
+      "event-calendar",
+      "messaging-communication",
+      "parents-students-portal",
+    ],
   },
   {
     name: "Growth",
-    price: "Most popular",
-    description: "For schools that want academics, finance, and operations fully connected.",
-    accent: "bg-[#2f74c0]",
+    label: "Academics, finance, and resources",
+    bestFor: "Schools that want classrooms, fees, report cards, resources, and parent updates connected.",
+    description: "Bring bursary, academic, library, learning, transport, and welfare workflows into the same operating system.",
+    accent: "bg-[#f47b20]",
     highlight: true,
-    features: ["Everything in Launch", "Fees and payments", "Report cards", "Timetable", "Approvals"],
+    slugs: [
+      "fee-collection",
+      "results-report-cards",
+      "lesson-planner",
+      "digital-learning-elibrary",
+      "library-management",
+      "school-bus-routes-management",
+      "medicals-incidents-reporting",
+    ],
+    includesPrevious: "Everything in Essentials",
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    description: "For multi-campus groups with deeper security, integrations, and reporting needs.",
+    name: "Complete",
+    label: "Full school operating system",
+    bestFor: "Schools that need CBT, boarding, inventory, activities, offline deployment, and deeper rollout support.",
+    description: "Run the full Venlearn workspace across cloud or offline/local deployment, then sync when needed.",
     accent: "bg-[#174a86]",
-    features: ["Everything in Growth", "Multi-campus controls", "Custom workflows", "Data migration", "Priority support"],
+    slugs: [
+      "cbt-offline-online",
+      "hostel-management",
+      "inventory-facility-management",
+      "extracurricular-activities",
+    ],
+    includesPrevious: "Everything in Growth",
+    extras: ["Offline/local deployment with optional cloud sync", "Onboarding, migration guidance, and workflow setup"],
   },
 ];
 
-const comparison = [
-  "Admissions pipeline",
-  "Student information system",
-  "Attendance alerts",
-  "Academic reports",
-  "Fees and invoicing",
-  "Parent and student portals",
-  "Transport, hostel, and library",
-  "Leadership dashboards",
-  "Role permissions and audit logs",
+const featureBySlug = new Map(productFeatures.map((feature) => [feature.slug, feature]));
+
+const allFeatureGroups = [
+  {
+    title: "People and access",
+    slugs: ["students-management", "staff-management", "guardians-management", "parents-students-portal"],
+  },
+  {
+    title: "Academics and assessment",
+    slugs: ["results-report-cards", "cbt-offline-online", "digital-learning-elibrary", "lesson-planner"],
+  },
+  {
+    title: "Daily operations",
+    slugs: [
+      "attendance",
+      "timetable",
+      "fee-collection",
+      "library-management",
+      "hostel-management",
+      "event-calendar",
+      "medicals-incidents-reporting",
+      "school-bus-routes-management",
+      "messaging-communication",
+      "inventory-facility-management",
+      "extracurricular-activities",
+    ],
+  },
 ];
+
+function getFeatures(slugs: string[]) {
+  return slugs.map((slug) => featureBySlug.get(slug)).filter(Boolean);
+}
 
 export default function PricingClient() {
   return (
@@ -54,7 +104,8 @@ export default function PricingClient() {
             Start small. Converge everything.
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-8 text-[#667085] sm:text-xl">
-            Pick the workflow set that matches your next term, then expand into a full school operating system as your team grows.
+            Pick the workflow set that matches your next term, then expand into a full school operating system as your team grows. No public
+            price list here: the right setup depends on your modules, deployment model, and rollout needs.
           </p>
         </div>
 
@@ -67,21 +118,38 @@ export default function PricingClient() {
               }`}
             >
               {plan.highlight && (
-                <span className="absolute -top-4 left-8 rounded-full bg-[#101828] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-white">
-                  Recommended
+                <span className="absolute -top-4 left-8 rounded-full bg-[#ff7a00] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-white">
+                  Popular path
                 </span>
               )}
               <div className={`h-2 rounded-full ${plan.accent}`} />
               <h2 className="mt-7 text-3xl font-black text-[#101828]">{plan.name}</h2>
-              <p className="mt-2 text-lg font-black text-[#2661ac]">{plan.price}</p>
-              <p className="mt-4 min-h-20 text-base font-medium leading-7 text-[#667085]">{plan.description}</p>
+              <p className="mt-2 text-lg font-black text-[#2661ac]">{plan.label}</p>
+              <p className="mt-4 text-sm font-bold leading-6 text-[#475467]">{plan.bestFor}</p>
+              <p className="mt-4 min-h-24 text-base font-medium leading-7 text-[#667085]">{plan.description}</p>
               <div className="mt-6 space-y-3">
-                {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-3">
+                {plan.includesPrevious && (
+                  <div className="flex items-center gap-3 rounded-2xl bg-[#fff5eb] p-3 text-[#9a4a00]">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#ff7a00]">
+                      <Layers3 className="h-4 w-4" />
+                    </span>
+                    <span className="font-black">{plan.includesPrevious}</span>
+                  </div>
+                )}
+                {getFeatures(plan.slugs).map((feature) => (
+                  <div key={feature.slug} className="flex items-center gap-3">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#eaf2fb] text-[#2661ac]">
                       <Check className="h-4 w-4" />
                     </span>
-                    <span className="font-bold text-[#344054]">{feature}</span>
+                    <span className="font-bold text-[#344054]">{feature.title}</span>
+                  </div>
+                ))}
+                {plan.extras?.map((extra) => (
+                  <div key={extra} className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fff0e3] text-[#ff7a00]">
+                      <Check className="h-4 w-4" />
+                    </span>
+                    <span className="font-bold text-[#344054]">{extra}</span>
                   </div>
                 ))}
               </div>
@@ -89,7 +157,7 @@ export default function PricingClient() {
                 href="/book-demo"
                 className="mt-8 flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#174a86] px-7 py-4 font-black text-white shadow-xl shadow-[#2661ac]/15 transition hover:-translate-y-0.5"
               >
-                Talk to sales
+                Book a demo
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </article>
@@ -101,13 +169,28 @@ export default function PricingClient() {
             <div>
               <p className="text-sm font-black uppercase tracking-[0.24em] text-[#6f9fd3]">Included platform</p>
               <h2 className="mt-4 text-4xl font-black leading-tight !text-white sm:text-5xl">
-                The core system stays unified across every plan.
+                Choose by modules. Keep one unified workspace.
               </h2>
+              <p className="mt-5 text-base font-medium leading-7 text-white/70">
+                Every tier is designed from the same Venlearn feature library, so schools can start focused and add more operations without
+                moving to another system.
+              </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {comparison.map((item) => (
-                <div key={item} className="rounded-2xl border border-white/10 bg-white/8 p-4 font-black">
-                  {item}
+            <div className="grid gap-4">
+              {allFeatureGroups.map((group) => (
+              <div key={group.title} className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5">
+                <h3 className="text-lg font-black !text-white [-webkit-text-fill-color:#fff]">{group.title}</h3>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {getFeatures(group.slugs).map((feature) => (
+                      <Link
+                        key={feature.slug}
+                        href={`/features/${feature.slug}`}
+                        className="rounded-full border border-white/10 bg-white/8 px-3 py-2 text-sm font-extrabold text-white/85 transition hover:border-[#ff7a00]/50 hover:text-white"
+                      >
+                        {feature.title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
