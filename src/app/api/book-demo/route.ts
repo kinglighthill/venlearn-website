@@ -17,7 +17,9 @@ const verifyRecaptcha = async (token: string) => {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
   if (!secretKey) {
-    console.warn("RECAPTCHA_SECRET_KEY is not defined. Skipping reCAPTCHA verification for demo booking.");
+    console.warn(
+      "RECAPTCHA_SECRET_KEY is not defined. Skipping reCAPTCHA verification for demo booking.",
+    );
     return true;
   }
 
@@ -41,13 +43,21 @@ export async function POST(request: NextRequest) {
     const missingField = requiredFields.find((field) => !demoLead[field]);
 
     if (missingField) {
-      return NextResponse.json({ success: false, message: `Missing ${missingField}` }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: `Missing ${missingField}` },
+        { status: 400 },
+      );
     }
 
-    const isVerified = await verifyRecaptcha(typeof token === "string" ? token : "");
+    const isVerified = await verifyRecaptcha(
+      typeof token === "string" ? token : "",
+    );
 
     if (!isVerified) {
-      return NextResponse.json({ success: false, message: "CAPTCHA verification failed" }, { status: 403 });
+      return NextResponse.json(
+        { success: false, message: "CAPTCHA verification failed" },
+        { status: 403 },
+      );
     }
 
     let zohoSyncStatus: "synced" | "failed" = "synced";
@@ -57,7 +67,10 @@ export async function POST(request: NextRequest) {
       await createZohoDemoLead(demoLead);
     } catch (zohoError) {
       zohoSyncStatus = "failed";
-      zohoSyncError = zohoError instanceof Error ? zohoError.message : "Unable to sync Zoho CRM lead.";
+      zohoSyncError =
+        zohoError instanceof Error
+          ? zohoError.message
+          : "Unable to sync Zoho CRM lead.";
       console.warn("Zoho CRM sync failed:", zohoSyncError);
     }
 
@@ -79,12 +92,18 @@ export async function POST(request: NextRequest) {
     } catch (firestoreError) {
       console.warn(
         "Firestore demo backup pending:",
-        firestoreError instanceof Error ? firestoreError.message : "Unable to save demo request backup.",
+        firestoreError instanceof Error
+          ? firestoreError.message
+          : "Unable to save demo request backup.",
       );
     }
 
+    console.log("ZohoSyncStatus: ", zohoSyncStatus);
+
     if (zohoSyncStatus === "failed") {
-      const isZohoDisconnected = zohoSyncError.includes("Zoho CRM is not connected");
+      const isZohoDisconnected = zohoSyncError.includes(
+        "Zoho CRM is not connected",
+      );
       console.log("Is Zoho disconnected?", isZohoDisconnected);
 
       return NextResponse.json(
@@ -94,7 +113,9 @@ export async function POST(request: NextRequest) {
             ? "Zoho CRM needs to be connected before demo requests can be sent to Leads."
             : `Demo request was received, but Zoho CRM sync failed: ${zohoSyncError}`,
           zohoSyncStatus,
-          zohoConnectUrl: isZohoDisconnected ? "/api/zoho/oauth/start" : undefined,
+          zohoConnectUrl: isZohoDisconnected
+            ? "/api/zoho/oauth/start"
+            : undefined,
         },
         { status: 502 },
       );
@@ -104,7 +125,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Book demo submission error:", error);
 
-    const message = error instanceof Error ? error.message : "Internal server error";
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
