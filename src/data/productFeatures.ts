@@ -57,6 +57,11 @@ export const productFeatureImages: Record<string, ProductFeatureImage> = {
     width: 3024,
     height: 1964,
   },
+  "lesson-planner": {
+    src: "/images/features/lesson-planner.png",
+    width: 3024,
+    height: 1964,
+  },
   "cbt-offline-online": {
     src: "/images/features/cbt-offline-online.png",
     width: 3024,
@@ -67,7 +72,7 @@ export const productFeatureImages: Record<string, ProductFeatureImage> = {
     width: 3024,
     height: 1964,
   },
-  timetable: {
+  "timetable": {
     src: "/images/features/timetable.png",
     width: 3024,
     height: 1964,
@@ -94,6 +99,26 @@ export const productFeatureImages: Record<string, ProductFeatureImage> = {
   },
   "extracurricular-activities": {
     src: "/images/features/extracurricular-activities.png",
+    width: 3024,
+    height: 1964,
+  },
+  "results-report-cards": {
+    src: "/images/features/results-report-cards.png",
+    width: 3024,
+    height: 1964,
+  },
+  "fee-collection": {
+    src: "/images/features/fee-collection.png",
+    width: 3024,
+    height: 1964,
+  },
+  "parents-students-portal": {
+    src: "/images/features/parents-students-portal.png",
+    width: 3024,
+    height: 1964,
+  },
+  "attendance": {
+    src: "/images/features/attendance.png",
     width: 3024,
     height: 1964,
   },
