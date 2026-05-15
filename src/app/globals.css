@@ -26,8 +26,11 @@
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #020617;
+  --foreground: #f8fafc;
+  --clickup-ink: #f8fafc;
+  --clickup-muted: #cbd5e1;
+  --clickup-line: #1e293b;
 }
 
 html {
@@ -39,6 +42,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-saas);
   @apply antialiased;
+}
+
+.dark body {
+  background: var(--background);
+  color: var(--foreground);
 }
 
 h1,
@@ -76,6 +84,105 @@ summary {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--clickup-line);
   box-shadow: 0 24px 70px rgba(36, 34, 62, 0.08);
+}
+
+.dark .clickup-surface {
+  background: rgba(15, 23, 42, 0.86);
+  border-color: rgba(51, 65, 85, 0.86);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+/* Dark theme bridge for the site's existing brand-token utility classes. */
+.dark :where(.bg-white,
+.bg-white\/80,
+.bg-white\/85,
+.bg-white\/90,
+.bg-white\/95,
+.bg-\[\#ffffff\],
+.bg-\[\#fbfbff\],
+.bg-\[\#fbfcff\]) {
+  background-color: rgb(15 23 42 / 0.94) !important;
+}
+
+.dark :where(.bg-white\/6,
+.bg-white\/8,
+.bg-white\/10,
+.bg-\[\#f3f7fc\],
+.bg-\[\#f8fafc\],
+.bg-\[\#f9fafb\],
+.bg-\[\#f8fbff\],
+.bg-\[\#eef0fb\],
+.bg-\[\#eef2f7\],
+.bg-\[\#eaf2fb\],
+.bg-\[\#eff6ff\],
+.bg-\[\#fff7ed\],
+.bg-\[\#fff5eb\],
+.bg-\[\#fff0e3\]) {
+  background-color: rgb(30 41 59 / 0.86) !important;
+}
+
+.dark :where(.bg-\[\#101828\],
+.bg-\[\#111827\]) {
+  background-color: rgb(2 6 23 / 0.96) !important;
+}
+
+.dark [class*="bg-[radial-gradient"],
+.dark [class*="bg-[linear-gradient"] {
+  background-image:
+    radial-gradient(circle at 16% 18%, rgba(38, 97, 172, 0.22), transparent 30%),
+    radial-gradient(circle at 84% 20%, rgba(255, 128, 0, 0.10), transparent 28%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%) !important;
+}
+
+.dark [class*="border-[#e8e9f4]"],
+.dark [class*="border-[#eaecf0]"],
+.dark [class*="border-[#eef2f7]"],
+.dark [class*="border-[#eef0fb]"],
+.dark [class*="border-[#e5e7eb]"],
+.dark [class*="border-[#d9e8fb]"],
+.dark [class*="border-[#d6e4f5]"],
+.dark [class*="border-[#d0d5dd]"],
+.dark [class*="border-white"] {
+  border-color: rgb(51 65 85 / 0.9) !important;
+}
+
+.dark :where(.text-\[\#101828\],
+.text-\[\#111827\],
+.text-\[\#24223e\],
+.text-\[\#2f3450\],
+.text-\[\#344054\]) {
+  color: #f8fafc !important;
+}
+
+.dark :where(.text-\[\#475467\],
+.text-\[\#667085\],
+.text-\[\#6c6f85\],
+.text-\[\#98a2b3\],
+.text-\[\#9a9eb5\]) {
+  color: #cbd5e1 !important;
+}
+
+.dark .shadow-\[\#101828\]\/5,
+.dark .shadow-\[\#101828\]\/6,
+.dark .shadow-\[\#101828\]\/8,
+.dark .shadow-\[\#24223e\]\/5,
+.dark .shadow-\[\#24223e\]\/6,
+.dark .shadow-\[\#24223e\]\/8,
+.dark .shadow-\[\#24223e\]\/10 {
+  --tw-shadow-color: rgb(0 0 0 / 0.42) !important;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: rgb(15 23 42);
+  border-color: rgb(51 65 85);
+  color: #f8fafc;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #94a3b8;
 }
 
 /* Utilities */

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, Menu, Monitor, Moon, Sun, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import { productFeatures } from "@/data/productFeatures";
 
 const primaryLinks = [
@@ -23,6 +24,20 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [isMobileFeaturesOpen, setIsMobileFeaturesOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const themeOptions = [
+    { name: "Light mode", value: "light", icon: Sun, activeClass: "text-amber-500" },
+    { name: "Dark mode", value: "dark", icon: Moon, activeClass: "text-indigo-500" },
+    { name: "System preference", value: "system", icon: Monitor, activeClass: "text-emerald-500" },
+  ];
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-3 z-50 px-3 sm:px-5">
@@ -33,11 +48,11 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
-          <div className="group inline-flex items-center rounded-full transition hover:bg-[#f3f7fc]">
+          <div className="group inline-flex items-center rounded-full transition hover:bg-[#f3f7fc] dark:hover:bg-slate-800">
             <Link
               href="/features"
               onMouseEnter={() => setIsFeaturesOpen(true)}
-              className="inline-flex items-center rounded-l-full py-2.5 pl-4 pr-1 text-[15px] font-extrabold text-[#24223e] transition group-hover:text-[#2661ac]"
+              className="inline-flex items-center rounded-l-full py-2.5 pl-4 pr-1 text-[15px] font-extrabold text-[#24223e] transition group-hover:text-[#2661ac] dark:text-slate-100"
             >
               Features
             </Link>
@@ -58,7 +73,7 @@ export default function Navbar() {
               href={link.href}
               target={"external" in link && link.external ? "_blank" : undefined}
               rel={"external" in link && link.external ? "noreferrer" : undefined}
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-[#24223e] transition hover:bg-[#f3f7fc] hover:text-[#2661ac]"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-[#24223e] transition hover:bg-[#f3f7fc] hover:text-[#2661ac] dark:text-slate-100 dark:hover:bg-slate-800"
             >
               {link.name}
             </Link>
@@ -66,6 +81,31 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex xl:gap-3">
+          {mounted && (
+            <div className="flex items-center gap-1 rounded-full border border-[#e8e9f4] bg-[#f3f7fc] p-1 dark:border-slate-700 dark:bg-slate-800">
+              {themeOptions.map((option) => {
+                const Icon = option.icon;
+                const isActive = theme === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setTheme(option.value)}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
+                      isActive
+                        ? `bg-white shadow-sm dark:bg-slate-600 ${option.activeClass}`
+                        : "text-[#9a9eb5] hover:text-[#2661ac] dark:text-slate-400 dark:hover:text-slate-100"
+                    }`}
+                    aria-label={option.name}
+                    title={option.name}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
           <Link
             href="/book-demo"
             className="rounded-full bg-[#2661ac] px-5 py-3 text-sm font-black text-white shadow-xl shadow-[#2661ac]/15 transition hover:-translate-y-0.5 hover:shadow-[#2661ac]/25 xl:px-6 xl:text-[15px]"
@@ -75,7 +115,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#e8e9f4] bg-white text-[#24223e] shadow-sm md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#e8e9f4] bg-white text-[#24223e] shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 md:hidden"
           onClick={() => setIsOpen((value) => !value)}
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
@@ -85,7 +125,7 @@ export default function Navbar() {
 
       {isFeaturesOpen && (
         <div
-          className="mt-3 hidden overflow-hidden rounded-[2rem] border border-[#e8e9f4] bg-white/95 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl md:block"
+          className="mt-3 hidden overflow-hidden rounded-[2rem] border border-[#e8e9f4] bg-white/95 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-slate-700 dark:bg-slate-900/95 md:block"
           onMouseEnter={() => setIsFeaturesOpen(true)}
         >
           <div className="px-8 py-6 xl:px-10">
@@ -97,7 +137,7 @@ export default function Navbar() {
               <Link
                 href="/features"
                 onClick={() => setIsFeaturesOpen(false)}
-                className="rounded-full border border-[#e8e9f4] px-4 py-2 text-sm font-black text-[#24223e] transition hover:bg-[#f3f7fc] hover:text-[#2661ac]"
+                className="rounded-full border border-[#e8e9f4] px-4 py-2 text-sm font-black text-[#24223e] transition hover:bg-[#f3f7fc] hover:text-[#2661ac] dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-800"
               >
                 View all
               </Link>
@@ -111,7 +151,7 @@ export default function Navbar() {
                     key={feature.slug}
                     href={`/features/${feature.slug}`}
                     onClick={() => setIsFeaturesOpen(false)}
-                    className="group rounded-2xl border border-[#e8e9f4] bg-[#fbfbff] p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-xl hover:shadow-[#24223e]/5"
+                    className="group rounded-2xl border border-[#e8e9f4] bg-[#fbfbff] p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-xl hover:shadow-[#24223e]/5 dark:border-slate-700 dark:bg-slate-800/70 dark:hover:bg-slate-800"
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2661ac] text-white shadow-lg shadow-[#2661ac]/15">
@@ -130,21 +170,21 @@ export default function Navbar() {
       )}
 
       {isOpen && (
-        <div className="mt-3 rounded-[2rem] border border-[#e8e9f4] bg-white/95 px-5 py-4 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl md:hidden">
+        <div className="mt-3 rounded-[2rem] border border-[#e8e9f4] bg-white/95 px-5 py-4 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-slate-700 dark:bg-slate-900/95 md:hidden">
           <div className="mx-auto max-w-[1440px]">
             <div className="grid gap-1">
               <div>
                 <button
                   type="button"
                   onClick={() => setIsMobileFeaturesOpen((value) => !value)}
-                  className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc]"
+                  className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc] dark:text-slate-100 dark:hover:bg-slate-800"
                   aria-expanded={isMobileFeaturesOpen}
                 >
                   Features
                   <ChevronDown className={`h-4 w-4 text-[#98a2b3] transition ${isMobileFeaturesOpen ? "rotate-180" : ""}`} />
                 </button>
                 {isMobileFeaturesOpen && (
-                  <div className="mt-2 grid max-h-[44vh] gap-2 overflow-y-auto rounded-3xl border border-[#eef2f7] bg-[#fbfcff] p-3">
+                  <div className="mt-2 grid max-h-[44vh] gap-2 overflow-y-auto rounded-3xl border border-[#eef2f7] bg-[#fbfcff] p-3 dark:border-slate-700 dark:bg-slate-950/70">
                     {productFeatures.map((feature) => {
                       const Icon = feature.icon;
 
@@ -156,7 +196,7 @@ export default function Navbar() {
                             setIsOpen(false);
                             setIsMobileFeaturesOpen(false);
                           }}
-                          className="flex items-center gap-3 rounded-2xl bg-white p-3 text-sm font-black text-[#344054] shadow-sm"
+                          className="flex items-center gap-3 rounded-2xl bg-white p-3 text-sm font-black text-[#344054] shadow-sm dark:bg-slate-800 dark:text-slate-100"
                         >
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2661ac] text-white">
                             <Icon className="h-4 w-4" />
@@ -175,12 +215,39 @@ export default function Navbar() {
                   target={"external" in link && link.external ? "_blank" : undefined}
                   rel={"external" in link && link.external ? "noreferrer" : undefined}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc]"
+                  className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc] dark:text-slate-100 dark:hover:bg-slate-800"
                 >
                   {link.name}
                 </Link>
               ))}
             </div>
+            {mounted && (
+              <div className="mt-3 flex items-center justify-between rounded-2xl border border-[#e8e9f4] px-4 py-3 dark:border-slate-700">
+                <span className="text-base font-black text-[#24223e] dark:text-slate-100">Theme</span>
+                <div className="flex gap-2">
+                  {themeOptions.map((option) => {
+                    const Icon = option.icon;
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setTheme(option.value)}
+                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
+                          theme === option.value
+                            ? "bg-[#2661ac] text-white"
+                            : "bg-[#f3f7fc] text-[#667085] dark:bg-slate-800 dark:text-slate-300"
+                        }`}
+                        aria-label={option.name}
+                        title={option.name}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <Link
               href="/book-demo"
               onClick={() => setIsOpen(false)}

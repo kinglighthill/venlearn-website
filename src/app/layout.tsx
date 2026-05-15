@@ -61,7 +61,7 @@ export default function RootLayout({
           gtag('config', 'G-6F46LKPC80');
         `}
       </Script>
-      <body className="flex min-h-screen flex-col bg-[#fbfbff] font-[var(--font-saas)] text-[#24223e] antialiased selection:bg-[#2661ac]/20 transition-colors duration-300">
+      <body className="flex min-h-screen flex-col bg-[#fbfbff] font-[var(--font-saas)] text-[#24223e] antialiased selection:bg-[#2661ac]/20 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
