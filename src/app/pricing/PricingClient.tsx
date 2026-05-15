@@ -93,7 +93,7 @@ function getFeatures(slugs: string[]) {
 export default function PricingClient() {
   return (
     <div className="overflow-hidden bg-white px-5 pb-24 pt-32 sm:px-8 lg:px-10">
-      <div className="absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(circle_at_12%_16%,rgba(38,97,172,0.14),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(38,97,172,0.08),transparent_28%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_82%)]" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-152 bg-[radial-gradient(circle_at_12%_16%,rgba(38,97,172,0.14),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(38,97,172,0.08),transparent_28%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_82%)]" />
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#d9e8fb] bg-white px-4 py-2 text-sm font-extrabold text-[#2661ac] shadow-lg shadow-[#2661ac]/10">
@@ -113,7 +113,7 @@ export default function PricingClient() {
           {plans.map((plan) => (
             <article
               key={plan.name}
-              className={`relative rounded-[2rem] border bg-white p-6 shadow-xl shadow-[#101828]/5 ${
+              className={`relative rounded-4xl border bg-white p-6 shadow-xl shadow-[#101828]/5 ${
                 plan.highlight ? "border-[#2661ac] ring-4 ring-[#2661ac]/10" : "border-[#eaecf0]"
               }`}
             >
@@ -137,11 +137,11 @@ export default function PricingClient() {
                   </div>
                 )}
                 {getFeatures(plan.slugs).map((feature) => (
-                  <div key={feature.slug} className="flex items-center gap-3">
+                  <div key={feature?.slug} className="flex items-center gap-3">
                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#eaf2fb] text-[#2661ac]">
                       <Check className="h-4 w-4" />
                     </span>
-                    <span className="font-bold text-[#344054]">{feature.title}</span>
+                    <span className="font-bold text-[#344054]">{feature?.title}</span>
                   </div>
                 ))}
                 {plan.extras?.map((extra) => (
@@ -164,11 +164,11 @@ export default function PricingClient() {
           ))}
         </div>
 
-        <section className="mt-16 rounded-[2rem] bg-[#101828] p-6 text-white sm:p-10">
+        <section className="mt-16 rounded-4xl bg-[#101828] p-6 text-white sm:p-10">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.24em] text-[#6f9fd3]">Included platform</p>
-              <h2 className="mt-4 text-4xl font-black leading-tight !text-white sm:text-5xl">
+              <h2 className="mt-4 text-4xl font-black leading-tight text-white! sm:text-5xl">
                 Choose by modules. Keep one unified workspace.
               </h2>
               <p className="mt-5 text-base font-medium leading-7 text-white/70">
@@ -183,11 +183,11 @@ export default function PricingClient() {
                   <div className="mt-4 flex flex-wrap gap-2">
                     {getFeatures(group.slugs).map((feature) => (
                       <Link
-                        key={feature.slug}
-                        href={`/features/${feature.slug}`}
+                        key={feature?.slug}
+                        href={`/features/${feature?.slug}`}
                         className="rounded-full border border-white/10 bg-white/8 px-3 py-2 text-sm font-extrabold text-white/85 transition hover:border-[#ff7a00]/50 hover:text-white"
                       >
-                        {feature.title}
+                        {feature?.title}
                       </Link>
                     ))}
                   </div>
