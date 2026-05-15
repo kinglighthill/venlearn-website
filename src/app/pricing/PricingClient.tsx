@@ -178,8 +178,8 @@ export default function PricingClient() {
             </div>
             <div className="grid gap-4">
               {allFeatureGroups.map((group) => (
-              <div key={group.title} className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5">
-                <h3 className="text-lg font-black !text-white [-webkit-text-fill-color:#fff]">{group.title}</h3>
+              <div key={group.title} className="rounded-3xl border border-white/10 bg-white/6 p-5">
+                <h3 className="text-lg font-black text-white! [-webkit-text-fill-color:#fff]">{group.title}</h3>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {getFeatures(group.slugs).map((feature) => (
                       <Link
