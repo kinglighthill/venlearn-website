@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowRight, Check, Mail, MessageSquareText, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Mail,
+  MessageSquareText,
+  Sparkles,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useRecaptcha from "@/hooks/useRecaptcha";
@@ -38,25 +44,38 @@ export default function BookDemoClient() {
       lastName: formData.get("lastName"),
       schoolName: formData.get("schoolName"),
       email: formData.get("email"),
-      phone: phoneNumber.startsWith("+") ? phoneNumber : `${phoneCode} ${phoneNumber}`,
+      phone: phoneNumber.startsWith("+")
+        ? phoneNumber
+        : `${phoneCode} ${phoneNumber}`,
       studentsPopulation: formData.get("studentsPopulation"),
       designation: formData.get("designation"),
       demoDateTime: formData.get("demoDateTime"),
     };
 
     try {
-      const verification = await verifyUser("book_demo_form", data, "/book-demo", "/api/book-demo");
+      const verification = await verifyUser(
+        "book_demo_form",
+        data,
+        "/book-demo",
+        "/api/book-demo",
+      );
+      console.log("Verification result:", verification);
 
       if (verification?.success) {
         form.reset();
         router.push("/book-demo-success");
       } else {
         const zohoConnectUrl =
-          typeof verification?.zohoConnectUrl === "string" ? verification.zohoConnectUrl : undefined;
+          typeof verification?.zohoConnectUrl === "string"
+            ? verification.zohoConnectUrl
+            : undefined;
+
+        console.log("Demo booking failed. Zoho connect URL:", zohoConnectUrl);
 
         setSubmitStatus({
           type: "error",
-          message: verification?.message || "Demo booking failed. Please try again.",
+          message:
+            verification?.message || "Demo booking failed. Please try again.",
           actionUrl: zohoConnectUrl,
           actionLabel: zohoConnectUrl ? "Connect Zoho CRM" : undefined,
         });
@@ -84,12 +103,17 @@ export default function BookDemoClient() {
             Let&apos;s build your Venlearn rollout.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#667085] sm:text-xl">
-            Tell us about your school, campuses, workflows, and priorities. We&apos;ll help you shape the right setup for admissions, academics, finance, and communication.
+            Tell us about your school, campuses, workflows, and priorities.
+            We&apos;ll help you shape the right setup for admissions, academics,
+            finance, and communication.
           </p>
 
           <div className="mt-9 grid gap-3">
             {reasons.map((reason) => (
-              <div key={reason} className="flex items-center gap-3 rounded-2xl border border-[#eaecf0] bg-white p-4 shadow-sm">
+              <div
+                key={reason}
+                className="flex items-center gap-3 rounded-2xl border border-[#eaecf0] bg-white p-4 shadow-sm"
+              >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#eaf2fb] text-[#2661ac]">
                   <Check className="h-5 w-5" />
                 </span>
@@ -105,7 +129,10 @@ export default function BookDemoClient() {
               </span>
               <div>
                 <p className="font-black">Email us directly</p>
-                <a href="mailto:info@veracone.com" className="font-bold text-white/70 hover:text-white">
+                <a
+                  href="mailto:info@veracone.com"
+                  className="font-bold text-white/70 hover:text-white"
+                >
                   info@veracone.com
                 </a>
               </div>
@@ -114,11 +141,18 @@ export default function BookDemoClient() {
         </div>
 
         <div className="rounded-[2rem] bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15">
-          <form className="rounded-[1.8rem] bg-white p-5 sm:p-8" onSubmit={handleSubmit}>
+          <form
+            className="rounded-[1.8rem] bg-white p-5 sm:p-8"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-8 flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-[#2661ac]">Book a demo</p>
-                <h2 className="mt-2 text-3xl font-black text-[#101828]">Pick a time to see Venlearn</h2>
+                <p className="text-sm font-black uppercase tracking-[0.2em] text-[#2661ac]">
+                  Book a demo
+                </p>
+                <h2 className="mt-2 text-3xl font-black text-[#101828]">
+                  Pick a time to see Venlearn
+                </h2>
               </div>
               <span className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#f3f7fc] text-[#2661ac] sm:flex">
                 <MessageSquareText className="h-7 w-7" />
@@ -127,7 +161,9 @@ export default function BookDemoClient() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
-                <span className="text-sm font-black text-[#344054]">First name</span>
+                <span className="text-sm font-black text-[#344054]">
+                  First name
+                </span>
                 <input
                   name="firstName"
                   required
@@ -137,7 +173,9 @@ export default function BookDemoClient() {
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-black text-[#344054]">Last name</span>
+                <span className="text-sm font-black text-[#344054]">
+                  Last name
+                </span>
                 <input
                   name="lastName"
                   required
@@ -149,7 +187,9 @@ export default function BookDemoClient() {
             </div>
 
             <label className="mt-5 block">
-              <span className="text-sm font-black text-[#344054]">Email address</span>
+              <span className="text-sm font-black text-[#344054]">
+                Email address
+              </span>
               <input
                 name="email"
                 required
@@ -161,7 +201,9 @@ export default function BookDemoClient() {
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="block">
-                <span className="text-sm font-black text-[#344054]">Phone number</span>
+                <span className="text-sm font-black text-[#344054]">
+                  Phone number
+                </span>
                 <div className="mt-2 flex rounded-2xl border border-[#d0d5dd] bg-white focus-within:border-[#2661ac] focus-within:ring-4 focus-within:ring-[#2661ac]/10">
                   <select
                     name="phoneCode"
@@ -186,7 +228,9 @@ export default function BookDemoClient() {
                 </div>
               </label>
               <label className="block">
-                <span className="text-sm font-black text-[#344054]">School name</span>
+                <span className="text-sm font-black text-[#344054]">
+                  School name
+                </span>
                 <input
                   name="schoolName"
                   required
@@ -198,7 +242,9 @@ export default function BookDemoClient() {
             </div>
 
             <label className="mt-5 block">
-              <span className="text-sm font-black text-[#344054]">Students population</span>
+              <span className="text-sm font-black text-[#344054]">
+                Students population
+              </span>
               <select
                 name="studentsPopulation"
                 required
@@ -211,14 +257,22 @@ export default function BookDemoClient() {
                 <option value="Below 100 students">Below 100 students</option>
                 <option value="100 - 300 students">100 - 300 students</option>
                 <option value="301 - 600 students">301 - 600 students</option>
-                <option value="601 - 1,000 students">601 - 1,000 students</option>
-                <option value="1,001 - 2,000 students">1,001 - 2,000 students</option>
-                <option value="Above 2,000 students">Above 2,000 students</option>
+                <option value="601 - 1,000 students">
+                  601 - 1,000 students
+                </option>
+                <option value="1,001 - 2,000 students">
+                  1,001 - 2,000 students
+                </option>
+                <option value="Above 2,000 students">
+                  Above 2,000 students
+                </option>
               </select>
             </label>
 
             <label className="mt-5 block">
-              <span className="text-sm font-black text-[#344054]">Designation</span>
+              <span className="text-sm font-black text-[#344054]">
+                Designation
+              </span>
               <select
                 name="designation"
                 required
@@ -240,7 +294,9 @@ export default function BookDemoClient() {
             </label>
 
             <label className="mt-5 block">
-              <span className="text-sm font-black text-[#344054]">Preferred demo date and time</span>
+              <span className="text-sm font-black text-[#344054]">
+                Preferred demo date and time
+              </span>
               <input
                 name="demoDateTime"
                 required

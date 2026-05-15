@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
 
     if (zohoSyncStatus === "failed") {
       const isZohoDisconnected = zohoSyncError.includes("Zoho CRM is not connected");
+      console.log("Is Zoho disconnected?", isZohoDisconnected);
 
       return NextResponse.json(
         {
