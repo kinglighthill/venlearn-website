@@ -51,11 +51,14 @@ export default function BookDemoClient() {
         form.reset();
         router.push("/book-demo-success");
       } else {
+        const zohoConnectUrl =
+          typeof verification?.zohoConnectUrl === "string" ? verification.zohoConnectUrl : undefined;
+
         setSubmitStatus({
           type: "error",
           message: verification?.message || "Demo booking failed. Please try again.",
-          actionUrl: verification?.zohoConnectUrl,
-          actionLabel: verification?.zohoConnectUrl ? "Connect Zoho CRM" : undefined,
+          actionUrl: zohoConnectUrl,
+          actionLabel: zohoConnectUrl ? "Connect Zoho CRM" : undefined,
         });
       }
     } catch {
