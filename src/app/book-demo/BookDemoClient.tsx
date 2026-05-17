@@ -47,6 +47,7 @@ export default function BookDemoClient() {
       phone: phoneNumber.startsWith("+")
         ? phoneNumber
         : `${phoneCode} ${phoneNumber}`,
+      address: formData.get("address"),
       studentsPopulation: formData.get("studentsPopulation"),
       designation: formData.get("designation"),
       demoDateTime: formData.get("demoDateTime"),
@@ -94,12 +95,12 @@ export default function BookDemoClient() {
     <div className="relative overflow-hidden bg-white px-5 pb-24 pt-32 sm:px-8 lg:px-10">
       <div className="absolute inset-x-0 top-0 -z-10 h-[40rem] bg-[radial-gradient(circle_at_18%_18%,rgba(38,97,172,0.14),transparent_30%),radial-gradient(circle_at_84%_20%,rgba(38,97,172,0.08),transparent_28%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_82%)]" />
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <div>
+        <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#d9e8fb] bg-white px-4 py-2 text-sm font-extrabold text-[#2661ac] shadow-lg shadow-[#2661ac]/10">
             <Sparkles className="h-4 w-4" />
             Launch your school workspace
           </div>
-          <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.96] tracking-normal text-[#101828] sm:text-7xl">
+          <h1 className="mt-6 max-w-4xl break-words text-5xl font-black leading-[0.96] tracking-normal text-[#101828] sm:text-7xl">
             Let&apos;s build your Venlearn rollout.
           </h1>
           <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#667085] sm:text-xl">
@@ -140,9 +141,9 @@ export default function BookDemoClient() {
           </div>
         </div>
 
-        <div className="rounded-[2rem] bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15">
+        <div className="min-w-0 overflow-hidden rounded-[1.5rem] bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15 sm:rounded-[2rem]">
           <form
-            className="rounded-[1.8rem] bg-white p-5 sm:p-8"
+            className="min-w-0 rounded-[1.3rem] bg-white p-4 sm:rounded-[1.8rem] sm:p-8"
             onSubmit={handleSubmit}
           >
             <div className="mb-8 flex items-center justify-between gap-4">
@@ -159,8 +160,8 @@ export default function BookDemoClient() {
               </span>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block">
+            <div className="grid min-w-0 gap-4 sm:grid-cols-2 [&>*]:min-w-0">
+              <label className="block min-w-0">
                 <span className="text-sm font-black text-[#344054]">
                   First name
                 </span>
@@ -172,7 +173,7 @@ export default function BookDemoClient() {
                   placeholder="John"
                 />
               </label>
-              <label className="block">
+              <label className="block min-w-0">
                 <span className="text-sm font-black text-[#344054]">
                   Last name
                 </span>
@@ -186,7 +187,7 @@ export default function BookDemoClient() {
               </label>
             </div>
 
-            <label className="mt-5 block">
+            <label className="mt-5 block min-w-0">
               <span className="text-sm font-black text-[#344054]">
                 Email address
               </span>
@@ -199,17 +200,17 @@ export default function BookDemoClient() {
               />
             </label>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <label className="block">
+            <div className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2 [&>*]:min-w-0">
+              <label className="block min-w-0">
                 <span className="text-sm font-black text-[#344054]">
                   Phone number
                 </span>
-                <div className="mt-2 flex rounded-2xl border border-[#d0d5dd] bg-white focus-within:border-[#2661ac] focus-within:ring-4 focus-within:ring-[#2661ac]/10">
+                <div className="mt-2 flex min-w-0 rounded-2xl border border-[#d0d5dd] bg-white focus-within:border-[#2661ac] focus-within:ring-4 focus-within:ring-[#2661ac]/10">
                   <select
                     name="phoneCode"
                     defaultValue="+234"
                     aria-label="Phone country code"
-                    className="w-36 shrink-0 rounded-l-2xl border-r border-[#d0d5dd] bg-[#f3f7fc] px-4 py-4 font-black text-[#101828] outline-none sm:w-32"
+                    className="w-28 shrink-0 rounded-l-2xl border-r border-[#d0d5dd] bg-[#f3f7fc] px-3 py-4 font-black text-[#101828] outline-none sm:w-32 sm:px-4"
                   >
                     <option value="+234">NG +234</option>
                     <option value="+233">GH +233</option>
@@ -227,7 +228,7 @@ export default function BookDemoClient() {
                   />
                 </div>
               </label>
-              <label className="block">
+              <label className="block min-w-0">
                 <span className="text-sm font-black text-[#344054]">
                   School name
                 </span>
@@ -240,6 +241,19 @@ export default function BookDemoClient() {
                 />
               </label>
             </div>
+
+            <label className="mt-5 block">
+              <span className="text-sm font-black text-[#344054]">
+                Address
+              </span>
+              <textarea
+                name="address"
+                required
+                rows={3}
+                className="mt-2 w-full resize-none rounded-2xl border border-[#d0d5dd] bg-white px-4 py-4 font-semibold text-[#101828] outline-none transition focus:border-[#2661ac] focus:ring-4 focus:ring-[#2661ac]/10"
+                placeholder="School address"
+              />
+            </label>
 
             <label className="mt-5 block">
               <span className="text-sm font-black text-[#344054]">
