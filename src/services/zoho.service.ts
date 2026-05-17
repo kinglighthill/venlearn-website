@@ -43,7 +43,11 @@ let memoryAccessToken = "";
 let memoryAccessTokenExpiresAt = 0;
 let memoryApiDomain = "";
 
-const zohoTokenStorePath = path.join(process.cwd(), ".venlearn", "zoho-oauth.json");
+const zohoTokenStorePath = path.join(
+  process.cwd(),
+  ".venlearn",
+  "zoho-oauth.json",
+);
 const zohoBlobStoreName = "venlearn-oauth";
 const zohoBlobStoreKey = "zoho";
 const zohoUserAgent = "Venlearn Website/1.0";
@@ -60,60 +64,78 @@ const requestZohoJson = async <T>(
   const url = new URL(urlString);
   const body = options.body || "";
 
-  return new Promise<{ data: T; ok: boolean; status: number }>((resolve, reject) => {
-    const request = https.request(
-      {
-        family: 4,
-        headers: {
-          Accept: "application/json",
-          "User-Agent": zohoUserAgent,
-          ...options.headers,
-          ...(body ? { "Content-Length": Buffer.byteLength(body).toString() } : {}),
+  return new Promise<{ data: T; ok: boolean; status: number }>(
+    (resolve, reject) => {
+      const request = https.request(
+        {
+          family: 4,
+          headers: {
+            Accept: "application/json",
+            "User-Agent": zohoUserAgent,
+            ...options.headers,
+            ...(body
+              ? { "Content-Length": Buffer.byteLength(body).toString() }
+              : {}),
+          },
+          hostname: url.hostname,
+          method: options.method || "GET",
+          path: `${url.pathname}${url.search}`,
+          port: url.port ? Number(url.port) : undefined,
+          protocol: url.protocol,
+          timeout: options.timeoutMs || 20000,
         },
-        hostname: url.hostname,
-        method: options.method || "GET",
-        path: `${url.pathname}${url.search}`,
-        port: url.port ? Number(url.port) : undefined,
-        protocol: url.protocol,
-        timeout: options.timeoutMs || 20000,
-      },
-      (response) => {
-        const chunks: Buffer[] = [];
+        (response) => {
+          const chunks: Buffer[] = [];
 
-        response.on("data", (chunk: Buffer) => {
-          chunks.push(chunk);
-        });
+          response.on("data", (chunk: Buffer) => {
+            chunks.push(chunk);
+          });
 
-        response.on("end", () => {
-          const text = Buffer.concat(chunks).toString("utf8");
+          response.on("end", () => {
+            const text = Buffer.concat(chunks).toString("utf8");
 
-          try {
-            resolve({
-              data: (text ? JSON.parse(text) : {}) as T,
-              ok: Boolean(response.statusCode && response.statusCode >= 200 && response.statusCode < 300),
-              status: response.statusCode || 0,
-            });
-          } catch {
-            reject(new Error(`Zoho returned an unreadable response from ${url.hostname}.`));
-          }
-        });
-      },
-    );
+            try {
+              resolve({
+                data: (text ? JSON.parse(text) : {}) as T,
+                ok: Boolean(
+                  response.statusCode &&
+                  response.statusCode >= 200 &&
+                  response.statusCode < 300,
+                ),
+                status: response.statusCode || 0,
+              });
+            } catch {
+              reject(
+                new Error(
+                  `Zoho returned an unreadable response from ${url.hostname}.`,
+                ),
+              );
+            }
+          });
+        },
+      );
 
-    request.on("timeout", () => {
-      request.destroy(new Error(`Zoho request to ${url.hostname} timed out.`));
-    });
+      request.on("timeout", () => {
+        request.destroy(
+          new Error(`Zoho request to ${url.hostname} timed out.`),
+        );
+      });
 
-    request.on("error", (error) => {
-      reject(new Error(`Unable to reach Zoho at ${url.hostname}: ${error.message}`));
-    });
+      request.on("error", (error) => {
+        reject(
+          new Error(
+            `Unable to reach Zoho at ${url.hostname}: ${error.message}`,
+          ),
+        );
+      });
 
-    if (body) {
-      request.write(body);
-    }
+      if (body) {
+        request.write(body);
+      }
 
-    request.end();
-  });
+      request.end();
+    },
+  );
 };
 
 const postZohoForm = async <T>(url: string, body: URLSearchParams) =>
@@ -123,7 +145,11 @@ const postZohoForm = async <T>(url: string, body: URLSearchParams) =>
     method: "POST",
   });
 
-const postZohoJson = async <T>(url: string, payload: unknown, accessToken: string) =>
+const postZohoJson = async <T>(
+  url: string,
+  payload: unknown,
+  accessToken: string,
+) =>
   requestZohoJson<T>(url, {
     body: JSON.stringify(payload),
     headers: {
@@ -133,10 +159,13 @@ const postZohoJson = async <T>(url: string, payload: unknown, accessToken: strin
     method: "POST",
   });
 
-const shouldUseNetlifyBlobs = () => process.env.NETLIFY === "true" && process.env.NETLIFY_DEV !== "true";
+const shouldUseNetlifyBlobs = () =>
+  process.env.NETLIFY === "true" && process.env.NETLIFY_DEV !== "true";
 
 const maskToken = (token: string) =>
-  token ? `${token.slice(0, 6)}…${token.slice(-4)} (len=${token.length})` : "<empty>";
+  token
+    ? `${token.slice(0, 6)}…${token.slice(-4)} (len=${token.length})`
+    : "<empty>";
 
 const cacheZohoTokenStore = (store: ZohoTokenStore) => {
   if (!store.refreshToken) {
@@ -144,7 +173,10 @@ const cacheZohoTokenStore = (store: ZohoTokenStore) => {
   }
 
   memoryRefreshToken = store.refreshToken;
-  memoryApiDomain = store.apiDomain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com";
+  memoryApiDomain =
+    store.apiDomain ||
+    process.env.ZOHO_CRM_API_DOMAIN ||
+    "https://www.zohoapis.com";
 
   return {
     refreshToken: memoryRefreshToken,
@@ -174,7 +206,10 @@ const readZohoTokenFromBlob = async () => {
   }
 };
 
-const writeZohoTokenToBlob = async (refreshToken: string, apiDomain: string) => {
+const writeZohoTokenToBlob = async (
+  refreshToken: string,
+  apiDomain: string,
+) => {
   try {
     const store = getStore(zohoBlobStoreName);
 
@@ -211,18 +246,36 @@ const readStoredZohoToken = async () => {
 
     return cacheZohoTokenStore(store);
   } catch (error) {
-    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
       return null;
     }
 
-    console.warn("Unable to read stored Zoho OAuth token:", error instanceof Error ? error.message : error);
+    console.warn(
+      "Unable to read stored Zoho OAuth token:",
+      error instanceof Error ? error.message : error,
+    );
     return null;
   }
 };
 
-const writeStoredZohoToken = async (refreshToken: string, apiDomain: string) => {
+const writeStoredZohoToken = async (
+  refreshToken: string,
+  apiDomain: string,
+) => {
   memoryRefreshToken = refreshToken;
   memoryApiDomain = apiDomain;
+
+  console.log("[zoho] env check", {
+    NETLIFY: process.env.NETLIFY,
+    NETLIFY_DEV: process.env.NETLIFY_DEV,
+    NODE_ENV: process.env.NODE_ENV,
+    AWS_REGION: process.env.AWS_REGION,
+  });
 
   if (shouldUseNetlifyBlobs()) {
     await writeZohoTokenToBlob(refreshToken, apiDomain);
@@ -267,10 +320,13 @@ export const getZohoRedirectUri = (requestUrl?: string) => {
 const getZohoConfig = () => {
   const clientId = process.env.ZOHO_CLIENT_ID;
   const clientSecret = process.env.ZOHO_CLIENT_SECRET;
-  const accountsUrl = process.env.ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
+  const accountsUrl =
+    process.env.ZOHO_ACCOUNTS_URL || "https://accounts.zoho.com";
 
   if (!clientId || !clientSecret) {
-    throw new Error("Zoho CRM is not configured. Set ZOHO_CLIENT_ID and ZOHO_CLIENT_SECRET.");
+    throw new Error(
+      "Zoho CRM is not configured. Set ZOHO_CLIENT_ID and ZOHO_CLIENT_SECRET.",
+    );
   }
 
   return { clientId, clientSecret, accountsUrl };
@@ -291,7 +347,10 @@ export const getZohoAuthorizationUrl = (requestUrl: string) => {
   return url.toString();
 };
 
-export const exchangeZohoGrantTokenForRefreshToken = async (grantToken: string, redirectUri: string) => {
+export const exchangeZohoGrantTokenForRefreshToken = async (
+  grantToken: string,
+  redirectUri: string,
+) => {
   const { clientId, clientSecret, accountsUrl } = getZohoConfig();
 
   if (!grantToken || !redirectUri) {
@@ -306,14 +365,24 @@ export const exchangeZohoGrantTokenForRefreshToken = async (grantToken: string, 
     grant_type: "authorization_code",
   });
 
-  const response = await postZohoForm<ZohoTokenResponse>(`${accountsUrl}/oauth/v2/token`, body);
+  const response = await postZohoForm<ZohoTokenResponse>(
+    `${accountsUrl}/oauth/v2/token`,
+    body,
+  );
   const data = response.data;
 
   if (!response.ok || data.error) {
-    throw new Error(data.error_description || data.error || "Unable to exchange Zoho grant token for refresh token.");
+    throw new Error(
+      data.error_description ||
+        data.error ||
+        "Unable to exchange Zoho grant token for refresh token.",
+    );
   }
 
-  const apiDomain = data.api_domain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com";
+  const apiDomain =
+    data.api_domain ||
+    process.env.ZOHO_CRM_API_DOMAIN ||
+    "https://www.zohoapis.com";
 
   if (data.refresh_token) {
     await writeStoredZohoToken(data.refresh_token, apiDomain);
@@ -326,7 +395,9 @@ export const exchangeZohoGrantTokenForRefreshToken = async (grantToken: string, 
     return storedToken.refreshToken;
   }
 
-  throw new Error("Zoho did not return a refresh token. Revoke this app in Zoho, then authorize it again.");
+  throw new Error(
+    "Zoho did not return a refresh token. Revoke this app in Zoho, then authorize it again.",
+  );
 };
 
 const exchangeConfiguredGrantTokenForRefreshToken = async () => {
@@ -338,12 +409,18 @@ const exchangeConfiguredGrantTokenForRefreshToken = async () => {
     );
   }
 
-  return exchangeZohoGrantTokenForRefreshToken(grantToken, getZohoRedirectUri());
+  return exchangeZohoGrantTokenForRefreshToken(
+    grantToken,
+    getZohoRedirectUri(),
+  );
 };
 
 const getZohoRefreshToken = async () => {
   if (memoryRefreshToken) {
-    console.log("[zoho] refresh token source: memory", maskToken(memoryRefreshToken));
+    console.log(
+      "[zoho] refresh token source: memory",
+      maskToken(memoryRefreshToken),
+    );
     return memoryRefreshToken;
   }
 
@@ -351,18 +428,26 @@ const getZohoRefreshToken = async () => {
 
   if (configuredRefreshToken) {
     memoryRefreshToken = configuredRefreshToken;
-    console.log("[zoho] refresh token source: env ZOHO_REFRESH_TOKEN", maskToken(memoryRefreshToken));
+    console.log(
+      "[zoho] refresh token source: env ZOHO_REFRESH_TOKEN",
+      maskToken(memoryRefreshToken),
+    );
     return memoryRefreshToken;
   }
 
   const storedToken = await readStoredZohoToken();
 
   if (storedToken?.refreshToken) {
-    console.log("[zoho] refresh token source: blob/disk", maskToken(storedToken.refreshToken));
+    console.log(
+      "[zoho] refresh token source: blob/disk",
+      maskToken(storedToken.refreshToken),
+    );
     return storedToken.refreshToken;
   }
 
-  console.log("[zoho] refresh token source: none — falling back to grant-token exchange");
+  console.log(
+    "[zoho] refresh token source: none — falling back to grant-token exchange",
+  );
   return exchangeConfiguredGrantTokenForRefreshToken();
 };
 
@@ -370,7 +455,10 @@ const getZohoAccessToken = async () => {
   if (memoryAccessToken && Date.now() < memoryAccessTokenExpiresAt) {
     return {
       accessToken: memoryAccessToken,
-      apiDomain: memoryApiDomain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com",
+      apiDomain:
+        memoryApiDomain ||
+        process.env.ZOHO_CRM_API_DOMAIN ||
+        "https://www.zohoapis.com",
     };
   }
 
@@ -384,7 +472,10 @@ const getZohoAccessToken = async () => {
     grant_type: "refresh_token",
   });
 
-  const response = await postZohoForm<ZohoTokenResponse>(`${accountsUrl}/oauth/v2/token`, body);
+  const response = await postZohoForm<ZohoTokenResponse>(
+    `${accountsUrl}/oauth/v2/token`,
+    body,
+  );
   const data = response.data;
 
   console.log("[zoho] access-token exchange response", {
@@ -400,12 +491,20 @@ const getZohoAccessToken = async () => {
   });
 
   if (!response.ok || !data.access_token) {
-    throw new Error(data.error_description || data.error || "Unable to get Zoho CRM access token.");
+    throw new Error(
+      data.error_description ||
+        data.error ||
+        "Unable to get Zoho CRM access token.",
+    );
   }
 
   memoryAccessToken = data.access_token;
-  memoryApiDomain = data.api_domain || process.env.ZOHO_CRM_API_DOMAIN || "https://www.zohoapis.com";
-  memoryAccessTokenExpiresAt = Date.now() + Math.max((data.expires_in || 3600) - 120, 60) * 1000;
+  memoryApiDomain =
+    data.api_domain ||
+    process.env.ZOHO_CRM_API_DOMAIN ||
+    "https://www.zohoapis.com";
+  memoryAccessTokenExpiresAt =
+    Date.now() + Math.max((data.expires_in || 3600) - 120, 60) * 1000;
 
   return {
     accessToken: memoryAccessToken,
@@ -416,7 +515,9 @@ const getZohoAccessToken = async () => {
 export const createZohoDemoLead = async (lead: DemoLead) => {
   const { accessToken, apiDomain } = await getZohoAccessToken();
   const fullName = `${lead.firstName} ${lead.lastName}`.trim();
-  const formattedDemoDate = lead.demoDateTime ? new Date(lead.demoDateTime).toLocaleString("en-NG") : "Not selected";
+  const formattedDemoDate = lead.demoDateTime
+    ? new Date(lead.demoDateTime).toLocaleString("en-NG")
+    : "Not selected";
 
   const response = await postZohoJson<ZohoInsertResponse>(
     `${apiDomain}/crm/v8/Leads`,
