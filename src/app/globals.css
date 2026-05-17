@@ -3,6 +3,18 @@
 /* Configure dark mode to use class-based selector */
 @variant dark (&:where(.dark, .dark *));
 
+/*
+ * Force-generate the hex/opacity utility classes that the dark-mode bridge
+ * selectors below depend on. The bridge lives in CSS, so Tailwind's source
+ * scanner doesn't know to emit these on its own — without this, dev-mode
+ * pages render with the bridge inactive (selectors target classes that
+ * weren't generated). Keep this list in lockstep with the `.dark :where(...)`
+ * blocks lower in this file.
+ */
+@source inline("{bg,text,border,shadow}-{white,[#ffffff],[#fbfbff],[#fbfcff],[#f3f7fc],[#f8fafc],[#f9fafb],[#f8fbff],[#eef0fb],[#eef2f7],[#eaf2fb],[#eff6ff],[#fff7ed],[#fff5eb],[#fff0e3],[#101828],[#111827],[#24223e],[#2f3450],[#344054],[#475467],[#667085],[#6c6f85],[#98a2b3],[#9a9eb5],[#e8e9f4],[#eaecf0],[#e5e7eb],[#d9e8fb],[#d6e4f5],[#d0d5dd]}");
+@source inline("bg-white/{6,8,10,80,85,90,95}");
+@source inline("shadow-[#101828]/{5,6,8} shadow-[#24223e]/{5,6,8,10}");
+
 @theme {
   --color-brand-primary: #2661ac;
   --color-brand-secondary: #2661ac;
