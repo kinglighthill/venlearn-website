@@ -135,6 +135,9 @@ const postZohoJson = async <T>(url: string, payload: unknown, accessToken: strin
 
 const shouldUseNetlifyBlobs = () => process.env.NETLIFY === "true" && process.env.NETLIFY_DEV !== "true";
 
+const maskToken = (token: string) =>
+  token ? `${token.slice(0, 6)}…${token.slice(-4)} (len=${token.length})` : "<empty>";
+
 const cacheZohoTokenStore = (store: ZohoTokenStore) => {
   if (!store.refreshToken) {
     return null;
@@ -172,13 +175,29 @@ const readZohoTokenFromBlob = async () => {
 };
 
 const writeZohoTokenToBlob = async (refreshToken: string, apiDomain: string) => {
-  const store = getStore(zohoBlobStoreName);
+  try {
+    const store = getStore(zohoBlobStoreName);
 
-  await store.setJSON(zohoBlobStoreKey, {
-    refreshToken,
-    apiDomain,
-    updatedAt: new Date().toISOString(),
-  } satisfies ZohoTokenStore);
+    await store.setJSON(zohoBlobStoreKey, {
+      refreshToken,
+      apiDomain,
+      updatedAt: new Date().toISOString(),
+    } satisfies ZohoTokenStore);
+
+    console.log("[zoho] wrote refresh token to blob", {
+      store: zohoBlobStoreName,
+      key: zohoBlobStoreKey,
+      refreshToken: maskToken(refreshToken),
+      apiDomain,
+    });
+  } catch (error) {
+    console.error("[zoho] FAILED to write refresh token to blob", {
+      store: zohoBlobStoreName,
+      key: zohoBlobStoreKey,
+      message: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
+  }
 };
 
 const readStoredZohoToken = async () => {
@@ -321,9 +340,6 @@ const exchangeConfiguredGrantTokenForRefreshToken = async () => {
 
   return exchangeZohoGrantTokenForRefreshToken(grantToken, getZohoRedirectUri());
 };
-
-const maskToken = (token: string) =>
-  token ? `${token.slice(0, 6)}…${token.slice(-4)} (len=${token.length})` : "<empty>";
 
 const getZohoRefreshToken = async () => {
   if (memoryRefreshToken) {
