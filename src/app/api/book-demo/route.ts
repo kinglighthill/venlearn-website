@@ -8,6 +8,7 @@ const requiredFields: Array<keyof DemoLead> = [
   "lastName",
   "email",
   "phone",
+  "address",
   "studentsPopulation",
   "designation",
   "demoDateTime",
@@ -28,6 +29,19 @@ const verifyRecaptcha = async (token: string) => {
   const data = await response.json();
 
   return data.success && data.score >= 0.5;
+};
+
+const isZohoConnectionError = (error: string) => {
+  const normalizedError = error.toLowerCase();
+
+  return [
+    "Zoho CRM is not connected",
+    "invalid_code",
+    "invalid_grant",
+    "invalid_token",
+    "invalid oauth token",
+    "invalid token",
+  ].some((message) => normalizedError.includes(message.toLowerCase()));
 };
 
 export async function POST(request: NextRequest) {
@@ -82,6 +96,7 @@ export async function POST(request: NextRequest) {
         school_name: demoLead.schoolName,
         email: demoLead.email,
         phone: demoLead.phone,
+        address: demoLead.address,
         students_population: demoLead.studentsPopulation,
         designation: demoLead.designation,
         demo_date_time: demoLead.demoDateTime,
@@ -101,9 +116,7 @@ export async function POST(request: NextRequest) {
     console.log("ZohoSyncStatus: ", zohoSyncStatus);
 
     if (zohoSyncStatus === "failed") {
-      const isZohoDisconnected = zohoSyncError.includes(
-        "Zoho CRM is not connected",
-      );
+      const isZohoDisconnected = isZohoConnectionError(zohoSyncError);
       console.log("Is Zoho disconnected?", isZohoDisconnected);
 
       return NextResponse.json(

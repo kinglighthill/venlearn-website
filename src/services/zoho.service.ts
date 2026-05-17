@@ -33,6 +33,7 @@ export type DemoLead = {
   lastName: string;
   email: string;
   phone: string;
+  address: string;
   studentsPopulation: string;
   designation: string;
   demoDateTime: string;
@@ -51,6 +52,8 @@ const zohoTokenStorePath = path.join(
 const zohoBlobStoreName = "venlearn-oauth";
 const zohoBlobStoreKey = "zoho";
 const zohoUserAgent = "Venlearn Website/1.0";
+const zohoConnectionErrorMessage =
+  "Zoho CRM is not connected. Visit /api/zoho/oauth/start to authorize Zoho, or set ZOHO_REFRESH_TOKEN.";
 
 const requestZohoJson = async <T>(
   urlString: string,
@@ -160,6 +163,9 @@ const postZohoJson = async <T>(
   });
 
 const shouldUseNetlifyBlobs = () => process.env.NODE_ENV === "production";
+
+const isZohoOAuthConnectionError = (error?: string) =>
+  Boolean(error && ["invalid_code", "invalid_grant", "invalid_token"].includes(error));
 
 const cacheZohoTokenStore = (store: ZohoTokenStore) => {
   if (!store.refreshToken) {
@@ -375,9 +381,7 @@ const exchangeConfiguredGrantTokenForRefreshToken = async () => {
   const grantToken = process.env.ZOHO_GRANT_TOKEN;
 
   if (!grantToken) {
-    throw new Error(
-      "Zoho CRM is not connected. Visit /api/zoho/oauth/start to authorize Zoho, or set ZOHO_REFRESH_TOKEN.",
-    );
+    throw new Error(zohoConnectionErrorMessage);
   }
 
   return exchangeZohoGrantTokenForRefreshToken(
@@ -435,6 +439,10 @@ const getZohoAccessToken = async () => {
   const data = response.data;
 
   if (!response.ok || !data.access_token) {
+    if (isZohoOAuthConnectionError(data.error)) {
+      throw new Error(zohoConnectionErrorMessage);
+    }
+
     throw new Error(
       data.error_description ||
         data.error ||
@@ -473,6 +481,7 @@ export const createZohoDemoLead = async (lead: DemoLead) => {
           Company: lead.schoolName,
           Email: lead.email,
           Phone: lead.phone,
+          Street: lead.address,
           Designation: lead.designation,
           Lead_Source: "Website Demo Form",
           Description: [
@@ -480,6 +489,7 @@ export const createZohoDemoLead = async (lead: DemoLead) => {
             `Name: ${fullName}`,
             `Email: ${lead.email}`,
             `Phone: ${lead.phone}`,
+            `Address: ${lead.address}`,
             `Designation: ${lead.designation}`,
             `School name: ${lead.schoolName}`,
             `Students population: ${lead.studentsPopulation}`,
