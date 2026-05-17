@@ -161,11 +161,6 @@ const postZohoJson = async <T>(
 
 const shouldUseNetlifyBlobs = () => process.env.NODE_ENV === "production";
 
-const maskToken = (token: string) =>
-  token
-    ? `${token.slice(0, 6)}…${token.slice(-4)} (len=${token.length})`
-    : "<empty>";
-
 const cacheZohoTokenStore = (store: ZohoTokenStore) => {
   if (!store.refreshToken) {
     return null;
@@ -209,29 +204,13 @@ const writeZohoTokenToBlob = async (
   refreshToken: string,
   apiDomain: string,
 ) => {
-  try {
-    const store = getStore(zohoBlobStoreName);
+  const store = getStore(zohoBlobStoreName);
 
-    await store.setJSON(zohoBlobStoreKey, {
-      refreshToken,
-      apiDomain,
-      updatedAt: new Date().toISOString(),
-    } satisfies ZohoTokenStore);
-
-    console.log("[zoho] wrote refresh token to blob", {
-      store: zohoBlobStoreName,
-      key: zohoBlobStoreKey,
-      refreshToken: maskToken(refreshToken),
-      apiDomain,
-    });
-  } catch (error) {
-    console.error("[zoho] FAILED to write refresh token to blob", {
-      store: zohoBlobStoreName,
-      key: zohoBlobStoreKey,
-      message: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-  }
+  await store.setJSON(zohoBlobStoreKey, {
+    refreshToken,
+    apiDomain,
+    updatedAt: new Date().toISOString(),
+  } satisfies ZohoTokenStore);
 };
 
 const readStoredZohoToken = async () => {
@@ -268,13 +247,6 @@ const writeStoredZohoToken = async (
 ) => {
   memoryRefreshToken = refreshToken;
   memoryApiDomain = apiDomain;
-
-  console.log("[zoho] env check", {
-    NETLIFY: process.env.NETLIFY,
-    NETLIFY_DEV: process.env.NETLIFY_DEV,
-    NODE_ENV: process.env.NODE_ENV,
-    AWS_REGION: process.env.AWS_REGION,
-  });
 
   if (shouldUseNetlifyBlobs()) {
     await writeZohoTokenToBlob(refreshToken, apiDomain);
@@ -416,10 +388,6 @@ const exchangeConfiguredGrantTokenForRefreshToken = async () => {
 
 const getZohoRefreshToken = async () => {
   if (memoryRefreshToken) {
-    console.log(
-      "[zoho] refresh token source: memory",
-      maskToken(memoryRefreshToken),
-    );
     return memoryRefreshToken;
   }
 
@@ -427,26 +395,15 @@ const getZohoRefreshToken = async () => {
 
   if (configuredRefreshToken) {
     memoryRefreshToken = configuredRefreshToken;
-    console.log(
-      "[zoho] refresh token source: env ZOHO_REFRESH_TOKEN",
-      maskToken(memoryRefreshToken),
-    );
     return memoryRefreshToken;
   }
 
   const storedToken = await readStoredZohoToken();
 
   if (storedToken?.refreshToken) {
-    console.log(
-      "[zoho] refresh token source: blob/disk",
-      maskToken(storedToken.refreshToken),
-    );
     return storedToken.refreshToken;
   }
 
-  console.log(
-    "[zoho] refresh token source: none — falling back to grant-token exchange",
-  );
   return exchangeConfiguredGrantTokenForRefreshToken();
 };
 
@@ -476,18 +433,6 @@ const getZohoAccessToken = async () => {
     body,
   );
   const data = response.data;
-
-  console.log("[zoho] access-token exchange response", {
-    status: response.status,
-    ok: response.ok,
-    hasAccessToken: Boolean(data.access_token),
-    hasRefreshTokenInResponse: Boolean(data.refresh_token),
-    apiDomain: data.api_domain,
-    expiresIn: data.expires_in,
-    error: data.error,
-    errorDescription: data.error_description,
-    accountsUrl,
-  });
 
   if (!response.ok || !data.access_token) {
     throw new Error(
@@ -549,17 +494,6 @@ export const createZohoDemoLead = async (lead: DemoLead) => {
 
   const data = response.data;
   const firstRecord = data.data?.[0];
-
-  console.log("[zoho] Leads insert response", {
-    status: response.status,
-    ok: response.ok,
-    apiDomain,
-    firstRecordStatus: firstRecord?.status,
-    firstRecordCode: firstRecord?.code,
-    firstRecordMessage: firstRecord?.message,
-    firstRecordDetails: firstRecord?.details,
-    rawData: data,
-  });
 
   if (!response.ok || firstRecord?.status === "error") {
     throw new Error(firstRecord?.message || "Unable to create Zoho CRM lead.");
