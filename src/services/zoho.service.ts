@@ -159,8 +159,7 @@ const postZohoJson = async <T>(
     method: "POST",
   });
 
-const shouldUseNetlifyBlobs = () =>
-  process.env.NETLIFY === "true" && process.env.NETLIFY_DEV !== "true";
+const shouldUseNetlifyBlobs = () => process.env.NODE_ENV === "production";
 
 const maskToken = (token: string) =>
   token
