@@ -259,6 +259,51 @@ export default function CompanyPage() {
         </div>
       </section>
 
+      <section className="relative mx-auto mt-24 max-w-7xl overflow-hidden rounded-[2rem] bg-[#2661ac] p-6 text-white shadow-2xl shadow-[#2661ac]/20 sm:p-10 lg:p-14">
+        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#ff8000]/20 blur-3xl" />
+        <div className="relative grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white shadow-lg shadow-[#101828]/10">
+              <HeartHandshake className="h-7 w-7" />
+            </div>
+            <p className="mt-8 text-sm font-black uppercase tracking-[0.24em] text-[#ffd3a3]">
+              Venlearn partner program
+            </p>
+            <h2 className="mt-4 max-w-3xl text-4xl font-black leading-tight !text-white sm:text-5xl">
+              Know a school that could benefit from Venlearn?
+            </h2>
+            <p className="mt-5 max-w-2xl text-base font-semibold leading-8 text-white/75 sm:text-lg">
+              Individuals can join our partner program, refer schools that need better tools for managing their operations, and earn commission when a referred school subscribes.
+            </p>
+            <Link
+              href="/partner"
+              className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-black text-[#2661ac] shadow-xl shadow-[#101828]/15 transition hover:-translate-y-0.5 hover:bg-[#f3f7fc]"
+            >
+              Become a Venlearn partner
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
+
+          <div className="grid gap-3 rounded-[1.75rem] border border-white/15 bg-white/10 p-5 backdrop-blur-sm sm:p-6">
+            {[
+              ["01", "Refer a school", "Introduce a school that could benefit from Venlearn."],
+              ["02", "We take it from there", "Our team handles the product conversation and next steps."],
+              ["03", "Earn commission", "Get rewarded when your qualified referral subscribes."],
+            ].map(([number, title, description]) => (
+              <div key={number} className="flex gap-4 rounded-2xl bg-white p-4 text-[#101828] shadow-lg shadow-[#101828]/10">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff1e3] text-sm font-black text-[#d96d00]">
+                  {number}
+                </span>
+                <div>
+                  <h3 className="font-black">{title}</h3>
+                  <p className="mt-1 text-sm font-semibold leading-6 text-[#667085]">{description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto mt-24 max-w-5xl rounded-[2rem] border border-[#e8e9f4] bg-white p-6 text-center shadow-2xl shadow-[#101828]/6 sm:p-10">
         <Mail className="mx-auto h-10 w-10 text-[#2661ac]" />
         <p className="mt-5 text-sm font-black uppercase tracking-[0.24em] text-[#2661ac]">Contact Veracone</p>

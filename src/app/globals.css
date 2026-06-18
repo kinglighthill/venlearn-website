@@ -7,6 +7,8 @@
   --color-brand-primary: #2661ac;
   --color-brand-secondary: #2661ac;
   --color-brand-accent: #d9e8fb;
+  --color-brand-orange: #ff8000;
+  --color-brand-orange-soft: #ffe4c7;
 }
 
 :root {
@@ -17,6 +19,11 @@
   --brand-blue-dark: #174a86;
   --brand-blue-soft: #d9e8fb;
   --brand-blue-pale: #f3f7fc;
+  --brand-orange: #ff8000;
+  --brand-orange-deep: #a34700;
+  --brand-orange-light: #ffb15c;
+  --brand-orange-soft: #ffe4c7;
+  --brand-orange-pale: #fff5eb;
   --clickup-purple: #2661ac;
   --clickup-pink: #2661ac;
   --clickup-blue: #2661ac;
@@ -76,8 +83,13 @@ summary {
 }
 
 ::selection {
-  background: rgba(38, 97, 172, 0.18);
+  background: rgba(255, 128, 0, 0.24);
   color: var(--clickup-ink);
+}
+
+:where(a, button, summary, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(255, 128, 0, 0.58);
+  outline-offset: 3px;
 }
 
 .clickup-surface {
@@ -183,6 +195,72 @@ summary {
 .dark input::placeholder,
 .dark textarea::placeholder {
   color: #94a3b8;
+}
+
+/*
+ * Venlearn's warm accent system. Blue continues to carry the core brand and
+ * actions; these touches echo the orange half of the logo throughout the site.
+ */
+.brand-canvas > div {
+  background-image:
+    radial-gradient(circle at 96% 7%, rgba(255, 128, 0, 0.12), transparent 18rem),
+    radial-gradient(circle at 3% 52%, rgba(255, 128, 0, 0.07), transparent 15rem);
+  background-repeat: no-repeat;
+}
+
+.brand-canvas :where(p, span)[class*="uppercase"][class*="tracking-"][class*="text-[#2661ac]"] {
+  text-decoration-color: rgba(255, 128, 0, 0.78);
+  text-decoration-line: underline;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.45em;
+}
+
+.brand-canvas :where(div, span)[class*="bg-[#eaf2fb]"][class*="rounded-full"] {
+  background-color: var(--brand-orange-soft);
+  color: var(--brand-blue-dark);
+}
+
+.brand-canvas :where(div, span)[class*="bg-[#2661ac]"][class*="rounded-2xl"][class*="text-white"] {
+  border-bottom: 3px solid var(--brand-orange);
+}
+
+.brand-canvas [class*="bg-[#2661ac]"][class*="p-1"] {
+  background-image: linear-gradient(135deg, transparent 0 80%, var(--brand-orange) 80% 91%, var(--brand-orange-light) 91% 100%);
+}
+
+.brand-canvas :where(a, button)[class*="bg-[#2661ac]"][class*="text-white"] {
+  border: 1px solid rgba(255, 128, 0, 0.52);
+}
+
+.brand-canvas article[class*="border"] {
+  transition-property: background-color, border-color, box-shadow, color, opacity, transform;
+}
+
+.brand-canvas article[class*="border"]:hover {
+  border-color: rgba(255, 128, 0, 0.58);
+}
+
+.brand-highlight {
+  background-image: linear-gradient(transparent 84%, rgba(255, 128, 0, 0.28) 84%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-inline: 0.04em;
+}
+
+.dark .brand-canvas > div {
+  background-image:
+    radial-gradient(circle at 96% 7%, rgba(255, 128, 0, 0.10), transparent 18rem),
+    radial-gradient(circle at 3% 52%, rgba(255, 128, 0, 0.06), transparent 15rem);
+}
+
+.dark .brand-canvas :where(div, span)[class*="bg-[#eaf2fb]"][class*="rounded-full"] {
+  background-color: rgba(255, 128, 0, 0.18) !important;
+  color: #ffb15c !important;
+}
+
+.dark .brand-highlight {
+  background-image: linear-gradient(transparent 84%, rgba(255, 128, 0, 0.20) 84%);
 }
 
 /* Utilities */

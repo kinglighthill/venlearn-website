@@ -98,7 +98,7 @@ export default function RootLayout({
               ]}
             />
             <Navbar />
-            <main className="flex-grow">
+            <main className="brand-canvas flex-grow">
               {children}
             </main>
             <Footer />

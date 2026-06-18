@@ -42,13 +42,13 @@ export default function Navbar() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-3 z-50 px-3 sm:px-5">
       <div className="pointer-events-auto mx-auto max-w-[1240px]" onMouseLeave={() => setIsFeaturesOpen(false)}>
-      <nav className="clickup-surface flex h-[68px] items-center justify-between rounded-full px-4 backdrop-blur-2xl sm:px-6 xl:px-7">
+      <nav className="clickup-surface relative flex h-[68px] items-center justify-between overflow-hidden rounded-full px-4 backdrop-blur-2xl after:absolute after:inset-x-12 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-[#ff8000]/75 after:to-transparent sm:px-6 xl:px-7">
         <Link href="/" aria-label="Venlearn home" className="shrink-0">
           <Image src="/images/venlearn-logo.svg" alt="Venlearn" width={182} height={36} priority className="h-8 w-auto sm:h-9" />
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
-          <div className="group inline-flex items-center rounded-full transition hover:bg-[#f3f7fc] dark:hover:bg-slate-800">
+          <div className="group inline-flex items-center rounded-full transition hover:bg-[#fff5eb] dark:hover:bg-slate-800">
             <Link
               href="/features"
               onMouseEnter={() => setIsFeaturesOpen(true)}
@@ -73,7 +73,7 @@ export default function Navbar() {
               href={link.href}
               target={"external" in link && link.external ? "_blank" : undefined}
               rel={"external" in link && link.external ? "noreferrer" : undefined}
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-[#24223e] transition hover:bg-[#f3f7fc] hover:text-[#2661ac] dark:text-slate-100 dark:hover:bg-slate-800"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-[#24223e] transition hover:bg-[#fff5eb] hover:text-[#2661ac] dark:text-slate-100 dark:hover:bg-slate-800"
             >
               {link.name}
             </Link>
@@ -108,14 +108,15 @@ export default function Navbar() {
           )}
           <Link
             href="/book-demo"
-            className="rounded-full bg-[#2661ac] px-5 py-3 text-sm font-black text-white shadow-xl shadow-[#2661ac]/15 transition hover:-translate-y-0.5 hover:shadow-[#2661ac]/25 xl:px-6 xl:text-[15px]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#ff8000]/50 bg-[#2661ac] px-5 py-3 text-sm font-black text-white shadow-xl shadow-[#2661ac]/15 transition hover:-translate-y-0.5 hover:shadow-[#2661ac]/25 xl:px-6 xl:text-[15px]"
           >
+            <span className="h-2 w-2 rounded-full bg-[#ff8000] shadow-[0_0_0_4px_rgba(255,128,0,0.16)]" />
             Request a demo
           </Link>
         </div>
 
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#e8e9f4] bg-white text-[#24223e] shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#ff8000]/45 bg-white text-[#24223e] shadow-sm dark:border-[#ff8000]/25 dark:bg-slate-800 dark:text-slate-100 md:hidden"
           onClick={() => setIsOpen((value) => !value)}
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
@@ -125,7 +126,7 @@ export default function Navbar() {
 
       {isFeaturesOpen && (
         <div
-          className="mt-3 hidden overflow-hidden rounded-[2rem] border border-[#e8e9f4] bg-white/95 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-slate-700 dark:bg-slate-900/95 md:block"
+          className="mt-3 hidden overflow-hidden rounded-[2rem] border border-[#ff8000]/30 bg-[radial-gradient(circle_at_92%_8%,rgba(255,128,0,0.12),transparent_24%),rgba(255,255,255,0.95)] shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-[#ff8000]/20 dark:bg-slate-900/95 md:block"
           onMouseEnter={() => setIsFeaturesOpen(true)}
         >
           <div className="px-8 py-6 xl:px-10">
@@ -151,7 +152,7 @@ export default function Navbar() {
                     key={feature.slug}
                     href={`/features/${feature.slug}`}
                     onClick={() => setIsFeaturesOpen(false)}
-                    className="group rounded-2xl border border-[#e8e9f4] bg-[#fbfbff] p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-xl hover:shadow-[#24223e]/5 dark:border-slate-700 dark:bg-slate-800/70 dark:hover:bg-slate-800"
+                    className="group rounded-2xl border border-[#e8e9f4] bg-[#fbfbff] p-4 transition hover:-translate-y-0.5 hover:border-[#ff8000]/55 hover:bg-[#fff8f2] hover:shadow-xl hover:shadow-[#24223e]/5 dark:border-slate-700 dark:bg-slate-800/70 dark:hover:border-[#ff8000]/30 dark:hover:bg-slate-800"
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2661ac] text-white shadow-lg shadow-[#2661ac]/15">
@@ -170,21 +171,34 @@ export default function Navbar() {
       )}
 
       {isOpen && (
-        <div className="mt-3 rounded-[2rem] border border-[#e8e9f4] bg-white/95 px-5 py-4 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-slate-700 dark:bg-slate-900/95 md:hidden">
+        <div className="mt-3 rounded-[2rem] border border-[#ff8000]/30 bg-[radial-gradient(circle_at_92%_8%,rgba(255,128,0,0.12),transparent_24%),rgba(255,255,255,0.95)] px-5 py-4 shadow-2xl shadow-[#24223e]/10 backdrop-blur-2xl dark:border-[#ff8000]/20 dark:bg-slate-900/95 md:hidden">
           <div className="mx-auto max-w-[1440px]">
             <div className="grid gap-1">
               <div>
-                <button
-                  type="button"
-                  onClick={() => setIsMobileFeaturesOpen((value) => !value)}
-                  className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc] dark:text-slate-100 dark:hover:bg-slate-800"
-                  aria-expanded={isMobileFeaturesOpen}
-                >
-                  Features
-                  <ChevronDown className={`h-4 w-4 text-[#98a2b3] transition ${isMobileFeaturesOpen ? "rotate-180" : ""}`} />
-                </button>
+                <div className="flex items-center rounded-2xl text-[#24223e] transition hover:bg-[#fff5eb] dark:text-slate-100 dark:hover:bg-slate-800">
+                  <Link
+                    href="/features"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setIsMobileFeaturesOpen(false);
+                    }}
+                    className="flex-1 rounded-l-2xl px-4 py-3 text-base font-black"
+                  >
+                    Features
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileFeaturesOpen((value) => !value)}
+                    className="flex self-stretch items-center rounded-r-2xl px-4"
+                    aria-label={isMobileFeaturesOpen ? "Collapse features menu" : "Expand features menu"}
+                    aria-expanded={isMobileFeaturesOpen}
+                    aria-controls="mobile-features-menu"
+                  >
+                    <ChevronDown className={`h-4 w-4 text-[#98a2b3] transition ${isMobileFeaturesOpen ? "rotate-180" : ""}`} />
+                  </button>
+                </div>
                 {isMobileFeaturesOpen && (
-                  <div className="mt-2 grid max-h-[44vh] gap-2 overflow-y-auto rounded-3xl border border-[#eef2f7] bg-[#fbfcff] p-3 dark:border-slate-700 dark:bg-slate-950/70">
+                  <div id="mobile-features-menu" className="mt-2 grid max-h-[44vh] gap-2 overflow-y-auto rounded-3xl border border-[#eef2f7] bg-[#fbfcff] p-3 dark:border-slate-700 dark:bg-slate-950/70">
                     {productFeatures.map((feature) => {
                       const Icon = feature.icon;
 
@@ -215,7 +229,7 @@ export default function Navbar() {
                   target={"external" in link && link.external ? "_blank" : undefined}
                   rel={"external" in link && link.external ? "noreferrer" : undefined}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#f3f7fc] dark:text-slate-100 dark:hover:bg-slate-800"
+                  className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-black text-[#24223e] hover:bg-[#fff5eb] dark:text-slate-100 dark:hover:bg-slate-800"
                 >
                   {link.name}
                 </Link>
@@ -251,8 +265,9 @@ export default function Navbar() {
             <Link
               href="/book-demo"
               onClick={() => setIsOpen(false)}
-              className="mt-4 flex min-h-14 items-center justify-center rounded-full bg-[#2661ac] px-6 py-4 text-base font-black text-white shadow-xl shadow-[#2661ac]/15"
+              className="mt-4 flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#ff8000]/50 bg-[#2661ac] px-6 py-4 text-base font-black text-white shadow-xl shadow-[#2661ac]/15"
             >
+              <span className="h-2 w-2 rounded-full bg-[#ff8000]" />
               Book a demo
             </Link>
           </div>

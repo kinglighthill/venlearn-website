@@ -27,6 +27,8 @@ type ZohoTokenStore = {
   updatedAt?: string;
 };
 
+export type LeadType = "partner" | "customer";
+
 export type DemoLead = {
   schoolName: string;
   firstName: string;
@@ -37,6 +39,17 @@ export type DemoLead = {
   studentsPopulation: string;
   designation: string;
   demoDateTime: string;
+  type: LeadType;
+};
+
+export type PartnerLead = {
+  fullName: string;
+  email: string;
+  phone: string;
+  organizationName: string;
+  partnerCategory: string;
+  referralExperience: string;
+  type: LeadType;
 };
 
 let memoryRefreshToken = "";
@@ -464,6 +477,28 @@ const getZohoAccessToken = async () => {
   };
 };
 
+const getLeadTypeFieldName = () =>
+  process.env.ZOHO_LEAD_TYPE_FIELD_API_NAME || "Type";
+
+const withLeadTypeField = <T extends Record<string, unknown>>(
+  record: T,
+  type: LeadType,
+) => ({
+  ...record,
+  [getLeadTypeFieldName()]: type,
+});
+
+const splitFullName = (fullName: string) => {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  const firstName = parts.slice(0, -1).join(" ");
+  const lastName = parts.at(-1) || "Partner";
+
+  return {
+    firstName,
+    lastName,
+  };
+};
+
 export const createZohoDemoLead = async (lead: DemoLead) => {
   const { accessToken, apiDomain } = await getZohoAccessToken();
   const fullName = `${lead.firstName} ${lead.lastName}`.trim();
@@ -475,27 +510,77 @@ export const createZohoDemoLead = async (lead: DemoLead) => {
     `${apiDomain}/crm/v8/Leads`,
     {
       data: [
-        {
-          First_Name: lead.firstName,
-          Last_Name: lead.lastName,
-          Company: lead.schoolName,
-          Email: lead.email,
-          Phone: lead.phone,
-          Street: lead.address,
-          Designation: lead.designation,
-          Lead_Source: "Website Demo Form",
-          Description: [
-            "Venlearn demo booking request",
-            `Name: ${fullName}`,
-            `Email: ${lead.email}`,
-            `Phone: ${lead.phone}`,
-            `Address: ${lead.address}`,
-            `Designation: ${lead.designation}`,
-            `School name: ${lead.schoolName}`,
-            `Students population: ${lead.studentsPopulation}`,
-            `Preferred demo date and time: ${formattedDemoDate}`,
-          ].join("\n"),
-        },
+        withLeadTypeField(
+          {
+            First_Name: lead.firstName,
+            Last_Name: lead.lastName,
+            Company: lead.schoolName,
+            Email: lead.email,
+            Phone: lead.phone,
+            Street: lead.address,
+            Designation: lead.designation,
+            Lead_Source: "Website Demo Form",
+            Description: [
+              "Venlearn demo booking request",
+              `Type: ${lead.type}`,
+              `Name: ${fullName}`,
+              `Email: ${lead.email}`,
+              `Phone: ${lead.phone}`,
+              `Address: ${lead.address}`,
+              `Designation: ${lead.designation}`,
+              `School name: ${lead.schoolName}`,
+              `Students population: ${lead.studentsPopulation}`,
+              `Preferred demo date and time: ${formattedDemoDate}`,
+            ].join("\n"),
+          },
+          lead.type,
+        ),
+      ],
+      trigger: ["workflow"],
+    },
+    accessToken,
+  );
+
+  const data = response.data;
+  const firstRecord = data.data?.[0];
+
+  if (!response.ok || firstRecord?.status === "error") {
+    throw new Error(firstRecord?.message || "Unable to create Zoho CRM lead.");
+  }
+
+  return data;
+};
+
+export const createZohoPartnerLead = async (lead: PartnerLead) => {
+  const { accessToken, apiDomain } = await getZohoAccessToken();
+  const { firstName, lastName } = splitFullName(lead.fullName);
+
+  const response = await postZohoJson<ZohoInsertResponse>(
+    `${apiDomain}/crm/v8/Leads`,
+    {
+      data: [
+        withLeadTypeField(
+          {
+            First_Name: firstName,
+            Last_Name: lastName,
+            Company: lead.organizationName || lead.fullName,
+            Email: lead.email,
+            Phone: lead.phone,
+            Designation: lead.partnerCategory,
+            Lead_Source: "Website Partner Form",
+            Description: [
+              "Venlearn partner signup request",
+              `Type: ${lead.type}`,
+              `Name: ${lead.fullName}`,
+              `Email: ${lead.email}`,
+              `Phone: ${lead.phone}`,
+              `Organization: ${lead.organizationName || "Not provided"}`,
+              `Partner category: ${lead.partnerCategory}`,
+              `Referral experience: ${lead.referralExperience || "Not provided"}`,
+            ].join("\n"),
+          },
+          lead.type,
+        ),
       ],
       trigger: ["workflow"],
     },

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { addData } from "@/services/firestore.service";
 import { createZohoDemoLead, DemoLead } from "@/services/zoho.service";
 
-const requiredFields: Array<keyof DemoLead> = [
+const requiredFields: Array<keyof Omit<DemoLead, "type">> = [
   "schoolName",
   "firstName",
   "lastName",
@@ -49,10 +49,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const token = body.token;
 
-    const demoLead = requiredFields.reduce((lead, field) => {
+    const demoLeadFields = requiredFields.reduce((lead, field) => {
       lead[field] = typeof body[field] === "string" ? body[field].trim() : "";
       return lead;
-    }, {} as DemoLead);
+    }, {} as Omit<DemoLead, "type">);
+
+    const demoLead: DemoLead = {
+      ...demoLeadFields,
+      type: "customer",
+    };
 
     const missingField = requiredFields.find((field) => !demoLead[field]);
 
@@ -90,7 +95,8 @@ export async function POST(request: NextRequest) {
 
     try {
       await addData({
-        type: "book_demo",
+        type: demoLead.type,
+        source: "book_demo",
         first_name: demoLead.firstName,
         last_name: demoLead.lastName,
         school_name: demoLead.schoolName,
