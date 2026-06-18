@@ -133,7 +133,7 @@ export default function Home() {
             One workspace for every school team
           </div>
           <h1 className="mx-auto mt-6 max-w-6xl text-5xl font-black leading-[0.95] tracking-normal text-[#24223e] sm:text-7xl lg:text-8xl">
-            One software for <span className="text-[#2661ac]">all your school needs</span>
+            One software for <span className="brand-highlight text-[#2661ac]">all your school needs</span>
           </h1>
           <p className="mx-auto mt-7 max-w-3xl text-lg font-medium leading-8 text-[#6c6f85] sm:text-2xl sm:leading-10">
             Venlearn brings admissions, academics, attendance, billing, communication, reports, and campus operations into one fast, colorful command center.
