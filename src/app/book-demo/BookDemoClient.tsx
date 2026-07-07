@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useRecaptcha from "@/hooks/useRecaptcha";
 
 const reasons = [
@@ -17,6 +17,15 @@ const reasons = [
   "Plan migration, training, and launch timing",
 ];
 
+const meetingDurationMs = 30 * 60 * 1000;
+const blockedWindowMs = 60 * 60 * 1000;
+const firstStartHour = 9;
+const lastStartHour = 20;
+const timeSlots = Array.from(
+  { length: lastStartHour - firstStartHour + 1 },
+  (_, index) => `${String(firstStartHour + index).padStart(2, "0")}:00`,
+);
+
 type SubmitStatus = {
   type: "success" | "error";
   message: string;
@@ -24,17 +33,337 @@ type SubmitStatus = {
   actionLabel?: string;
 };
 
+type BookedSlot = {
+  id: string;
+  startAtMs: number;
+  endAtMs: number;
+};
+
+type AvailabilityExclusion = {
+  id: string;
+  active: boolean;
+  scope: "weekly" | "date";
+  weekday?: number;
+  date?: string;
+  allDay: boolean;
+  startTime?: string;
+  endTime?: string;
+  reason?: string;
+};
+
+const formatDateInputValue = (date: Date) =>
+  [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+
+const formatTimeLabel = (time: string) => {
+  const [hour, minute] = time.split(":").map(Number);
+  const start = new Date(2000, 0, 1, hour, minute, 0, 0);
+  const end = new Date(start.getTime() + meetingDurationMs);
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const startLabel = formatter.format(start);
+  const endLabel = formatter.format(end);
+
+  return `${startLabel} - ${endLabel}`;
+};
+
+const getBrowserTimeZone = () => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    return "";
+  }
+};
+
+const getSlotWindow = (date: string, time: string) => {
+  const start = new Date(`${date}T${time}:00`);
+  const startAtMs = start.getTime();
+
+  if (!Number.isFinite(startAtMs)) {
+    return null;
+  }
+
+  return {
+    startAtMs,
+    endAtMs: startAtMs + blockedWindowMs,
+  };
+};
+
+const parseTimeToMinutes = (time: string) => {
+  const match = time.match(/^(\d{2}):(\d{2})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+
+  if (hours > 23 || minutes > 59) {
+    return null;
+  }
+
+  return hours * 60 + minutes;
+};
+
+const getWeekdayFromDateString = (date: string) => {
+  const match = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match.map(Number);
+
+  return new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+};
+
+const isBookedSlot = (slot: unknown): slot is BookedSlot => {
+  if (!slot || typeof slot !== "object") {
+    return false;
+  }
+
+  const maybeSlot = slot as Partial<BookedSlot>;
+
+  return (
+    typeof maybeSlot.id === "string" &&
+    typeof maybeSlot.startAtMs === "number" &&
+    typeof maybeSlot.endAtMs === "number"
+  );
+};
+
+const isAvailabilityExclusion = (
+  exclusion: unknown,
+): exclusion is AvailabilityExclusion => {
+  if (!exclusion || typeof exclusion !== "object") {
+    return false;
+  }
+
+  const maybeExclusion = exclusion as Partial<AvailabilityExclusion>;
+
+  return (
+    typeof maybeExclusion.id === "string" &&
+    maybeExclusion.active !== false &&
+    (maybeExclusion.scope === "weekly" || maybeExclusion.scope === "date")
+  );
+};
+
+const isExcludedByRule = (
+  date: string,
+  time: string,
+  exclusions: AvailabilityExclusion[],
+) => {
+  const startMinutes = parseTimeToMinutes(time);
+  const weekday = getWeekdayFromDateString(date);
+
+  if (startMinutes === null || weekday === null) {
+    return true;
+  }
+
+  const endMinutes = startMinutes + blockedWindowMs / 60000;
+
+  return exclusions.some((exclusion) => {
+    const appliesToDate =
+      exclusion.scope === "date"
+        ? exclusion.date === date
+        : exclusion.weekday === weekday;
+
+    if (!appliesToDate) {
+      return false;
+    }
+
+    if (exclusion.allDay) {
+      return true;
+    }
+
+    const exclusionStart = exclusion.startTime
+      ? parseTimeToMinutes(exclusion.startTime)
+      : null;
+    const exclusionEnd = exclusion.endTime
+      ? parseTimeToMinutes(exclusion.endTime)
+      : null;
+
+    if (exclusionStart === null || exclusionEnd === null) {
+      return false;
+    }
+
+    return startMinutes < exclusionEnd && endMinutes > exclusionStart;
+  });
+};
+
+const isTimeUnavailable = (
+  date: string,
+  time: string,
+  bookedSlots: BookedSlot[],
+  exclusions: AvailabilityExclusion[],
+) => {
+  const slot = getSlotWindow(date, time);
+
+  if (!slot) {
+    return true;
+  }
+
+  if (slot.startAtMs <= Date.now()) {
+    return true;
+  }
+
+  if (isExcludedByRule(date, time, exclusions)) {
+    return true;
+  }
+
+  return bookedSlots.some(
+    (booking) =>
+      slot.startAtMs < booking.endAtMs && slot.endAtMs > booking.startAtMs,
+  );
+};
+
 export default function BookDemoClient() {
   const router = useRouter();
   const verifyUser = useRecaptcha();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus | null>(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
+  const [exclusions, setExclusions] = useState<AvailabilityExclusion[]>([]);
+  const [slotsStatus, setSlotsStatus] = useState<
+    "idle" | "loading" | "ready" | "error"
+  >("idle");
+  const [slotsMessage, setSlotsMessage] = useState("");
+  const [slotRefreshIndex, setSlotRefreshIndex] = useState(0);
+  const todayDate = useMemo(() => formatDateInputValue(new Date()), []);
+  const selectedDemoSlot = useMemo(() => {
+    if (!selectedDate || !selectedTime) {
+      return null;
+    }
+
+    const slot = getSlotWindow(selectedDate, selectedTime);
+
+    if (!slot) {
+      return null;
+    }
+
+    return {
+      localValue: `${selectedDate}T${selectedTime}`,
+      timezoneOffsetMinutes: new Date(slot.startAtMs).getTimezoneOffset(),
+      utcValue: new Date(slot.startAtMs).toISOString(),
+    };
+  }, [selectedDate, selectedTime]);
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setBookedSlots([]);
+      setExclusions([]);
+      setSlotsStatus("idle");
+      setSlotsMessage("");
+      return;
+    }
+
+    const controller = new AbortController();
+    const rangeStart = new Date(`${selectedDate}T00:00:00`);
+    const rangeEnd = new Date(`${selectedDate}T23:59:59.999`);
+
+    const loadBookedSlots = async () => {
+      setSlotsStatus("loading");
+      setSlotsMessage("");
+
+      try {
+        const response = await fetch(
+          `/api/book-demo?start=${encodeURIComponent(
+            rangeStart.toISOString(),
+          )}&end=${encodeURIComponent(rangeEnd.toISOString())}`,
+          { cache: "no-store", signal: controller.signal },
+        );
+        const data = (await response.json().catch(() => ({}))) as {
+          bookings?: unknown[];
+          exclusions?: unknown[];
+          message?: string;
+        };
+
+        if (!response.ok) {
+          throw new Error(data.message || "Unable to load demo times.");
+        }
+
+        setBookedSlots(
+          Array.isArray(data.bookings)
+            ? data.bookings.filter(isBookedSlot)
+            : [],
+        );
+        setExclusions(
+          Array.isArray(data.exclusions)
+            ? data.exclusions.filter(isAvailabilityExclusion)
+            : [],
+        );
+        setSlotsStatus("ready");
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        setBookedSlots([]);
+        setExclusions([]);
+        setSlotsStatus("error");
+        setSlotsMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load demo times.",
+        );
+      }
+    };
+
+    loadBookedSlots();
+
+    return () => controller.abort();
+  }, [selectedDate, slotRefreshIndex]);
+
+  useEffect(() => {
+    if (
+      selectedDate &&
+      selectedTime &&
+      isTimeUnavailable(selectedDate, selectedTime, bookedSlots, exclusions)
+    ) {
+      setSelectedTime("");
+    }
+  }, [bookedSlots, exclusions, selectedDate, selectedTime]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    setIsSubmitting(true);
     setSubmitStatus(null);
+
+    if (!selectedDemoSlot) {
+      setSubmitStatus({
+        type: "error",
+        message: "Please select a preferred demo date and 30-minute time slot.",
+      });
+      return;
+    }
+
+    if (slotsStatus === "loading") {
+      setSubmitStatus({
+        type: "error",
+        message: "Please wait for the available demo times to load.",
+      });
+      return;
+    }
+
+    if (isTimeUnavailable(selectedDate, selectedTime, bookedSlots, exclusions)) {
+      setSubmitStatus({
+        type: "error",
+        message:
+          "That demo time is no longer available. Please select another 30-minute slot.",
+      });
+      setSlotRefreshIndex((refreshIndex) => refreshIndex + 1);
+      return;
+    }
+
+    setIsSubmitting(true);
 
     const formData = new FormData(form);
     const phoneCode = String(formData.get("phoneCode") || "+234").trim();
@@ -50,7 +379,12 @@ export default function BookDemoClient() {
       address: formData.get("address"),
       studentsPopulation: formData.get("studentsPopulation"),
       designation: formData.get("designation"),
-      demoDateTime: formData.get("demoDateTime"),
+      demoDateTime: selectedDemoSlot.localValue,
+      demoDateTimeUtc: selectedDemoSlot.utcValue,
+      demoTimeZone: getBrowserTimeZone(),
+      demoTimezoneOffsetMinutes: String(
+        selectedDemoSlot.timezoneOffsetMinutes,
+      ),
     };
 
     try {
@@ -70,6 +404,11 @@ export default function BookDemoClient() {
           typeof verification?.zohoConnectUrl === "string"
             ? verification.zohoConnectUrl
             : undefined;
+
+        if (verification?.status === 409) {
+          setSelectedTime("");
+          setSlotRefreshIndex((refreshIndex) => refreshIndex + 1);
+        }
 
         console.log("Demo booking failed. Zoho connect URL:", zohoConnectUrl);
 
@@ -307,17 +646,71 @@ export default function BookDemoClient() {
               </select>
             </label>
 
-            <label className="mt-5 block">
+            <div className="mt-5">
               <span className="text-sm font-black text-[#344054]">
                 Preferred demo date and time
               </span>
-              <input
-                name="demoDateTime"
-                required
-                type="datetime-local"
-                className="mt-2 w-full rounded-2xl border border-[#d0d5dd] bg-white px-4 py-4 font-semibold text-[#101828] outline-none transition focus:border-[#2661ac] focus:ring-4 focus:ring-[#2661ac]/10"
-              />
-            </label>
+              <div className="mt-2 grid min-w-0 gap-4 sm:grid-cols-2 [&>*]:min-w-0">
+                <label className="block min-w-0">
+                  <span className="sr-only">Preferred demo date</span>
+                  <input
+                    name="demoDate"
+                    required
+                    type="date"
+                    min={todayDate}
+                    value={selectedDate}
+                    onChange={(event) => {
+                      setSelectedDate(event.target.value);
+                      setSelectedTime("");
+                    }}
+                    className="w-full rounded-2xl border border-[#d0d5dd] bg-white px-4 py-4 font-semibold text-[#101828] outline-none transition focus:border-[#2661ac] focus:ring-4 focus:ring-[#2661ac]/10"
+                  />
+                </label>
+                <label className="block min-w-0">
+                  <span className="sr-only">Preferred demo time</span>
+                  <select
+                    name="demoTime"
+                    required
+                    value={selectedTime}
+                    disabled={!selectedDate || slotsStatus === "loading"}
+                    onChange={(event) => setSelectedTime(event.target.value)}
+                    className="w-full rounded-2xl border border-[#d0d5dd] bg-white px-4 py-4 font-semibold text-[#101828] outline-none transition disabled:cursor-not-allowed disabled:bg-[#f9fafb] disabled:text-[#98a2b3] focus:border-[#2661ac] focus:ring-4 focus:ring-[#2661ac]/10"
+                  >
+                    <option value="" disabled>
+                      {slotsStatus === "loading"
+                        ? "Loading times"
+                        : "Select time"}
+                    </option>
+                    {timeSlots.map((time) => {
+                      const unavailable =
+                        selectedDate &&
+                        isTimeUnavailable(
+                          selectedDate,
+                          time,
+                          bookedSlots,
+                          exclusions,
+                        );
+
+                      return (
+                        <option
+                          key={time}
+                          value={time}
+                          disabled={Boolean(unavailable)}
+                        >
+                          {formatTimeLabel(time)}
+                          {unavailable ? " unavailable" : ""}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </label>
+              </div>
+              {slotsStatus === "error" && (
+                <p className="mt-3 text-sm font-bold text-[#b42318]">
+                  {slotsMessage}
+                </p>
+              )}
+            </div>
 
             {submitStatus && (
               <div
@@ -342,7 +735,7 @@ export default function BookDemoClient() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || slotsStatus === "loading"}
               className="mt-6 flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[#174a86] px-7 py-4 font-black text-white shadow-xl shadow-[#2661ac]/15 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? (
