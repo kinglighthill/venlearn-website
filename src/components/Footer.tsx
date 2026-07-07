@@ -9,6 +9,7 @@ const footerGroups = [
       ["Features", "/#features"],
       ["Pricing", "/pricing"],
       ["Book demo", "/book-demo"],
+      ["Blog", "/blog"],
       ["FAQ", "/faq"],
       ["Tutorials", "https://www.youtube.com/@venlearn"],
     ],
@@ -18,6 +19,7 @@ const footerGroups = [
     links: [
       ["Book demo", "/book-demo"],
       ["Become a partner", "/partner"],
+      ["Blog", "/blog"],
       ["Privacy", "/privacy"],
       ["Terms", "/terms"],
     ],

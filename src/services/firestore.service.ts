@@ -15,12 +15,14 @@ import {
   addDoc,
   collection,
   doc as clientDoc,
+  getDoc,
   getDocs,
   getFirestore as getClientFirestore,
   orderBy,
   query,
   runTransaction,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -67,10 +69,30 @@ export type DemoAvailabilityExclusion = {
   reason?: string;
 };
 
+const stripUndefinedValue = (value: unknown): unknown => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => stripUndefinedValue(item))
+      .filter((item) => item !== undefined);
+  }
+
+  if (value && typeof value === "object" && !(value instanceof Date)) {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .map(([key, nestedValue]) => [key, stripUndefinedValue(nestedValue)])
+        .filter(([, nestedValue]) => nestedValue !== undefined),
+    );
+  }
+
+  return value;
+};
+
 const stripUndefinedValues = (data: Record<string, unknown>) =>
-  Object.fromEntries(
-    Object.entries(data).filter(([, value]) => value !== undefined),
-  );
+  stripUndefinedValue(data) as Record<string, unknown>;
 
 const getDemoSlotId = (startAtMs: number) => `demo_${startAtMs}`;
 
@@ -371,6 +393,74 @@ export const addData = async (
   return docRef.id;
 };
 
+export const getDataDoc = async (
+  collectionName: string,
+  docId: string,
+  options: { requireAdmin?: boolean } = {},
+) => {
+  const adminDb = getAdminDb();
+
+  if (adminDb) {
+    const snapshot = await adminDb.collection(collectionName).doc(docId).get();
+
+    return snapshot.exists ? snapshot.data() || null : null;
+  }
+
+  if (options.requireAdmin) {
+    throw new Error(
+      "Firebase Admin credentials are required for this Firestore read.",
+    );
+  }
+
+  const db = getClientFirestore(app);
+  const snapshot = await getDoc(clientDoc(db, collectionName, docId));
+
+  return snapshot.exists() ? snapshot.data() : null;
+};
+
+export const setDataDoc = async (
+  collectionName: string,
+  docId: string,
+  data: Record<string, unknown>,
+  options: { merge?: boolean; requireAdmin?: boolean } = {},
+) => {
+  const cleanData = stripUndefinedValues(data);
+  const adminDb = getAdminDb();
+
+  if (adminDb) {
+    await adminDb
+      .collection(collectionName)
+      .doc(docId)
+      .set(
+        {
+          ...cleanData,
+          updated_at: FieldValue.serverTimestamp(),
+        },
+        { merge: options.merge ?? true },
+      );
+    return docId;
+  }
+
+  if (options.requireAdmin) {
+    throw new Error(
+      "Firebase Admin credentials are required for this Firestore write.",
+    );
+  }
+
+  const db = getClientFirestore(app);
+
+  await setDoc(
+    clientDoc(db, collectionName, docId),
+    {
+      ...cleanData,
+      updated_at: serverTimestamp(),
+    },
+    { merge: options.merge ?? true },
+  );
+
+  return docId;
+};
+
 export const reserveDemoBooking = async (
   data: Record<string, unknown> & {
     start_at_ms: number;
@@ -461,6 +551,40 @@ export const reserveDemoBooking = async (
   });
 
   return docId;
+};
+
+export const releaseDemoBooking = async (startAtMs: number, endAtMs: number) => {
+  if (!Number.isFinite(startAtMs) || !Number.isFinite(endAtMs)) {
+    return;
+  }
+
+  const docId = getDemoSlotId(startAtMs);
+  const slotLockIds = getDemoSlotLockIds(startAtMs, endAtMs);
+  const adminDb = getAdminDb();
+
+  if (adminDb) {
+    const docRef = adminDb.collection(DEMO_BOOKINGS_COLLECTION).doc(docId);
+    const lockRefs = slotLockIds.map((lockId) =>
+      adminDb.collection(DEMO_BOOKING_LOCKS_COLLECTION).doc(lockId),
+    );
+
+    await adminDb.runTransaction(async (transaction) => {
+      transaction.delete(docRef);
+      lockRefs.forEach((lockRef) => transaction.delete(lockRef));
+    });
+    return;
+  }
+
+  const db = getClientFirestore(app);
+  const docRef = clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId);
+  const lockRefs = slotLockIds.map((lockId) =>
+    clientDoc(db, DEMO_BOOKING_LOCKS_COLLECTION, lockId),
+  );
+
+  await runTransaction(db, async (transaction) => {
+    transaction.delete(docRef);
+    lockRefs.forEach((lockRef) => transaction.delete(lockRef));
+  });
 };
 
 export const updateDemoBooking = async (

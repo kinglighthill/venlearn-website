@@ -404,6 +404,11 @@ export default function BookDemoClient() {
           typeof verification?.zohoConnectUrl === "string"
             ? verification.zohoConnectUrl
             : undefined;
+        const googleCalendarConnectUrl =
+          typeof verification?.googleCalendarConnectUrl === "string"
+            ? verification.googleCalendarConnectUrl
+            : undefined;
+        const actionUrl = googleCalendarConnectUrl || zohoConnectUrl;
 
         if (verification?.status === 409) {
           setSelectedTime("");
@@ -416,8 +421,12 @@ export default function BookDemoClient() {
           type: "error",
           message:
             verification?.message || "Demo booking failed. Please try again.",
-          actionUrl: zohoConnectUrl,
-          actionLabel: zohoConnectUrl ? "Connect Zoho CRM" : undefined,
+          actionUrl,
+          actionLabel: googleCalendarConnectUrl
+            ? "Connect Google Calendar"
+            : zohoConnectUrl
+              ? "Connect Zoho CRM"
+              : undefined,
         });
       }
     } catch {

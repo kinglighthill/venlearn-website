@@ -16,7 +16,7 @@ import { productFeatures } from "@/data/productFeatures";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
-  title: "School Management Software for Modern Schools",
+  title: "Venlearn: Best School Management Software In Nigeria",
   description:
     "Venlearn is an all-in-one school management software for admissions, student records, staff, guardians, fees, attendance, report cards, CBT, portals, communication, and offline or cloud school operations.",
   path: "/",

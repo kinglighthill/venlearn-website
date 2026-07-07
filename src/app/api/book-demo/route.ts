@@ -7,9 +7,12 @@ import {
   DemoSlotUnavailableError,
   listDemoAvailabilityExclusions,
   listDemoBookingsInRange,
+  releaseDemoBooking,
   reserveDemoBooking,
   updateDemoBooking,
 } from "@/services/firestore.service";
+import { sendDemoBookingEmails } from "@/services/email.service";
+import { createGoogleMeetDemoEvent } from "@/services/google-calendar.service";
 import { createZohoDemoLead, DemoLead } from "@/services/zoho.service";
 
 const requiredFields: Array<keyof Omit<DemoLead, "type">> = [
@@ -199,7 +202,8 @@ const parseDemoSlot = (body: Record<string, unknown>) => {
     meetingEndAtMs,
     endAtMs,
     startMinutes: selectedHour * 60 + selectedMinute,
-    endMinutes: selectedHour * 60 + selectedMinute + DEMO_SLOT_DURATION_MS / 60000,
+    endMinutes:
+      selectedHour * 60 + selectedMinute + DEMO_SLOT_DURATION_MS / 60000,
   };
 };
 
@@ -296,6 +300,9 @@ export async function POST(request: NextRequest) {
     }
 
     let firestoreBookingId = "";
+    let googleMeetLink = "";
+    let googleCalendarEventId = "";
+    let googleCalendarEventLink = "";
 
     try {
       firestoreBookingId = await reserveDemoBooking({
@@ -337,11 +344,66 @@ export async function POST(request: NextRequest) {
       throw firestoreError;
     }
 
+    try {
+      const calendarEvent = await createGoogleMeetDemoEvent({
+        address: demoLead.address,
+        bookingId: firestoreBookingId,
+        demoEndTimeUtc: demoSlot.demoEndTimeUtc,
+        demoStartTimeUtc: demoSlot.demoDateTimeUtc,
+        demoTimeZone: demoSlot.demoTimeZone,
+        designation: demoLead.designation,
+        email: demoLead.email,
+        fullName: `${demoLead.firstName} ${demoLead.lastName}`.trim(),
+        phone: demoLead.phone,
+        schoolName: demoLead.schoolName,
+        studentsPopulation: demoLead.studentsPopulation,
+      });
+
+      googleMeetLink = calendarEvent.meetLink;
+      googleCalendarEventId = calendarEvent.eventId;
+      googleCalendarEventLink = calendarEvent.eventLink;
+
+      await updateDemoBooking(firestoreBookingId, {
+        google_calendar_event_id: googleCalendarEventId,
+        google_calendar_event_link: googleCalendarEventLink,
+        google_meet_link: googleMeetLink,
+        google_calendar_sync_status: "synced",
+        google_calendar_sync_error: "",
+      });
+    } catch (calendarError) {
+      await releaseDemoBooking(demoSlot.startAtMs, demoSlot.endAtMs);
+
+      const calendarSyncError =
+        calendarError instanceof Error
+          ? calendarError.message
+          : "Unable to create Google Calendar event.";
+
+      console.warn("Google Calendar demo event failed:", calendarSyncError);
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Demo time could not be booked because the Google Meet link could not be created: ${calendarSyncError}`,
+          googleCalendarConnectUrl: "/api/google-calendar/oauth/start",
+        },
+        { status: 502 },
+      );
+    }
+
     let zohoSyncStatus: "synced" | "failed" = "synced";
     let zohoSyncError = "";
+    let emailSyncStatus: "sent" | "failed" | "partial" = "sent";
+    let emailSyncError = "";
+    let emailWorkflow:
+      | Awaited<ReturnType<typeof sendDemoBookingEmails>>
+      | undefined;
 
     try {
-      await createZohoDemoLead(demoLead);
+      await createZohoDemoLead({
+        ...demoLead,
+        googleCalendarEventLink,
+        googleMeetLink,
+      });
     } catch (zohoError) {
       zohoSyncStatus = "failed";
       zohoSyncError =
@@ -352,7 +414,46 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+      emailWorkflow = await sendDemoBookingEmails({
+        bookingId: firestoreBookingId,
+        demoEndTimeUtc: demoSlot.demoEndTimeUtc,
+        demoStartTimeUtc: demoSlot.demoDateTimeUtc,
+        demoTimeZone: demoSlot.demoTimeZone,
+        email: demoLead.email,
+        firstName: demoLead.firstName,
+        googleCalendarEventLink,
+        meetLink: googleMeetLink,
+        schoolName: demoLead.schoolName,
+      });
+      const emailResults = Object.values(emailWorkflow);
+      const failedEmails = emailResults.filter(
+        (result) => result.status === "failed",
+      );
+
+      emailSyncStatus =
+        failedEmails.length === 0
+          ? "sent"
+          : failedEmails.length === emailResults.length
+            ? "failed"
+            : "partial";
+      emailSyncError = failedEmails
+        .map((result) => result.error)
+        .filter(Boolean)
+        .join("; ");
+    } catch (emailError) {
+      emailSyncStatus = "failed";
+      emailSyncError =
+        emailError instanceof Error
+          ? emailError.message
+          : "Unable to send demo booking emails.";
+      console.warn("Demo booking email workflow failed:", emailSyncError);
+    }
+
+    try {
       await updateDemoBooking(firestoreBookingId, {
+        email_sync_error: emailSyncError,
+        email_sync_status: emailSyncStatus,
+        email_workflow: emailWorkflow,
         zoho_sync_status: zohoSyncStatus,
         zoho_sync_error: zohoSyncError,
       });
@@ -381,6 +482,9 @@ export async function POST(request: NextRequest) {
         demo_start_at_iso: demoSlot.demoDateTimeUtc,
         demo_end_at_iso: demoSlot.demoEndTimeUtc,
         demo_blocked_until_iso: demoSlot.demoBlockedUntilUtc,
+        google_calendar_event_id: googleCalendarEventId,
+        google_calendar_event_link: googleCalendarEventLink,
+        google_meet_link: googleMeetLink,
         demo_time_zone: demoSlot.demoTimeZone,
         demo_timezone_offset_minutes: demoSlot.demoTimezoneOffsetMinutes,
         start_at_ms: demoSlot.startAtMs,
@@ -388,6 +492,9 @@ export async function POST(request: NextRequest) {
         end_at_ms: demoSlot.endAtMs,
         firestore_booking_id: firestoreBookingId,
         url_path: body.urlPath,
+        email_sync_error: emailSyncError,
+        email_sync_status: emailSyncStatus,
+        email_workflow: emailWorkflow,
         zoho_sync_status: zohoSyncStatus,
         zoho_sync_error: zohoSyncError,
       });
@@ -403,6 +510,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       bookingId: firestoreBookingId,
+      emailSyncStatus,
+      googleCalendarEventId,
+      googleMeetLink,
       zohoSyncStatus,
     });
   } catch (error) {

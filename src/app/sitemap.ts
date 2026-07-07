@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { blogPosts } from '@/data/blogPosts'
 import { productFeatures } from '@/data/productFeatures'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,6 +18,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.75,
+    })),
     ...productFeatures.map((feature) => ({
       url: `${baseUrl}/features/${feature.slug}`,
       lastModified: new Date(),

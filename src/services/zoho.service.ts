@@ -39,6 +39,8 @@ export type DemoLead = {
   studentsPopulation: string;
   designation: string;
   demoDateTime: string;
+  googleCalendarEventLink?: string;
+  googleMeetLink?: string;
   type: LeadType;
 };
 
@@ -488,6 +490,12 @@ const withLeadTypeField = <T extends Record<string, unknown>>(
   [getLeadTypeFieldName()]: type,
 });
 
+const withOptionalZohoField = <T extends Record<string, unknown>>(
+  record: T,
+  fieldName: string | undefined,
+  value: string | undefined,
+) => (fieldName && value ? { ...record, [fieldName]: value } : record);
+
 const splitFullName = (fullName: string) => {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
   const firstName = parts.slice(0, -1).join(" ");
@@ -511,28 +519,44 @@ export const createZohoDemoLead = async (lead: DemoLead) => {
     {
       data: [
         withLeadTypeField(
-          {
-            First_Name: lead.firstName,
-            Last_Name: lead.lastName,
-            Company: lead.schoolName,
-            Email: lead.email,
-            Phone: lead.phone,
-            Street: lead.address,
-            Designation: lead.designation,
-            Lead_Source: "Website Demo Form",
-            Description: [
-              "Venlearn demo booking request",
-              `Type: ${lead.type}`,
-              `Name: ${fullName}`,
-              `Email: ${lead.email}`,
-              `Phone: ${lead.phone}`,
-              `Address: ${lead.address}`,
-              `Designation: ${lead.designation}`,
-              `School name: ${lead.schoolName}`,
-              `Students population: ${lead.studentsPopulation}`,
-              `Preferred demo date and time: ${formattedDemoDate}`,
-            ].join("\n"),
-          },
+          withOptionalZohoField(
+            withOptionalZohoField(
+              {
+                First_Name: lead.firstName,
+                Last_Name: lead.lastName,
+                Company: lead.schoolName,
+                Email: lead.email,
+                Phone: lead.phone,
+                Street: lead.address,
+                Designation: lead.designation,
+                Lead_Source: "Website Demo Form",
+                Description: [
+                  "Venlearn demo booking request",
+                  `Type: ${lead.type}`,
+                  `Name: ${fullName}`,
+                  `Email: ${lead.email}`,
+                  `Phone: ${lead.phone}`,
+                  `Address: ${lead.address}`,
+                  `Designation: ${lead.designation}`,
+                  `School name: ${lead.schoolName}`,
+                  `Students population: ${lead.studentsPopulation}`,
+                  `Preferred demo date and time: ${formattedDemoDate}`,
+                  lead.googleMeetLink
+                    ? `Google Meet link: ${lead.googleMeetLink}`
+                    : "",
+                  lead.googleCalendarEventLink
+                    ? `Google Calendar event: ${lead.googleCalendarEventLink}`
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join("\n"),
+              },
+              process.env.ZOHO_GOOGLE_MEET_LINK_FIELD_API_NAME,
+              lead.googleMeetLink,
+            ),
+            process.env.ZOHO_GOOGLE_CALENDAR_EVENT_FIELD_API_NAME,
+            lead.googleCalendarEventLink,
+          ),
           lead.type,
         ),
       ],
