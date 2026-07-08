@@ -216,14 +216,14 @@ export async function GET(request: NextRequest) {
     if (!Number.isFinite(startAtMs) || !Number.isFinite(endAtMs)) {
       return NextResponse.json(
         { success: false, message: "A valid start and end range is required." },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
     if (endAtMs <= startAtMs) {
       return NextResponse.json(
         { success: false, message: "End range must be after start range." },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
@@ -239,7 +239,7 @@ export async function GET(request: NextRequest) {
     const message = isFirestorePermissionError(error)
       ? "Demo time availability cannot be loaded because Firestore permissions are not configured for this environment."
       : getErrorMessage(error, "Unable to load demo slots.");
-    return NextResponse.json({ success: false, message }, { status: 500 });
+    return NextResponse.json({ success: false, message }, { status: 200 });
   }
 }
 
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
     if (missingField) {
       return NextResponse.json(
         { success: false, message: `Missing ${missingField}` },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
@@ -284,7 +284,7 @@ export async function POST(request: NextRequest) {
             ? `That demo time is unavailable: ${matchingExclusion.reason}. Please select another time.`
             : "That demo time is unavailable. Please select another time.",
         },
-        { status: 409 },
+        { status: 200 },
       );
     }
 
@@ -295,7 +295,7 @@ export async function POST(request: NextRequest) {
     if (!isVerified) {
       return NextResponse.json(
         { success: false, message: "CAPTCHA verification failed" },
-        { status: 403 },
+        { status: 200 },
       );
     }
 
@@ -337,7 +337,7 @@ export async function POST(request: NextRequest) {
             message:
               "That demo time has already been booked. Please select another 30-minute slot.",
           },
-          { status: 409 },
+          { status: 200 },
         );
       }
 
@@ -521,13 +521,13 @@ export async function POST(request: NextRequest) {
     if (error instanceof DemoSlotValidationError) {
       return NextResponse.json(
         { success: false, message: error.message },
-        { status: 400 },
+        { status: 200 },
       );
     }
 
     const message = isFirestorePermissionError(error)
       ? "Unable to reserve the selected demo time because Firestore permissions are not configured for this environment."
       : getErrorMessage(error, "Internal server error");
-    return NextResponse.json({ success: false, message }, { status: 500 });
+    return NextResponse.json({ success: false, message }, { status: 200 });
   }
 }
