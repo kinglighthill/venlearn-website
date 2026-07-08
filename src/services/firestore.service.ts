@@ -12,6 +12,7 @@ import { existsSync } from "fs";
 import { homedir } from "os";
 import { app } from "@/config/conn";
 import {
+  getFirestore,
   addDoc,
   collection,
   doc as clientDoc,
@@ -26,6 +27,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+
+// import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export const DEMO_BOOKINGS_COLLECTION = "demo_bookings";
 export const DEMO_BOOKING_LOCKS_COLLECTION = "demo_booking_slot_locks";
@@ -42,7 +45,9 @@ const DEMO_SLOT_LOCK_INTERVAL_MS = 15 * 60 * 1000;
 
 export class DemoSlotUnavailableError extends Error {
   constructor() {
-    super("That demo time has already been booked. Please select another time.");
+    super(
+      "That demo time has already been booked. Please select another time.",
+    );
     this.name = "DemoSlotUnavailableError";
   }
 }
@@ -318,7 +323,7 @@ const getServiceAccountEnv = () => {
 };
 
 const getAdminDb = () => {
-  const serviceAccount = getServiceAccountJson() || getServiceAccountEnv();
+  /* const serviceAccount = getServiceAccountJson() || getServiceAccountEnv();
 
   if (!serviceAccount && !hasApplicationDefaultCredentials()) {
     return null;
@@ -333,7 +338,10 @@ const getAdminDb = () => {
     });
   }
 
-  return getAdminFirestore();
+  return getAdminFirestore(); */
+
+  const db = getFirestore(app);
+  return db;
 };
 
 export const hasFirestoreAdminCredentials = () =>
@@ -348,43 +356,57 @@ export const hasFirestoreAdminCredentials = () =>
       "GOOGLE_SERVICE_ACCOUNT_JSON_BASE64",
       "GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64",
     ) ||
-      hasApplicationDefaultCredentials() ||
-      (getEnvValue(
-        "FIREBASE_CLIENT_EMAIL",
-        "FIREBASE_ADMIN_CLIENT_EMAIL",
-        "GOOGLE_CLIENT_EMAIL",
-      ) &&
-        getEnvValue(
-          "FIREBASE_PRIVATE_KEY",
-          "FIREBASE_ADMIN_PRIVATE_KEY",
-          "GOOGLE_PRIVATE_KEY",
-        )),
+    hasApplicationDefaultCredentials() ||
+    (getEnvValue(
+      "FIREBASE_CLIENT_EMAIL",
+      "FIREBASE_ADMIN_CLIENT_EMAIL",
+      "GOOGLE_CLIENT_EMAIL",
+    ) &&
+      getEnvValue(
+        "FIREBASE_PRIVATE_KEY",
+        "FIREBASE_ADMIN_PRIVATE_KEY",
+        "GOOGLE_PRIVATE_KEY",
+      )),
   );
+
+// export const addData = async (
+//   data: Record<string, unknown>,
+//   collectionName = "messages",
+//   options: { requireAdmin?: boolean } = {},
+// ) => {
+//   const cleanData = stripUndefinedValues(data);
+//   const adminDb = getAdminDb();
+
+//   if (adminDb) {
+//     const docRef = await adminDb.collection(collectionName).add({
+//       ...cleanData,
+//       created_at: FieldValue.serverTimestamp(),
+//     });
+
+//     return docRef.id;
+//   }
+
+//   if (options.requireAdmin) {
+//     throw new Error(
+//       "Firebase Admin credentials are required for this Firestore write. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY.",
+//     );
+//   }
+
+//   const db = getClientFirestore(app);
+//   const docRef = await addDoc(collection(db, collectionName), {
+//     ...cleanData,
+//     created_at: serverTimestamp(),
+//   });
+
+//   return docRef.id;
+// };
 
 export const addData = async (
   data: Record<string, unknown>,
   collectionName = "messages",
-  options: { requireAdmin?: boolean } = {},
 ) => {
   const cleanData = stripUndefinedValues(data);
-  const adminDb = getAdminDb();
-
-  if (adminDb) {
-    const docRef = await adminDb.collection(collectionName).add({
-      ...cleanData,
-      created_at: FieldValue.serverTimestamp(),
-    });
-
-    return docRef.id;
-  }
-
-  if (options.requireAdmin) {
-    throw new Error(
-      "Firebase Admin credentials are required for this Firestore write. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY.",
-    );
-  }
-
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
   const docRef = await addDoc(collection(db, collectionName), {
     ...cleanData,
     created_at: serverTimestamp(),
@@ -393,30 +415,84 @@ export const addData = async (
   return docRef.id;
 };
 
+// export const getDataDoc = async (
+//   collectionName: string,
+//   docId: string,
+//   options: { requireAdmin?: boolean } = {},
+// ) => {
+//   const adminDb = getAdminDb();
+
+//   if (adminDb) {
+//     const snapshot = await adminDb.collection(collectionName).doc(docId).get();
+
+//     return snapshot.exists ? snapshot.data() || null : null;
+//   }
+
+//   if (options.requireAdmin) {
+//     throw new Error(
+//       "Firebase Admin credentials are required for this Firestore read.",
+//     );
+//   }
+
+//   const db = getClientFirestore(app);
+//   const snapshot = await getDoc(clientDoc(db, collectionName, docId));
+
+//   return snapshot.exists() ? snapshot.data() : null;
+// };
+
 export const getDataDoc = async (
   collectionName: string,
   docId: string,
   options: { requireAdmin?: boolean } = {},
 ) => {
-  const adminDb = getAdminDb();
+  const db = getFirestore(app);
 
-  if (adminDb) {
-    const snapshot = await adminDb.collection(collectionName).doc(docId).get();
-
-    return snapshot.exists ? snapshot.data() || null : null;
-  }
-
-  if (options.requireAdmin) {
-    throw new Error(
-      "Firebase Admin credentials are required for this Firestore read.",
-    );
-  }
-
-  const db = getClientFirestore(app);
   const snapshot = await getDoc(clientDoc(db, collectionName, docId));
-
   return snapshot.exists() ? snapshot.data() : null;
 };
+
+// export const setDataDoc = async (
+//   collectionName: string,
+//   docId: string,
+//   data: Record<string, unknown>,
+//   options: { merge?: boolean; requireAdmin?: boolean } = {},
+// ) => {
+//   const cleanData = stripUndefinedValues(data);
+//   const adminDb = getAdminDb();
+
+//   if (adminDb) {
+//     await adminDb
+//       .collection(collectionName)
+//       .doc(docId)
+//       .set(
+//         {
+//           ...cleanData,
+//           updated_at: FieldValue.serverTimestamp(),
+//         },
+//         { merge: options.merge ?? true },
+//       );
+//     return docId;
+//   }
+
+//   if (options.requireAdmin) {
+//     throw new Error(
+//       "Firebase Admin credentials are required for this Firestore write.",
+//     );
+//   }
+
+//   const db = getClientFirestore(app);
+
+//   await setDoc(
+//     clientDoc(db, collectionName, docId),
+//     {
+//       ...cleanData,
+//       updated_at: serverTimestamp(),
+//     },
+//     { merge: options.merge ?? true },
+//   );
+
+//   return docId;
+// };
 
 export const setDataDoc = async (
   collectionName: string,
@@ -425,29 +501,7 @@ export const setDataDoc = async (
   options: { merge?: boolean; requireAdmin?: boolean } = {},
 ) => {
   const cleanData = stripUndefinedValues(data);
-  const adminDb = getAdminDb();
-
-  if (adminDb) {
-    await adminDb
-      .collection(collectionName)
-      .doc(docId)
-      .set(
-        {
-          ...cleanData,
-          updated_at: FieldValue.serverTimestamp(),
-        },
-        { merge: options.merge ?? true },
-      );
-    return docId;
-  }
-
-  if (options.requireAdmin) {
-    throw new Error(
-      "Firebase Admin credentials are required for this Firestore write.",
-    );
-  }
-
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
 
   await setDoc(
     clientDoc(db, collectionName, docId),
@@ -461,7 +515,7 @@ export const setDataDoc = async (
   return docId;
 };
 
-export const reserveDemoBooking = async (
+/* export const reserveDemoBooking = async (
   data: Record<string, unknown> & {
     start_at_ms: number;
     end_at_ms: number;
@@ -553,7 +607,10 @@ export const reserveDemoBooking = async (
   return docId;
 };
 
-export const releaseDemoBooking = async (startAtMs: number, endAtMs: number) => {
+export const releaseDemoBooking = async (
+  startAtMs: number,
+  endAtMs: number,
+) => {
   if (!Number.isFinite(startAtMs) || !Number.isFinite(endAtMs)) {
     return;
   }
@@ -595,10 +652,13 @@ export const updateDemoBooking = async (
   const adminDb = getAdminDb();
 
   if (adminDb) {
-    await adminDb.collection(DEMO_BOOKINGS_COLLECTION).doc(docId).update({
-      ...cleanData,
-      updated_at: FieldValue.serverTimestamp(),
-    });
+    await adminDb
+      .collection(DEMO_BOOKINGS_COLLECTION)
+      .doc(docId)
+      .update({
+        ...cleanData,
+        updated_at: FieldValue.serverTimestamp(),
+      });
     return;
   }
 
@@ -662,6 +722,132 @@ export const listDemoAvailabilityExclusions = async () => {
     return [...defaultDemoAvailabilityExclusions, ...exclusions];
   }
 
+  const db = getClientFirestore(app);
+  const exclusionsQuery = query(
+    collection(db, DEMO_AVAILABILITY_EXCLUSIONS_COLLECTION),
+    where("active", "==", true),
+  );
+  const snapshot = await getDocs(exclusionsQuery);
+  const exclusions = snapshot.docs
+    .map((doc) => normalizeDemoAvailabilityExclusion(doc.id, doc.data()))
+    .filter((exclusion): exclusion is DemoAvailabilityExclusion =>
+      Boolean(exclusion),
+    );
+
+  return [...defaultDemoAvailabilityExclusions, ...exclusions];
+}; */
+
+export const reserveDemoBooking = async (
+  data: Record<string, unknown> & {
+    start_at_ms: number;
+    end_at_ms: number;
+  },
+) => {
+  if (!Number.isFinite(data.start_at_ms) || !Number.isFinite(data.end_at_ms)) {
+    throw new Error("A valid demo start and end time is required.");
+  }
+
+  const docId = getDemoSlotId(data.start_at_ms);
+  const slotLockIds = getDemoSlotLockIds(data.start_at_ms, data.end_at_ms);
+  const cleanData = stripUndefinedValues({
+    ...data,
+    booking_status: data.booking_status || "booked",
+    duration_minutes: DEMO_MEETING_DURATION_MINUTES,
+    break_duration_minutes: DEMO_BREAK_DURATION_MINUTES,
+    blocked_window_minutes: DEMO_SLOT_DURATION_MINUTES,
+    slot_id: docId,
+  });
+
+  const db = getClientFirestore(app);
+  const docRef = clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId);
+  const lockRefs = slotLockIds.map((lockId) =>
+    clientDoc(db, DEMO_BOOKING_LOCKS_COLLECTION, lockId),
+  );
+
+  await runTransaction(db, async (transaction) => {
+    const snapshot = await transaction.get(docRef);
+    const lockSnapshots = await Promise.all(
+      lockRefs.map((lockRef) => transaction.get(lockRef)),
+    );
+
+    if (snapshot.exists() || lockSnapshots.some((lock) => lock.exists())) {
+      throw new DemoSlotUnavailableError();
+    }
+
+    transaction.set(docRef, {
+      ...cleanData,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
+
+    lockRefs.forEach((lockRef) => {
+      transaction.set(lockRef, {
+        booking_id: docId,
+        start_at_ms: data.start_at_ms,
+        end_at_ms: data.end_at_ms,
+        created_at: serverTimestamp(),
+      });
+    });
+  });
+
+  return docId;
+};
+
+export const releaseDemoBooking = async (
+  startAtMs: number,
+  endAtMs: number,
+) => {
+  if (!Number.isFinite(startAtMs) || !Number.isFinite(endAtMs)) {
+    return;
+  }
+
+  const docId = getDemoSlotId(startAtMs);
+  const slotLockIds = getDemoSlotLockIds(startAtMs, endAtMs);
+  const db = getClientFirestore(app);
+  const docRef = clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId);
+  const lockRefs = slotLockIds.map((lockId) =>
+    clientDoc(db, DEMO_BOOKING_LOCKS_COLLECTION, lockId),
+  );
+
+  await runTransaction(db, async (transaction) => {
+    transaction.delete(docRef);
+    lockRefs.forEach((lockRef) => transaction.delete(lockRef));
+  });
+};
+
+export const updateDemoBooking = async (
+  docId: string,
+  data: Record<string, unknown>,
+) => {
+  const cleanData = stripUndefinedValues(data);
+  const db = getClientFirestore(app);
+
+  await updateDoc(clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId), {
+    ...cleanData,
+    updated_at: serverTimestamp(),
+  });
+};
+
+export const listDemoBookingsInRange = async (
+  startAtMs: number,
+  endAtMs: number,
+) => {
+  const db = getClientFirestore(app);
+  const bookingsQuery = query(
+    collection(db, DEMO_BOOKINGS_COLLECTION),
+    where("start_at_ms", "<", endAtMs),
+    orderBy("start_at_ms", "asc"),
+  );
+  const snapshot = await getDocs(bookingsQuery);
+
+  const bookings = snapshot.docs
+    .map((doc) => normalizeDemoBookingWindow(doc.id, doc.data()))
+    .filter(isDemoBookingWindow);
+
+  return bookings.filter((booking) => booking.endAtMs > startAtMs);
+};
+
+export const listDemoAvailabilityExclusions = async () => {
   const db = getClientFirestore(app);
   const exclusionsQuery = query(
     collection(db, DEMO_AVAILABILITY_EXCLUSIONS_COLLECTION),
