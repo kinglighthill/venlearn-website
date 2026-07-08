@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   addData,
-  hasFirestoreAdminCredentials,
 } from "@/services/firestore.service";
 import { createZohoPartnerLead, PartnerLead } from "@/services/zoho.service";
 
@@ -104,7 +103,7 @@ export async function POST(request: NextRequest) {
     let firestoreSyncStatus: "synced" | "skipped" | "failed" = "skipped";
     let firestoreSyncError = "";
 
-    if (hasFirestoreAdminCredentials()) {
+    // if (hasFirestoreAdminCredentials()) {
       try {
         firestoreDocId = await addData(
           {
@@ -132,11 +131,11 @@ export async function POST(request: NextRequest) {
             : "Unable to save partner signup backup.";
         console.warn("Firestore partner backup pending:", firestoreSyncError);
       }
-    } else {
-      console.warn(
-        "Skipping Firestore partner backup because Firebase Admin credentials are not configured.",
-      );
-    }
+    // } else {
+    //   console.warn(
+    //     "Skipping Firestore partner backup because Firebase Admin credentials are not configured.",
+    //   );
+    // }
 
     if (zohoSyncStatus === "failed") {
       const isZohoDisconnected = isZohoConnectionError(zohoSyncError);

@@ -18,7 +18,7 @@ import {
   doc as clientDoc,
   getDoc,
   getDocs,
-  getFirestore as getClientFirestore,
+  // getFirestore as getClientFirestore,
   orderBy,
   query,
   runTransaction,
@@ -231,143 +231,143 @@ const normalizeDemoAvailabilityExclusion = (
   };
 };
 
-const firebaseProjectId =
-  process.env.FIREBASE_PROJECT_ID ||
-  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ||
-  "venlearn-staging";
+// const firebaseProjectId =
+//   process.env.FIREBASE_PROJECT_ID ||
+//   process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ||
+//   "venlearn-staging";
 
-const normalizePrivateKey = (privateKey: string) =>
-  privateKey.replace(/\\n/g, "\n");
+// const normalizePrivateKey = (privateKey: string) =>
+//   privateKey.replace(/\\n/g, "\n");
 
-const getEnvValue = (...names: string[]) =>
-  names.map((name) => process.env[name]).find(Boolean);
+// const getEnvValue = (...names: string[]) =>
+//   names.map((name) => process.env[name]).find(Boolean);
 
-const getApplicationDefaultCredentialsPath = () =>
-  process.env.GOOGLE_APPLICATION_CREDENTIALS ||
-  `${homedir()}/.config/gcloud/application_default_credentials.json`;
+// const getApplicationDefaultCredentialsPath = () =>
+//   process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+//   `${homedir()}/.config/gcloud/application_default_credentials.json`;
 
-const hasApplicationDefaultCredentials = () =>
-  existsSync(getApplicationDefaultCredentialsPath());
+// const hasApplicationDefaultCredentials = () =>
+//   existsSync(getApplicationDefaultCredentialsPath());
 
-const getServiceAccountJson = () => {
-  const serviceAccountJson =
-    getEnvValue(
-      "FIREBASE_SERVICE_ACCOUNT_JSON",
-      "FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON",
-      "GOOGLE_SERVICE_ACCOUNT_JSON",
-      "GOOGLE_APPLICATION_CREDENTIALS_JSON",
-    ) ||
-    (() => {
-      const encodedServiceAccount = getEnvValue(
-        "FIREBASE_SERVICE_ACCOUNT_BASE64",
-        "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
-        "GOOGLE_SERVICE_ACCOUNT_JSON_BASE64",
-        "GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64",
-      );
+// const getServiceAccountJson = () => {
+//   const serviceAccountJson =
+//     getEnvValue(
+//       "FIREBASE_SERVICE_ACCOUNT_JSON",
+//       "FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON",
+//       "GOOGLE_SERVICE_ACCOUNT_JSON",
+//       "GOOGLE_APPLICATION_CREDENTIALS_JSON",
+//     ) ||
+//     (() => {
+//       const encodedServiceAccount = getEnvValue(
+//         "FIREBASE_SERVICE_ACCOUNT_BASE64",
+//         "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
+//         "GOOGLE_SERVICE_ACCOUNT_JSON_BASE64",
+//         "GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64",
+//       );
 
-      return encodedServiceAccount
-        ? Buffer.from(encodedServiceAccount, "base64").toString("utf8")
-        : undefined;
-    })();
+//       return encodedServiceAccount
+//         ? Buffer.from(encodedServiceAccount, "base64").toString("utf8")
+//         : undefined;
+//     })();
 
-  if (!serviceAccountJson) {
-    return null;
-  }
+//   if (!serviceAccountJson) {
+//     return null;
+//   }
 
-  const serviceAccount = JSON.parse(serviceAccountJson) as {
-    client_email?: string;
-    private_key?: string;
-    project_id?: string;
-  };
+//   const serviceAccount = JSON.parse(serviceAccountJson) as {
+//     client_email?: string;
+//     private_key?: string;
+//     project_id?: string;
+//   };
 
-  if (!serviceAccount.client_email || !serviceAccount.private_key) {
-    throw new Error(
-      "FIREBASE_SERVICE_ACCOUNT_JSON must include client_email and private_key.",
-    );
-  }
+//   if (!serviceAccount.client_email || !serviceAccount.private_key) {
+//     throw new Error(
+//       "FIREBASE_SERVICE_ACCOUNT_JSON must include client_email and private_key.",
+//     );
+//   }
 
-  return {
-    clientEmail: serviceAccount.client_email,
-    privateKey: normalizePrivateKey(serviceAccount.private_key),
-    projectId: serviceAccount.project_id || firebaseProjectId,
-  };
-};
+//   return {
+//     clientEmail: serviceAccount.client_email,
+//     privateKey: normalizePrivateKey(serviceAccount.private_key),
+//     projectId: serviceAccount.project_id || firebaseProjectId,
+//   };
+// };
 
-const getServiceAccountEnv = () => {
-  const clientEmail = getEnvValue(
-    "FIREBASE_CLIENT_EMAIL",
-    "FIREBASE_ADMIN_CLIENT_EMAIL",
-    "GOOGLE_CLIENT_EMAIL",
-  );
-  const privateKey = getEnvValue(
-    "FIREBASE_PRIVATE_KEY",
-    "FIREBASE_ADMIN_PRIVATE_KEY",
-    "GOOGLE_PRIVATE_KEY",
-  );
-  const projectId = getEnvValue(
-    "FIREBASE_PROJECT_ID",
-    "FIREBASE_ADMIN_PROJECT_ID",
-    "GOOGLE_PROJECT_ID",
-    "GCLOUD_PROJECT",
-  );
+// const getServiceAccountEnv = () => {
+//   const clientEmail = getEnvValue(
+//     "FIREBASE_CLIENT_EMAIL",
+//     "FIREBASE_ADMIN_CLIENT_EMAIL",
+//     "GOOGLE_CLIENT_EMAIL",
+//   );
+//   const privateKey = getEnvValue(
+//     "FIREBASE_PRIVATE_KEY",
+//     "FIREBASE_ADMIN_PRIVATE_KEY",
+//     "GOOGLE_PRIVATE_KEY",
+//   );
+//   const projectId = getEnvValue(
+//     "FIREBASE_PROJECT_ID",
+//     "FIREBASE_ADMIN_PROJECT_ID",
+//     "GOOGLE_PROJECT_ID",
+//     "GCLOUD_PROJECT",
+//   );
 
-  if (!clientEmail || !privateKey) {
-    return null;
-  }
+//   if (!clientEmail || !privateKey) {
+//     return null;
+//   }
 
-  return {
-    clientEmail,
-    privateKey: normalizePrivateKey(privateKey),
-    projectId: projectId || firebaseProjectId,
-  };
-};
+//   return {
+//     clientEmail,
+//     privateKey: normalizePrivateKey(privateKey),
+//     projectId: projectId || firebaseProjectId,
+//   };
+// };
 
-const getAdminDb = () => {
-  /* const serviceAccount = getServiceAccountJson() || getServiceAccountEnv();
+// const getAdminDb = () => {
+//   /* const serviceAccount = getServiceAccountJson() || getServiceAccountEnv();
 
-  if (!serviceAccount && !hasApplicationDefaultCredentials()) {
-    return null;
-  }
+//   if (!serviceAccount && !hasApplicationDefaultCredentials()) {
+//     return null;
+//   }
 
-  if (!getApps().length) {
-    initializeAdminApp({
-      credential: serviceAccount
-        ? cert(serviceAccount)
-        : applicationDefault(),
-      projectId: serviceAccount?.projectId || firebaseProjectId,
-    });
-  }
+//   if (!getApps().length) {
+//     initializeAdminApp({
+//       credential: serviceAccount
+//         ? cert(serviceAccount)
+//         : applicationDefault(),
+//       projectId: serviceAccount?.projectId || firebaseProjectId,
+//     });
+//   }
 
-  return getAdminFirestore(); */
+//   return getAdminFirestore(); */
 
-  const db = getFirestore(app);
-  return db;
-};
+//   const db = getFirestore(app);
+//   return db;
+// };
 
-export const hasFirestoreAdminCredentials = () =>
-  Boolean(
-    getEnvValue(
-      "FIREBASE_SERVICE_ACCOUNT_JSON",
-      "FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON",
-      "GOOGLE_SERVICE_ACCOUNT_JSON",
-      "GOOGLE_APPLICATION_CREDENTIALS_JSON",
-      "FIREBASE_SERVICE_ACCOUNT_BASE64",
-      "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
-      "GOOGLE_SERVICE_ACCOUNT_JSON_BASE64",
-      "GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64",
-    ) ||
-    hasApplicationDefaultCredentials() ||
-    (getEnvValue(
-      "FIREBASE_CLIENT_EMAIL",
-      "FIREBASE_ADMIN_CLIENT_EMAIL",
-      "GOOGLE_CLIENT_EMAIL",
-    ) &&
-      getEnvValue(
-        "FIREBASE_PRIVATE_KEY",
-        "FIREBASE_ADMIN_PRIVATE_KEY",
-        "GOOGLE_PRIVATE_KEY",
-      )),
-  );
+// export const hasFirestoreAdminCredentials = () =>
+//   Boolean(
+//     getEnvValue(
+//       "FIREBASE_SERVICE_ACCOUNT_JSON",
+//       "FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON",
+//       "GOOGLE_SERVICE_ACCOUNT_JSON",
+//       "GOOGLE_APPLICATION_CREDENTIALS_JSON",
+//       "FIREBASE_SERVICE_ACCOUNT_BASE64",
+//       "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
+//       "GOOGLE_SERVICE_ACCOUNT_JSON_BASE64",
+//       "GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64",
+//     ) ||
+//     hasApplicationDefaultCredentials() ||
+//     (getEnvValue(
+//       "FIREBASE_CLIENT_EMAIL",
+//       "FIREBASE_ADMIN_CLIENT_EMAIL",
+//       "GOOGLE_CLIENT_EMAIL",
+//     ) &&
+//       getEnvValue(
+//         "FIREBASE_PRIVATE_KEY",
+//         "FIREBASE_ADMIN_PRIVATE_KEY",
+//         "GOOGLE_PRIVATE_KEY",
+//       )),
+//   );
 
 // export const addData = async (
 //   data: Record<string, unknown>,
@@ -759,7 +759,7 @@ export const reserveDemoBooking = async (
     slot_id: docId,
   });
 
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
   const docRef = clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId);
   const lockRefs = slotLockIds.map((lockId) =>
     clientDoc(db, DEMO_BOOKING_LOCKS_COLLECTION, lockId),
@@ -804,7 +804,7 @@ export const releaseDemoBooking = async (
 
   const docId = getDemoSlotId(startAtMs);
   const slotLockIds = getDemoSlotLockIds(startAtMs, endAtMs);
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
   const docRef = clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId);
   const lockRefs = slotLockIds.map((lockId) =>
     clientDoc(db, DEMO_BOOKING_LOCKS_COLLECTION, lockId),
@@ -821,7 +821,7 @@ export const updateDemoBooking = async (
   data: Record<string, unknown>,
 ) => {
   const cleanData = stripUndefinedValues(data);
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
 
   await updateDoc(clientDoc(db, DEMO_BOOKINGS_COLLECTION, docId), {
     ...cleanData,
@@ -833,7 +833,7 @@ export const listDemoBookingsInRange = async (
   startAtMs: number,
   endAtMs: number,
 ) => {
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
   const bookingsQuery = query(
     collection(db, DEMO_BOOKINGS_COLLECTION),
     where("start_at_ms", "<", endAtMs),
@@ -849,7 +849,7 @@ export const listDemoBookingsInRange = async (
 };
 
 export const listDemoAvailabilityExclusions = async () => {
-  const db = getClientFirestore(app);
+  const db = getFirestore(app);
   const exclusionsQuery = query(
     collection(db, DEMO_AVAILABILITY_EXCLUSIONS_COLLECTION),
     where("active", "==", true),
