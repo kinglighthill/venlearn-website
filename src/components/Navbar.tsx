@@ -11,12 +11,14 @@ const primaryLinks = [
   { name: "Features", href: "/features", hasMenu: true },
   { name: "Pricing", href: "/pricing" },
   { name: "Company", href: "/company" },
+  { name: "Blog", href: "/blog" },
   { name: "Tutorials", href: "https://www.youtube.com/@venlearn", external: true },
 ];
 
 const mobileLinks = [
   { name: "Pricing", href: "/pricing" },
   { name: "Company", href: "/company" },
+  { name: "Blog", href: "/blog" },
   { name: "Tutorials", href: "https://www.youtube.com/@venlearn", external: true },
 ];
 
