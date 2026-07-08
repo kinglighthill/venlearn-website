@@ -7,9 +7,10 @@ export async function GET(request: NextRequest) {
       getGoogleCalendarAuthorizationUrl(request.url),
     );
   } catch (error) {
+    console.log("E:", error)
     const message =
       error instanceof Error
-        ? error.message
+        ? error
         : "Unable to start Google Calendar OAuth.";
 
     return NextResponse.json({ success: false, message }, { status: 500 });
