@@ -404,6 +404,7 @@ export const hasFirestoreAdminCredentials = () =>
 export const addData = async (
   data: Record<string, unknown>,
   collectionName = "messages",
+  options: { requireAdmin?: boolean } = {},
 ) => {
   const cleanData = stripUndefinedValues(data);
   const db = getFirestore(app);
