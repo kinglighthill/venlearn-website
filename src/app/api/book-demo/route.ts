@@ -245,7 +245,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("start")
     const body = (await request.json()) as Record<string, unknown>;
     const token = body.token;
 
@@ -268,7 +267,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("start-2")
     const demoSlot = parseDemoSlot(body);
     const exclusions = await listDemoAvailabilityExclusions();
     const matchingExclusion = getMatchingExclusion(
@@ -277,7 +275,6 @@ export async function POST(request: NextRequest) {
       demoSlot.endMinutes,
       exclusions,
     );
-    console.log("start-3")
 
     if (matchingExclusion) {
       return NextResponse.json(
@@ -307,7 +304,6 @@ export async function POST(request: NextRequest) {
     let googleCalendarEventId = "";
     let googleCalendarEventLink = "";
 
-    console.log("1")
     try {
       firestoreBookingId = await reserveDemoBooking({
         type: demoLead.type,
@@ -348,7 +344,6 @@ export async function POST(request: NextRequest) {
       throw firestoreError;
     }
 
-    console.log("2")
     try {
       const calendarEvent = await createGoogleMeetDemoEvent({
         address: demoLead.address,
@@ -391,7 +386,7 @@ export async function POST(request: NextRequest) {
           message: `Demo time could not be booked because the Google Meet link could not be created: ${calendarSyncError}`,
           googleCalendarConnectUrl: "/api/google-calendar/oauth/start",
         },
-        { status: 502 },
+        { status: 200 },
       );
     }
 
@@ -403,7 +398,6 @@ export async function POST(request: NextRequest) {
       | Awaited<ReturnType<typeof sendDemoBookingEmails>>
       | undefined;
 
-    console.log("3")
     try {
       await createZohoDemoLead({
         ...demoLead,
@@ -419,7 +413,6 @@ export async function POST(request: NextRequest) {
       console.warn("Zoho CRM sync failed:", zohoSyncError);
     }
 
-    console.log("4")
     try {
       emailWorkflow = await sendDemoBookingEmails({
         bookingId: firestoreBookingId,
@@ -473,7 +466,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("5")
     try {
       await addData({
         type: demoLead.type,
@@ -515,7 +507,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("6")
     return NextResponse.json({
       success: true,
       bookingId: firestoreBookingId,
