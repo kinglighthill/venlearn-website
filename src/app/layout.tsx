@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { GoogleTagManager } from '@next/third-parties/google';
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ import {
   websiteJsonLd,
 } from "@/lib/seo";
 import { productFeatures } from "@/data/productFeatures";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://venlearn.com"),
@@ -77,6 +79,7 @@ export default function RootLayout({
         `}
       </Script>
       <body className="flex min-h-screen flex-col bg-[#fbfbff] font-[var(--font-saas)] text-[#24223e] antialiased selection:bg-[#2661ac]/20 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+        <GoogleTagManager gtmId="GTM-NF24M56G" />
         <noscript
           dangerouslySetInnerHTML={{
             __html:
