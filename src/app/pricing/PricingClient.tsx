@@ -66,7 +66,7 @@ const allFeatureGroups = [
   },
   {
     title: "Academics and assessment",
-    slugs: ["results-report-cards", "cbt-offline-online", "digital-learning-elibrary", "lesson-planner"],
+    slugs: ["results-report-cards", "cbt-offline-online", "cbt-offline", "digital-learning-elibrary", "lesson-planner"],
   },
   {
     title: "Daily operations",

@@ -67,6 +67,11 @@ export const productFeatureImages: Record<string, ProductFeatureImage> = {
     width: 3024,
     height: 1964,
   },
+  "cbt-offline": {
+    src: "/images/features/cbt-offline-online.png",
+    width: 3024,
+    height: 1964,
+  },
   "digital-learning-elibrary": {
     src: "/images/features/digital-learning-elibrary.png",
     width: 3024,
@@ -207,6 +212,20 @@ export const productFeatures: ProductFeature[] = [
       "Timed exams, randomized questions, shuffled options, access rules, and exam availability windows.",
       "Tab or application switch alerts, candidate monitoring, exam groups, attempts, and secure result export.",
       "Automatic marking, manual review tools, score publishing, online assessment results, and analysis reports.",
+    ],
+  },
+  {
+    title: "CBT (Offline Only)",
+    slug: "cbt-offline",
+    description: "Run computer-based tests in your school's LAN with question banks, timing, grading, result summaries, MS Word imports.",
+    icon: MonitorCheck,
+    subFeatures: [
+      "Question banks with objective, theory, fill-in-the-blank, image-based, audio-based, and mixed assessment support.",
+      "Create your own questions or import questions from Microsoft Word documents.",
+      "Offline LAN-based exams for school to examine in their labs.",
+      "Timed exams, randomized questions, shuffled options, access rules, and exam availability windows.",
+      "Tab or application switch alerts, candidate monitoring, exam groups, attempts, and secure result export.",
+      "Automatic marking, manual review tools, and analysis reports.",
     ],
   },
   {

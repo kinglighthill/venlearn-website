@@ -10,13 +10,16 @@ import {
   productFeatures,
 } from "@/data/productFeatures";
 import { absoluteUrl, breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
-import { Capabilities, ExploreMore, Header, HeaderLink } from "./components";
+import { Capabilities, ExploreMore, Header, DemoLink } from "./components";
 import {
+  DownloadLink,
+  WalkthroughLink,
   SuiteSwitcher,
   Apps,
   Downloads,
   Walkthrough,
   Lifecycle,
+  DownloadsOffline,
 } from "./components-cbt";
 
 type FeaturePageProps = {
@@ -112,24 +115,48 @@ export default async function FeatureDetailPage({ params }: FeaturePageProps) {
         ]}
       />
 
-      {feature.slug === "cbt-offline-online" ? (
-        <Cbt
-          icon={Icon}
-          feature={feature}
-          featureImage={featureImage}
-          otherFeatures={otherFeatures}
-        />
-      ) : (
-        <DefaultPage
-          icon={Icon}
-          feature={feature}
-          featureImage={featureImage}
-          otherFeatures={otherFeatures}
-        />
-      )}
+      {renderFeature(Icon, feature, featureImage, otherFeatures)}
     </div>
   );
 }
+
+const renderFeature = (
+  icon: LucideIcon,
+  feature: ProductFeature,
+  featureImage: ProductFeatureImage,
+  otherFeatures: ProductFeature[],
+) => {
+  switch (feature.slug) {
+    case "cbt-offline-online":
+      return (
+        <Cbt
+          icon={icon}
+          feature={feature}
+          featureImage={featureImage}
+          otherFeatures={otherFeatures}
+        />
+      );
+    case "cbt-offline":
+      return (
+        <CbtOffline
+          icon={icon}
+          feature={feature}
+          featureImage={featureImage}
+          otherFeatures={otherFeatures}
+        />
+      );
+
+    default:
+      return (
+        <DefaultPage
+          icon={icon}
+          feature={feature}
+          featureImage={featureImage}
+          otherFeatures={otherFeatures}
+        />
+      );
+  }
+};
 
 function Cbt(featureProp: FeatureProp) {
   const { icon: Icon, feature, featureImage, otherFeatures } = featureProp;
@@ -140,12 +167,12 @@ function Cbt(featureProp: FeatureProp) {
 
       <Header feature={feature} featureImage={featureImage} hideImage={true}>
         <>
-          <HeaderLink />
-          {/* <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <DemoLink />
+          {/* <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <HeaderLink />
             <a
               href="#walkthrough"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
+              className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
             >
               <MonitorPlay className="h-5 w-5 text-[#2661ac]" />
               Watch the walkthrough
@@ -171,6 +198,40 @@ function Cbt(featureProp: FeatureProp) {
   );
 }
 
+function CbtOffline(featureProp: FeatureProp) {
+  const { icon: Icon, feature, featureImage, otherFeatures } = featureProp;
+
+  return (
+    <>
+      <div className="absolute inset-x-0 top-0 -z-10 h-184 bg-[radial-gradient(circle_at_12%_20%,rgba(38,97,172,0.14),transparent_28%),radial-gradient(circle_at_82%_16%,rgba(38,97,172,0.08),transparent_25%),linear-gradient(180deg,#f3f7fc_0%,#ffffff_78%)]" />
+
+      <Header feature={feature} featureImage={featureImage} hideImage={true}>
+        <>
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <DownloadLink />
+            <DemoLink />
+            <WalkthroughLink />
+          </div>
+
+          <SuiteSwitcher offline={true}/>
+        </>
+      </Header>
+
+      <Apps offline={true}/>
+
+      <Capabilities icon={Icon} feature={feature} />
+
+      <Lifecycle offline={true}/>
+
+      <Walkthrough />
+
+      <DownloadsOffline />
+
+      <ExploreMore otherFeatures={otherFeatures} />
+    </>
+  );
+}
+
 function DefaultPage(featureProp: FeatureProp) {
   const { icon: Icon, feature, featureImage, otherFeatures } = featureProp;
 
@@ -180,7 +241,7 @@ function DefaultPage(featureProp: FeatureProp) {
 
       <Header feature={feature} featureImage={featureImage}>
         <>
-          <HeaderLink />
+          <DemoLink />
         </>
       </Header>
 

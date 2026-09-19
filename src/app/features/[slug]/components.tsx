@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Check,
   LucideIcon,
-  MonitorPlay,
   Sparkles,
 } from "lucide-react";
 import { ProductFeature, ProductFeatureImage } from "@/data/productFeatures";
@@ -68,7 +67,7 @@ export function Header(headerProp: HeaderProp) {
   );
 }
 
-export function HeaderLink() {
+export function DemoLink() {
   return (
     <Link
       href="/book-demo"

@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Check,
+  MonitorPlay,
   Download,
   Edit3,
   ExternalLink,
@@ -15,6 +16,9 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
+import { useOS } from "@/hooks/useOS";
+import { OS_DOWNLOAD } from "@/data/constants";
+import OSIcon from "@/components/OSIcon";
 
 const suiteApps = [
   {
@@ -39,6 +43,61 @@ const suiteApps = [
     icon: Users,
     image: "/images/features/cbt-offline-online.png",
     alt: "Venlearn Admin with candidate scheduling and live proctoring view",
+    description:
+      "For administrators and proctors. Schedule exams, manage candidates, and watch live proctoring feeds as the exam runs.",
+    highlights: [
+      "Candidate management",
+      "Live proctoring view",
+      "Result analytics",
+    ],
+  },
+  {
+    id: "editor",
+    name: "Editor",
+    title: "Content Editor",
+    icon: Edit3,
+    image: "/images/editor-mockup.png",
+    alt: "Content Editor with rich-text questions and media support",
+    description:
+      "Author rich exams with objective, theory, image-based, and audio-based questions, or import them straight from Microsoft Word.",
+    highlights: ["Rich text and media", "Question banks", "Word import"],
+  },
+  {
+    id: "client",
+    name: "Student Client",
+    title: "Student Client",
+    icon: ShieldCheck,
+    image: "/images/client-mockup.png",
+    alt: "Student Client running an exam in locked-down kiosk mode",
+    description:
+      "The locked-down app candidates sit exams in. Blocks app switching and restricted key combinations for the whole session.",
+    highlights: ["Kiosk mode", "Screen recording", "Anti-cheat controls"],
+  },
+];
+
+const suiteAppsOffline = [
+  {
+    id: "server",
+    name: "Server",
+    title: "Venlearn Server",
+    icon: Server,
+    image: "/images/server-mockup.png",
+    alt: "Venlearn Server dashboard showing real-time proctoring logs",
+    description:
+      "The command center. Distributes exams over the school network, manages connections, and records every proctoring event in real time.",
+    highlights: [
+      "Real-time logging",
+      "Secure socket connections",
+      "Exam distribution",
+    ],
+  },
+  {
+    id: "manager",
+    name: "Manager",
+    title: "Venlearn Manager",
+    icon: Users,
+    image: "/images/manager-mockup.png",
+    alt: "Venlearn Manager with candidate scheduling and live proctoring view",
     description:
       "For administrators and proctors. Schedule exams, manage candidates, and watch live proctoring feeds as the exam runs.",
     highlights: [
@@ -122,8 +181,60 @@ const lifecycle = [
   },
 ];
 
+const lifecycleOffline = [
+  {
+    stage: "Author",
+    app: suiteAppsOffline[2],
+    heading: "Write exams once, reuse them everywhere.",
+    body: "Build question banks in the Content Editor with support for every subject: code blocks, mathematical equations, images, and audio. Existing papers come in from Microsoft Word without retyping.",
+    points: [
+      "Rich text and Markdown question authoring",
+      "LaTeX equation and code syntax support",
+      "Import questions from Microsoft Word documents",
+      "Question bank import and export for reuse across terms",
+    ],
+  },
+  {
+    stage: "Deliver",
+    app: suiteAppsOffline[0],
+    heading: "Built for a full hall of candidates.",
+    body: "The Server runs exams over your school LAN with no internet required, or online for remote candidates, handling thousands of concurrent connections with minimal latency.",
+    points: [
+      "Offline LAN exams within computer labs",
+      "High concurrency support for large candidate pools",
+      "Encrypted data transmission (AES-256)",
+      "Automated log rotation and backup",
+    ],
+  },
+  {
+    stage: "Sit",
+    app: suiteAppsOffline[3],
+    heading: "A testing environment candidates can't break out of.",
+    body: "The Student Client controls the machine for the length of the exam. Timed papers, randomized questions, and shuffled options keep every seat honest.",
+    points: [
+      "Full kiosk mode with app switching and shortcut keys blocked",
+      "Tab and application switch alerts for online exams",
+      "Clipboard clearing and background process blocking",
+      "Timed exams with randomized questions and shuffled options",
+    ],
+  },
+  {
+    stage: "Oversee",
+    app: suiteAppsOffline[1],
+    heading: "Watch every candidate, intervene in one click.",
+    body: "Proctors see the whole hall from Venlearn Manager: live activity, session logs, and instant results the moment the exam closes.",
+    points: [
+      "Live candidate monitoring grid",
+      "One-click pause and intervention",
+      "Detailed per-candidate activity logs",
+      "Automatic marking with instant result publishing",
+    ],
+  },
+];
+
 const downloads = [
   {
+    available: false,
     name: "Venlearn Suite",
     slug: "suite",
     version: "v1.0.0",
@@ -169,6 +280,59 @@ const downloads = [
   },
 ];
 
+const downloadsOffline = [
+  {
+    available: true,
+    name: "Venlearn Suite",
+    slug: "suite",
+    version: "v1.0.0",
+    size: "139 MB",
+    icon: "/images/icons/server.png",
+    description: "Every app in one installer.",
+    comingSoon: "macOS & Linux coming soon",
+  },
+  {
+    available: true,
+    name: "Venlearn Server",
+    slug: "server",
+    version: "v1.0.0",
+    size: "53 MB",
+    icon: "/images/icons/server.png",
+    description: "The exam command center.",
+    comingSoon: "macOS & Linux coming soon",
+  },
+  {
+    available: true,
+    name: "Venlearn Manager",
+    slug: "manager",
+    version: "v1.0.0",
+    size: "26 MB",
+    icon: "/images/icons/manager.png",
+    description: "Scheduling, proctoring, and results.",
+    comingSoon: "macOS, iOS & Android coming soon",
+  },
+  {
+    available: true,
+    name: "Venlearn Editor",
+    slug: "editor",
+    version: "v1.0.0",
+    size: "31 MB",
+    icon: "/images/icons/editor.png",
+    description: "Exam authoring and question banks.",
+    comingSoon: "macOS coming soon",
+  },
+  {
+    available: true,
+    name: "Venlearn Client",
+    slug: "client",
+    version: "v1.0.0",
+    size: "26 MB",
+    icon: "/images/icons/client.png",
+    description: "The locked-down exam seat.",
+    comingSoon: "macOS, iOS, & Android coming soon",
+  },
+];
+
 const walkthrough = {
   title: "Getting started with the Venlearn Editor",
   description:
@@ -185,15 +349,50 @@ const fadeUp = {
   transition: { duration: 0.5 },
 };
 
-export function SuiteSwitcher() {
+export function DownloadLink() {
+  const os = useOS();
+  const osDownload = OS_DOWNLOAD[os];
+
+  const label = osDownload.available ? osDownload.label : OS_DOWNLOAD["unknown"].label
+  const platform = osDownload.available ? os : "windows"
+  const icon = osDownload.available ? os : "windows"
+
+  return (
+    <a
+      // href="#download"
+      href={`/api/download?app=suite&platform=${platform}`}
+      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
+    >
+      <Download className="h-5 w-5 text-[#2661ac]" />
+      {label}
+      <OSIcon os={icon} className="h-5 w-5 text-[#2661ac]" size={24} />
+    </a>
+  );
+}
+
+export function WalkthroughLink() {
+  return (
+    <a
+      href="#walkthrough"
+      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
+    >
+      <MonitorPlay className="h-5 w-5 text-[#2661ac]" />
+      Watch the walkthrough
+    </a>
+  );
+}
+
+export function SuiteSwitcher({ offline }: { offline?: boolean }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const prefersReducedMotion = useReducedMotion();
 
+  const apps = offline ? suiteAppsOffline : suiteApps;
+
   useEffect(() => {
     if (!isAutoPlaying || prefersReducedMotion) return;
     const interval = setInterval(() => {
-      setActiveIndex((index) => (index + 1) % suiteApps.length);
+      setActiveIndex((index) => (index + 1) % apps.length);
     }, 5000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, prefersReducedMotion]);
@@ -203,7 +402,7 @@ export function SuiteSwitcher() {
     setActiveIndex(index);
   }, []);
 
-  const activeApp = suiteApps[activeIndex];
+  const activeApp = apps[activeIndex];
 
   return (
     <div className="mx-auto mt-14 max-w-6xl">
@@ -212,7 +411,7 @@ export function SuiteSwitcher() {
         aria-label="Venlearn CBT apps"
         className="mx-auto mb-5 flex w-fit max-w-full flex-wrap items-center justify-center gap-1.5 rounded-full border border-[#e5e7eb] bg-white p-1.5 shadow-lg shadow-[#101828]/5"
       >
-        {suiteApps.map((app, index) => (
+        {apps.map((app, index) => (
           <button
             key={app.id}
             role="tab"
@@ -232,7 +431,7 @@ export function SuiteSwitcher() {
       <div className="rounded-4xl bg-[#2661ac] p-1 shadow-[0_44px_120px_rgba(47,43,128,0.20)]">
         <div className="rounded-[1.8rem] bg-[#101828] p-3 sm:p-5">
           <div className="relative aspect-16/10 overflow-hidden rounded-[1.45rem] bg-white">
-            {suiteApps.map((app, index) => (
+            {apps.map((app, index) => (
               <Image
                 key={app.id}
                 src={app.image}
@@ -294,7 +493,9 @@ export function WalkthroughPlayer() {
   );
 }
 
-export function Apps() {
+export function Apps({ offline }: { offline?: boolean }) {
+  const apps = offline ? suiteAppsOffline : suiteApps;
+
   return (
     <section className="mx-auto mt-24 max-w-7xl">
       <div className="mx-auto max-w-3xl text-center">
@@ -311,7 +512,7 @@ export function Apps() {
       </div>
 
       <div className="mt-12 grid gap-4 md:grid-cols-2">
-        {suiteApps.map((app) => (
+        {apps.map((app) => (
           <motion.div
             key={app.id}
             {...fadeUp}
@@ -343,7 +544,9 @@ export function Apps() {
   );
 }
 
-export function Lifecycle() {
+export function Lifecycle({ offline }: { offline?: boolean }) {
+  const info = offline ? lifecycleOffline : lifecycle;
+
   return (
     <section className="mx-auto mt-24 max-w-7xl">
       <div className="mx-auto max-w-3xl text-center">
@@ -356,7 +559,7 @@ export function Lifecycle() {
       </div>
 
       <div className="mt-14 space-y-20">
-        {lifecycle.map((step, index) => {
+        {info.map((step, index) => {
           const StepIcon = step.app.icon;
           const imageFirst = index % 2 === 1;
 
@@ -394,7 +597,7 @@ export function Lifecycle() {
               <div className={imageFirst ? "lg:order-1" : undefined}>
                 <div className="rounded-[1.75rem] bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15">
                   <div className="rounded-[1.55rem] bg-[#101828] p-2.5 sm:p-3.5">
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-[1.2rem] bg-white">
+                    <div className="relative aspect-16/10 overflow-hidden rounded-[1.2rem] bg-white">
                       <Image
                         src={step.app.image}
                         alt={step.app.alt}
@@ -510,6 +713,98 @@ export function Downloads() {
                 </a>
                 <p className="mt-3 text-xs font-bold text-[#98a2b3]">
                   macOS &amp; Linux coming soon
+                </p>
+              </motion.div>
+            ))}
+        </div>
+      </section>
+
+      {/* <section className="mx-auto mt-24 max-w-7xl">
+        <div className="rounded-4xl border border-[#eef2f7] bg-[#f8fafc] p-8 text-center sm:p-14">
+          <h2 className="mx-auto max-w-3xl text-4xl font-black leading-tight text-[#101828] sm:text-5xl">
+            Run your next exam on Venlearn.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-7 text-[#667085] sm:text-lg">
+            Book a walkthrough with our team, or download the apps and set up
+            your first computer-based test today.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/book-demo"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#111827] px-8 py-4 text-base font-black text-white shadow-2xl shadow-[#111827]/20 transition hover:-translate-y-0.5"
+            >
+              Book a demo
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+            <a
+              href="#download"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
+            >
+              <Download className="h-5 w-5 text-[#2661ac]" />
+              Download the apps
+            </a>
+          </div>
+        </div>
+      </section> */}
+    </>
+  );
+}
+
+export function DownloadsOffline() {
+  return (
+    <>
+      <section id="download" className="mx-auto mt-24 max-w-7xl scroll-mt-28">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-black uppercase tracking-[0.24em] text-[#2661ac]">
+            Download
+          </p>
+          <h2 className="mt-3 text-4xl font-black leading-tight text-[#101828] sm:text-5xl">
+            Install the suite on your exam machines.
+          </h2>
+          <p className="mt-5 text-base font-medium leading-7 text-[#667085] sm:text-lg">
+            Windows installers are available today; Android, iOS, macOS and
+            Linux are coming soon. Not sure what you need? The Suite installer
+            includes everything.
+          </p>
+        </div>
+
+        {/* <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"> */}
+        <div className="mt-12 flex flex-wrap justify-center gap-4">
+          {downloadsOffline
+            .filter((app) => app.available)
+            .map((app) => (
+              <motion.div
+                key={app.slug}
+                {...fadeUp}
+                // className="flex flex-col rounded-[1.35rem] border border-[#eef2f7] bg-white p-6 text-center shadow-xl shadow-[#101828]/5"
+                className="flex min-w-65 max-w-sm flex-1 flex-col rounded-[1.35rem] border border-[#eef2f7] bg-white p-6 text-center shadow-xl shadow-[#101828]/5"
+              >
+                <div className="relative mx-auto h-16 w-16">
+                  <Image
+                    src={app.icon}
+                    alt={`${app.name} app icon`}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h3 className="mt-4 text-base font-black leading-6 text-[#101828]">
+                  {app.name}
+                </h3>
+                <p className="mt-1.5 grow text-sm font-semibold leading-6 text-[#667085]">
+                  {app.description}
+                </p>
+                <p className="mx-auto mt-3 rounded-full bg-[#f3f7fc] px-3 py-1 text-xs font-black text-[#2661ac]">
+                  {app.version} · {app.size}
+                </p>
+                <a
+                  href={`/api/download?app=${app.slug}&platform=windows`}
+                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#111827] px-4 py-3 text-sm font-black text-white shadow-lg shadow-[#111827]/15 transition hover:-translate-y-0.5"
+                >
+                  <Download className="h-4 w-4" />
+                  Windows
+                </a>
+                <p className="mt-3 text-xs font-bold text-[#98a2b3]">
+                  {app.comingSoon}
                 </p>
               </motion.div>
             ))}
