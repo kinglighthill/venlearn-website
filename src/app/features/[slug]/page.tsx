@@ -20,6 +20,7 @@ import {
   Walkthrough,
   Lifecycle,
   DownloadsOffline,
+  BookDemo,
 } from "./components-cbt";
 
 type FeaturePageProps = {
@@ -208,9 +209,9 @@ function CbtOffline(featureProp: FeatureProp) {
       <Header feature={feature} featureImage={featureImage} hideImage={true}>
         <>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <DownloadLink />
             <DemoLink />
             <WalkthroughLink />
+            <DownloadLink />
           </div>
 
           <SuiteSwitcher offline={true}/>
@@ -219,13 +220,19 @@ function CbtOffline(featureProp: FeatureProp) {
 
       <Apps offline={true}/>
 
+      <BookDemo />
+
       <Capabilities icon={Icon} feature={feature} />
 
       <Lifecycle offline={true}/>
 
+      <BookDemo />
+
       <Walkthrough />
 
       <DownloadsOffline />
+
+      <BookDemo />
 
       <ExploreMore otherFeatures={otherFeatures} />
     </>

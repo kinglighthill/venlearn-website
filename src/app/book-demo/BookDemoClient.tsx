@@ -470,26 +470,9 @@ export default function BookDemoClient() {
               </div>
             ))}
           </div>
-
-          <div className="mt-9 rounded-[1.75rem] bg-[#101828] p-6 text-white">
-            <div className="flex items-center gap-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
-                <Mail className="h-6 w-6 text-[#6f9fd3]" />
-              </span>
-              <div>
-                <p className="font-black">Email us directly</p>
-                <a
-                  href="mailto:info@veracone.com"
-                  className="font-bold text-white/70 hover:text-white"
-                >
-                  info@veracone.com
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="min-w-0 overflow-hidden rounded-[1.5rem] bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15 sm:rounded-[2rem]">
+        <div className="min-w-0 overflow-hidden rounded-3xl bg-[#2661ac] p-1 shadow-2xl shadow-[#2661ac]/15 sm:rounded-4xl">
           <form
             className="min-w-0 rounded-[1.3rem] bg-white p-4 sm:rounded-[1.8rem] sm:p-8"
             onSubmit={handleSubmit}

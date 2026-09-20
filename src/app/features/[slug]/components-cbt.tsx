@@ -2,10 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowRight,
   Check,
   MonitorPlay,
   Download,
@@ -15,10 +13,10 @@ import {
   Server,
   ShieldCheck,
   Users,
+  ArrowRight,
+  LucideIcon,
 } from "lucide-react";
-import { useOS } from "@/hooks/useOS";
-import { OS_DOWNLOAD } from "@/data/constants";
-import OSIcon from "@/components/OSIcon";
+import Link from "next/link";
 
 const suiteApps = [
   {
@@ -338,8 +336,7 @@ const walkthrough = {
   description:
     "A short guide to authoring your first exam, from blank page to question bank.",
   duration: "5:30",
-  videoUrl:
-    "https://venlearn.fra1.cdn.digitaloceanspaces.com/editor/videos/overview.mp4",
+  videoUrl: "https://youtu.be/zCUQ1fZy2IY",
 };
 
 const fadeUp = {
@@ -349,36 +346,34 @@ const fadeUp = {
   transition: { duration: 0.5 },
 };
 
-export function DownloadLink() {
-  const os = useOS();
-  const osDownload = OS_DOWNLOAD[os];
-
-  const label = osDownload.available ? osDownload.label : OS_DOWNLOAD["unknown"].label
-  const platform = osDownload.available ? os : "windows"
-  const icon = osDownload.available ? os : "windows"
-
+function SecondaryLink({
+  tag,
+  text,
+  icon: Icon,
+}: {
+  tag: string;
+  text: string;
+  icon: LucideIcon;
+}) {
+  const href = `#${tag}`;
   return (
     <a
-      // href="#download"
-      href={`/api/download?app=suite&platform=${platform}`}
-      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
+      href={href}
+      className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-white"
     >
-      <Download className="h-5 w-5 text-[#2661ac]" />
-      {label}
-      <OSIcon os={icon} className="h-5 w-5 text-[#2661ac]" size={24} />
+      <Icon className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+      {text}
     </a>
   );
 }
 
+export function DownloadLink() {
+  return <SecondaryLink tag="download" text="Download" icon={Download} />;
+}
+
 export function WalkthroughLink() {
   return (
-    <a
-      href="#walkthrough"
-      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-8 py-4 text-base font-black text-[#111827] shadow-lg shadow-[#101828]/5 transition hover:-translate-y-0.5"
-    >
-      <MonitorPlay className="h-5 w-5 text-[#2661ac]" />
-      Watch the walkthrough
-    </a>
+    <SecondaryLink tag="walkthrough" text="Walkthrough" icon={MonitorPlay} />
   );
 }
 
@@ -457,37 +452,57 @@ export function SuiteSwitcher({ offline }: { offline?: boolean }) {
   );
 }
 
+function getYouTubeId(url: string) {
+  const match = url.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
 export function WalkthroughPlayer() {
+  const videoId = getYouTubeId(walkthrough.videoUrl);
+
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <div className="overflow-hidden rounded-[1.45rem] border border-white/10 bg-black">
-      {isPlaying ? (
-        <video
-          src={walkthrough.videoUrl}
-          controls
-          autoPlay
-          playsInline
+      {videoId ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+          title={walkthrough.title}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
           className="aspect-video w-full"
         />
       ) : (
-        <button
-          onClick={() => setIsPlaying(true)}
-          className="group relative flex aspect-video w-full items-center justify-center bg-[#182338]"
-          aria-label={`Play video: ${walkthrough.title}`}
-        >
-          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-2xl transition group-hover:scale-110">
-            <Play className="ml-1 h-8 w-8 fill-[#2661ac] stroke-[#2661ac]" />
-          </span>
-          <span className="absolute bottom-0 inset-x-0 flex flex-col gap-1 bg-gradient-to-t from-black/70 to-transparent p-6 text-left sm:p-8">
-            <span className="text-lg font-black text-white sm:text-xl">
-              {walkthrough.title}
-            </span>
-            <span className="text-sm font-semibold text-white/70">
-              {walkthrough.description} · {walkthrough.duration}
-            </span>
-          </span>
-        </button>
+        <>
+          {isPlaying ? (
+            <video
+              src={walkthrough.videoUrl}
+              controls
+              autoPlay
+              playsInline
+              className="aspect-video w-full"
+            />
+          ) : (
+            <button
+              onClick={() => setIsPlaying(true)}
+              className="group relative flex aspect-video w-full items-center justify-center bg-[#182338]"
+              aria-label={`Play video: ${walkthrough.title}`}
+            >
+              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-2xl transition group-hover:scale-110">
+                <Play className="ml-1 h-8 w-8 fill-[#2661ac] stroke-[#2661ac]" />
+              </span>
+              <span className="absolute bottom-0 inset-x-0 flex flex-col gap-1 bg-linear-to-t from-black/70 to-transparent p-6 text-left sm:p-8">
+                <span className="text-lg font-black text-white sm:text-xl">
+                  {walkthrough.title}
+                </span>
+                <span className="text-sm font-semibold text-white/70">
+                  {walkthrough.description} · {walkthrough.duration}
+                </span>
+              </span>
+            </button>
+          )}
+        </>
       )}
     </div>
   );
@@ -539,6 +554,30 @@ export function Apps({ offline }: { offline?: boolean }) {
             </ul>
           </motion.div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+export function BookDemo() {
+  return (
+    <section className="mx-auto mt-16 max-w-7xl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-5 dark:border-slate-800 dark:bg-slate-900/60 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-7">
+        <p className="flex items-start gap-3 text-base font-bold leading-snug text-slate-900 dark:text-white sm:items-center sm:text-lg">
+          <span
+            aria-hidden
+            className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-orange shadow-[0_0_0_5px_rgba(255,128,0,0.14)] sm:mt-0"
+          />
+          Ready to transition to CBT for your school?
+        </p>
+
+        <Link
+          href="/book-demo"
+          className="group inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#2661ac] px-6 py-2.5 text-sm font-black text-white transition hover:bg-[#2c6fc0] sm:w-auto"
+        >
+          Book demo
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );

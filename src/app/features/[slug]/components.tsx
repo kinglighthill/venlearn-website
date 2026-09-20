@@ -1,11 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Check,
-  LucideIcon,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Check, LucideIcon, Sparkles } from "lucide-react";
 import { ProductFeature, ProductFeatureImage } from "@/data/productFeatures";
 import { ReactNode } from "react";
 
@@ -71,7 +66,7 @@ export function DemoLink() {
   return (
     <Link
       href="/book-demo"
-      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#111827] px-8 py-4 text-base font-black text-white shadow-2xl shadow-[#111827]/20 transition hover:-translate-y-0.5"
+      className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-slate-900 px-8 py-4 text-base font-black text-white shadow-2xl shadow-[#111827]/20 dark:bg-brand-orange dark:text-[#0b1220] transition hover:-translate-y-0.5"
     >
       Book a demo
       <ArrowRight className="h-5 w-5" />
